@@ -272,6 +272,7 @@
     </div>
     <div class="q-nav">
       <button class="btn btn-secondary" id="btn-back" onclick="goBack()">← Back</button>
+      <button class="btn btn-secondary" onclick="restartAssessment()">Start Over</button>
       <span class="nav-hint" id="nav-hint">Select an answer to continue</span>
       <button class="btn btn-primary" id="btn-next" onclick="goNext()" disabled>Next →</button>
     </div>
@@ -342,7 +343,8 @@ const QUESTIONS = [
       {label:"Overlay / Specialist / Pre-sales", desc:"Support roles that assist AEs but do not carry primary revenue quota independently", scores:{flat:4,indexed:3,analytic:0,territory:0,account:0}},
       {label:"New-logo hunters",                 desc:"Prospecting-heavy reps primarily focused on acquiring net-new customers", scores:{flat:0,indexed:1,analytic:3,territory:4,account:0}},
       {label:"Account managers",                 desc:"Reps focused on renewal, retention, and expansion within existing accounts", scores:{flat:1,indexed:1,analytic:0,territory:0,account:5}},
-      {label:"Mixed / Hybrid",                   desc:"Reps responsible for both new business development and account growth", scores:{flat:1,indexed:2,analytic:2,territory:2,account:1}}
+      {label:"Mixed / Hybrid",                   desc:"Reps responsible for both new business development and account growth", scores:{flat:1,indexed:2,analytic:2,territory:2,account:1}},
+      {label:"Post-sales / CSM",                 desc:"Customer Success Managers focused on retention, adoption, and expansion within an assigned book of business", scores:{flat:0,indexed:1,analytic:1,territory:0,account:5}}
     ]},
   { id:"market", category:"Market Dynamics", text:"How would you characterize the market this role sells into?",
     options:[
@@ -499,7 +501,7 @@ function renderQuestion() {
   document.getElementById("prog-count").textContent = "Question " + (currentQ+1) + " of " + QUESTIONS.length;
   document.getElementById("progress-fill").style.width = pct + "%";
   document.getElementById("q-text").textContent    = q.text;
-  document.getElementById("btn-back").style.visibility = currentQ > 0 ? "visible" : "hidden";
+  document.getElementById("btn-back").style.visibility = "visible";
   const nxt = document.getElementById("btn-next");
   nxt.textContent = currentQ === QUESTIONS.length - 1 ? "See Results →" : "Next →";
   nxt.disabled    = answers[q.id] === undefined;
