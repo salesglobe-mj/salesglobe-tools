@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quota Methodology Selector | SalesGlobe</title>
+  <style>
+    :root {
+      --red: #E62B1E;
+      --dark-red: #8D0801;
+      --navy: #16213F;
+      --dark-blue: #27394F;
+      --blue: #205D92;
+      --teal: #4C9A9C;
+      --yellow: #F4D58D;
+      --grey: #857874;
+      --white: #FFFFFF;
+      --black: #000000;
+      --bg: #f0f0f0;
+      --font: "Calibri", "Segoe UI", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 18px; }
+    body { font-family: var(--font); background: var(--bg); color: var(--black); min-height: 100vh; }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .header {
+      background: var(--navy); padding: 16px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-logo img { height: 36px; display: block; }
+    .header-tool { color: rgba(255,255,255,0.45); font-size: 0.78rem; letter-spacing: 0.5px; }
+
+    /* ── Layout ─────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 52px 48px 80px; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn { font-family: var(--font); cursor: pointer; border-radius: 2px; font-weight: bold; transition: all 0.18s; border: none; font-size: 1rem; }
+    .btn-primary { background: var(--red); color: white; padding: 16px 36px; }
+    .btn-primary:hover { background: var(--dark-red); }
+    .btn-primary:disabled { background: #ccc; cursor: default; }
+    .btn-secondary { background: transparent; color: var(--dark-blue); border: 2px solid var(--dark-blue); padding: 14px 26px; }
+    .btn-secondary:hover { background: var(--dark-blue); color: white; }
+    .btn-ghost { background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; font-size: 0.85rem; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.22); }
+
+    /* ── Welcome ─────────────────────────────────────────── */
+    .welcome-hero {
+      background: var(--navy); color: white;
+      padding: 72px 64px; border-radius: 4px; margin-bottom: 32px;
+      position: relative; overflow: hidden;
+    }
+    .welcome-hero::before { content:""; position:absolute; top:-80px; right:-80px; width:320px; height:320px; background:var(--red); border-radius:50%; opacity:.1; }
+    .welcome-hero::after  { content:""; position:absolute; bottom:-100px; right:60px; width:400px; height:400px; background:var(--blue); border-radius:50%; opacity:.07; }
+    .welcome-hero h1 { font-size: 2.6rem; font-weight: bold; margin-bottom: 14px; position:relative; z-index:1; line-height:1.15; }
+    .welcome-hero h1 span { color: var(--red); }
+    .hero-sub { font-size: 1.05rem; color: rgba(255,255,255,0.72); max-width: 600px; line-height: 1.7; margin-bottom: 36px; position:relative; z-index:1; }
+    .method-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; position:relative; z-index:1; }
+    .method-chip { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.82); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); }
+    .welcome-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 32px; }
+    .welcome-card { background: white; padding: 24px 26px; border-radius: 3px; border-left: 5px solid var(--red); }
+    .welcome-card h3 { font-size: 1rem; font-weight: bold; color: var(--dark-blue); margin-bottom: 8px; }
+    .welcome-card p { font-size: 0.88rem; color: var(--grey); line-height: 1.6; }
+
+    /* ── Progress ─────────────────────────────────────────── */
+    .progress-section { margin-bottom: 32px; }
+    .progress-meta { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .progress-cat { font-size: 0.78rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; color: var(--red); }
+    .progress-count { font-size: 0.78rem; color: var(--grey); }
+    .progress-track { height: 6px; background: #d8d8d8; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--red); border-radius: 3px; transition: width .4s ease; }
+
+    /* ── Question Card ─────────────────────────────────────── */
+    .q-card { background: white; border-radius: 4px; padding: 44px 52px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.07); }
+    .q-text { font-size: 1.45rem; font-weight: bold; color: var(--navy); margin-bottom: 32px; line-height: 1.35; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .option-card { border: 2px solid #e0e0e0; padding: 22px 22px 22px 56px; border-radius: 3px; cursor: pointer; transition: all .18s; position: relative; }
+    .option-card:hover { border-color: var(--blue); background: #f5faff; }
+    .option-card.selected { border-color: var(--red); background: #fff6f6; }
+    .option-check { position:absolute; top:50%; left:16px; transform:translateY(-50%); width:22px; height:22px; border-radius:50%; border:2px solid #ccc; transition:all .18s; display:flex; align-items:center; justify-content:center; }
+    .option-card.selected .option-check { background:var(--red); border-color:var(--red); }
+    .option-card.selected .option-check::after { content:"✓"; color:white; font-size:13px; font-weight:bold; }
+    .option-label { font-size: 1rem; font-weight: bold; color: var(--navy); margin-bottom: 5px; }
+    .option-desc { font-size: 0.85rem; color: var(--grey); line-height: 1.5; }
+    .q-nav { display: flex; justify-content: space-between; align-items: center; }
+    .nav-hint { font-size: 0.85rem; color: #bbb; }
+
+
+
+    /* ── Results ─────────────────────────────────────────── */
+    .results-header { background: var(--navy); color: white; padding: 48px 64px; border-radius: 4px; margin-bottom: 28px; }
+    .results-eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.4); margin-bottom: 8px; }
+    .results-headline { font-size: 2.2rem; font-weight: bold; margin-bottom: 6px; }
+    .results-subline { font-size: 1rem; color: rgba(255,255,255,.6); }
+    .results-user-info { margin-top: 14px; font-size: 0.88rem; color: rgba(255,255,255,.5); }
+    .results-user-info strong { color: rgba(255,255,255,.8); }
+
+    .actions-bar { display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; align-items: center; }
+    .consultant-toggle { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--grey); font-weight: bold; cursor: pointer; user-select: none; }
+    .toggle-switch { width: 44px; height: 24px; background: #ddd; border-radius: 12px; position: relative; transition: background .2s; flex-shrink: 0; }
+    .toggle-switch.on { background: var(--teal); }
+    .toggle-switch::after { content:""; position:absolute; top:3px; left:3px; width:18px; height:18px; background:white; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+    .toggle-switch.on::after { transform: translateX(20px); }
+
+    /* Consultant notes boxes */
+    .consultant-note {
+      background: #f0f8f7; border-left: 4px solid var(--teal);
+      padding: 14px 18px; margin-top: 16px; border-radius: 0 3px 3px 0;
+      font-size: 0.85rem; color: var(--dark-blue); line-height: 1.6;
+      display: none;
+    }
+    .consultant-note.visible { display: block; }
+    .consultant-note-label { font-size: 0.72rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.8px; color: var(--teal); margin-bottom: 6px; }
+
+    /* Rec card */
+    .rec-card { background: white; border-radius: 4px; padding: 40px 52px; margin-bottom: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.07); border-top: 6px solid var(--red); }
+    .rec-badge { display:inline-block; background:var(--red); color:white; padding:5px 14px; font-size:0.72rem; font-weight:bold; text-transform:uppercase; letter-spacing:1px; border-radius:2px; margin-bottom:16px; }
+    .rec-name { font-size: 1.9rem; font-weight: bold; color: var(--navy); margin-bottom: 6px; }
+    .rec-tagline { font-size: 0.95rem; color: var(--grey); margin-bottom: 18px; }
+    .rec-desc { font-size: 1rem; color: var(--black); line-height: 1.7; margin-bottom: 26px; padding-bottom: 26px; border-bottom: 1px solid #efefef; }
+    .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 26px; }
+    .rec-sec-label { font-size: 0.72rem; font-weight:bold; text-transform:uppercase; letter-spacing:.6px; color:var(--grey); margin-bottom:12px; }
+    .rec-list { list-style:none; padding:0; }
+    .rec-list li { font-size: 0.9rem; color: var(--dark-blue); padding: 5px 0 5px 16px; position:relative; line-height:1.5; }
+    .rec-list li::before { content:"→"; position:absolute; left:0; color:var(--red); font-size:0.78rem; top:6px; }
+    .rec-meta-row { display:flex; gap:36px; flex-wrap:wrap; }
+    .meta-label { font-size:0.72rem; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; color:var(--grey); margin-bottom:4px; }
+    .meta-val { font-size:0.95rem; font-weight:bold; color:var(--dark-blue); }
+    .meta-val.best-for { font-size:0.88rem; font-weight:normal; max-width:480px; line-height:1.6; }
+
+    /* Panel */
+    .panel { background:white; border-radius:4px; padding:36px 52px; margin-bottom:24px; box-shadow:0 2px 10px rgba(0,0,0,.07); }
+    .panel-title { font-size:1.2rem; font-weight:bold; color:var(--navy); margin-bottom:24px; }
+
+    /* Scores */
+    .score-row { margin-bottom:18px; }
+    .score-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .score-label { font-size:0.95rem; font-weight:bold; color:var(--dark-blue); display:flex; align-items:center; gap:10px; }
+    .rank-badge { width:22px; height:22px; border-radius:50%; font-size:0.72rem; font-weight:bold; text-align:center; line-height:22px; flex-shrink:0; }
+    .rank-1 { background:var(--red); color:white; }
+    .rank-other { background:#e8e8e8; color:var(--grey); }
+    .score-pct { font-size:0.95rem; font-weight:bold; color:var(--grey); }
+    .score-track { height:12px; background:#f0f0f0; border-radius:6px; overflow:hidden; }
+    .score-bar { height:100%; border-radius:6px; width:0; transition:width 1.1s cubic-bezier(.4,0,.2,1); }
+
+    /* Insights */
+    .insight-row { display:flex; gap:20px; padding:15px 0; border-bottom:1px solid #f2f2f2; }
+    .insight-row:last-child { border-bottom:none; }
+    .insight-cat { font-size:0.78rem; font-weight:bold; text-transform:uppercase; letter-spacing:.6px; color:var(--red); min-width:160px; padding-top:2px; }
+    .insight-text { font-size:0.9rem; color:var(--dark-blue); line-height:1.6; }
+
+    /* Matrix */
+    #matrixCanvas { display:block; width:100%; height:auto; }
+
+    /* Alternatives */
+    .alt-item { border:1px solid #e2e2e2; border-radius:3px; margin-bottom:14px; overflow:hidden; }
+    .alt-summary { padding:22px 24px; cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+    .alt-summary:hover { background:#fafafa; }
+    .alt-name { font-size:1rem; font-weight:bold; margin-bottom:5px; }
+    .alt-desc { font-size:0.85rem; color:var(--grey); line-height:1.5; }
+    .alt-badge { font-size:0.82rem; color:var(--grey); white-space:nowrap; margin-top:4px; }
+    .alt-arrow { font-size:0.82rem; color:var(--blue); flex-shrink:0; margin-top:2px; }
+    .alt-detail { display:none; padding:0 24px 24px; border-top:1px solid #f0f0f0; }
+    .alt-detail.open { display:block; }
+    .alt-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding-top:18px; }
+    .alt-detail-label { font-size:0.72rem; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; color:var(--grey); margin-bottom:10px; }
+    .alt-detail-list { list-style:none; padding:0; }
+    .alt-detail-list li { font-size:0.85rem; color:var(--dark-blue); padding:4px 0 4px 14px; position:relative; line-height:1.5; }
+    .alt-detail-list li::before { content:"→"; position:absolute; left:0; font-size:0.72rem; top:5px; }
+    .alt-detail-footer { margin-top:16px; padding-top:14px; border-top:1px solid #f5f5f5; font-size:0.82rem; color:var(--grey); }
+
+    /* Footer */
+    .tool-footer { text-align:center; padding:36px 16px; font-size:0.78rem; color:var(--grey); }
+    .tool-footer a { color:var(--grey); text-decoration:none; }
+    .tool-footer a:hover { color:var(--red); }
+
+    /* ── Print styles ─────────────────────────────────────── */
+    @media print {
+      @page { margin: 0.75in; size: letter; }
+      .header { position:static; background:var(--navy) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .actions-bar, .q-nav, .btn, .consultant-toggle { display:none !important; }
+      .screen { display:block !important; }
+      #screen-welcome, #screen-questions, #screen-lead { display:none !important; }
+      #screen-results { display:block !important; }
+      .results-header { background:var(--navy) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .rec-card, .panel, .alt-item { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
+      .alt-detail { display:block !important; }
+      .score-bar { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .consultant-note { display:block !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      body { font-size:14px; }
+      html { font-size:14px; }
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width:900px) {
+      html { font-size:16px; }
+      .container { padding:36px 28px 60px; }
+      .welcome-hero { padding:52px 40px; }
+      .welcome-cards { grid-template-columns:1fr; }
+      .q-card { padding:32px 36px; }
+      .options-grid { grid-template-columns:1fr; }
+      .results-header { padding:36px 40px; }
+      .rec-card, .panel { padding:30px 36px; }
+      .rec-grid { grid-template-columns:1fr; }
+      .insight-row { flex-direction:column; gap:4px; }
+      .insight-cat { min-width:unset; }
+      .form-row { grid-template-columns:1fr; }
+      .lead-form { padding:32px 36px; }
+      .alt-detail-grid { grid-template-columns:1fr; }
+      .consultant-toggle { margin-left:0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAC0CAYAAAB8BpMQAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LmRhYmFjYmIsIDIwMjEvMDQvMTQtMDA6Mzk6NDQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0MEFFNzdFQUVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0MEFFNzdFQkVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQwQUU3N0U4RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQwQUU3N0U5RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yvA/pQAAHKFJREFUeNrsnfFV2zwXh+/L6f9NJ6g7QdMJaiaATkCYAJiAMAF0AtIJoBNgJiidAL8TNO8EfOiLfHBDQnRlyZbt5znHB0oTW5blq5+urq7+eXp6EgAAAIAxsUcVAAAAAAIIAAAAAAEEAAAAgAACAAAAQAABAAAAIIAAAAAAEEAAAAAACCAAAACAznhHFQAAAPSOfMPfCqoFAQQAANBnsudjao+vb4iebRgxtHw+fj8fD/YoqdYX/mErDAAAgCQEjxE4B/bnJMI1SiuM7p+PWyuQEEAAAADQKkbkzJ6PI1l5etrGiKCfYxVDCCAAAIB2ya3omSVSnqUVQd9lNVWGAAIAAICgwudcdLE8bVM8HxcygoBqBBAAAADCZ5MQOpMBe4QQQAAAAHEwMT6Xks5Ulw9XsvIIDS5GCAEEAAAQnlNZeX0mA7gXI36OZRUnhAACAACAVxjBc/18HA7w3haymhYbhDcIAQQAABAGs5T9Ttrz+pSyObnhROItqzfX+yYDiA1CAAEAADRnJivPTwyMx6WQVVbn4g3hs00ImeOzrIKws0DlMZ6gBQIIAABgvJhA59MIoscIjJ8Sdkn61AqhkwBi6LjPIggBBAAA4I/x+swCns+IHZOQsI2A46kVQk3Kv7BCCAEEAACA+PESPl0lIMxktWLN9156KYIQQAAAAN2Jn9KKhyKBe8rsfeVjEEF7tGEAAIBOxI/x+HySdLadMGJsX1arvLRL3U19nPbpIeIBAgAA0HX0TVd7lZL+UnKzguxG9N6g3gRGI4AAAADcMGLgruE5CvHzsHTFXFbxQa6Y+9qXHuQJQgABAADsxnhEHqVZksOF9HPF1Ex0Xq/y+fiSusgjBggAAGA3NyMVPz5lzyReUkgEEAAAQEuY4N58pOLH9x4OJfH90JgCAwAA2E72fPwSf+/PEMRPnZm4e3fMFNgn+XsqrL5P2bRWrx9Fl5naxBj9Z3+ao0QAAQAAhMNMffl6MkzH/GWAdTIX98DoByuAMgmzD9lbYstkz74Xx1VoCCAAAIDN5OK/6muT92NI3EmzacGYlLLaTuQKAQQAAKDHTH1NPb9rloIXA6qLaurKiJ7P9vcs8TI/2OewUYS+o30DAAC8YtZA/FwNQPxkNbGTN6iLLjFlvtsmgvAAAQAAvOZR/DwcfZ36mlih87XHgmcbC9kQiI4AAgAA+BsjAHxjf3qzFYQVeCbA+0DSjecJhRGlZf0PTIEBAAD8zYnn98oeiB/j2TmS4Xl5djGT1eo1BBAAAMAGMvFf9n6RuOg5lPQDl2Pxdf0PCCAAAIAXZp7fKyUt748ROic9ED2F/Wlipn7X/m7+/bBFzJl4pff2WXlvT4IAAgAAeOHI83vfEyj7xAqeE0l3essIxW/iv1t8UfvdZII+9y0IAggAAGBFk9w2iw7LnVvhNuuwDMuaCHuLTDy2rdgi9g4Un79f/wOboQIAALwICR9upf1l70YAmE1azXL9uw7ETyGrfEfGm2NWWH0Q9xioppukVvl9pspn9Bd4gAAAAFYceH7vvsUymk7/pGXBs7SC57f9WbwhMi4d63nRQPRpp71MeV9NuZEHCAAAYIVvh/gqx0wEjOCplq+3QWGF3VuCZxMuCSSNoPrgIXxOxC/oeeO2JHiAAAAA/IVFGVH8VEHN5xJ/JVe1m/pPKxZ8p/QK2e2dmohbLFDl7ToU/9VeW7clQQABAAD4r5p6iFCWph4PjXgzoudHwPu4F7fpuekbAsjc840093aZezrb9p8IIAAAgNWmnz787pnwiSF61s/vKjhvt/xfKPGz/9YHEEAAAAD+U0xFD4RPbNHjUx9ft/z9MKD4WSKAAAAA3qaLxIGxhc9CVjE9tyN6Duaez8QhhgkBBAAA4C9ACs/vVcu5Qwsf4/34Lt3kJqrXSb7jM3nga5p7PdaIPQQQAACMnazFa80kzqquhRU+Dz1/FkvPez/TfpdM0AAAgACKTy6r7MXXAa9Xyir7ssmpc9xD8TPZImZchUwhq1ifYx/hhAACAACI28lfW/GTBzrng+30TQLGuXQ31dWUTfE+5l7OdnxvYYXPxgSHrjAFBgAAEIfQcT6ms7+QMCvPUmZhRV49CaL5t1nFZmJ8yhAXQQABAACExXg2riXcyjLT6X8fgfCpU3m5jmNdAAEEAADgj/FOLGu/G4/PaaBzF1YAlD2sk+QhBggAAMCfae3nr0DixwifKsal7HGdIIAAAAAGivF2zK34yRqe60ECBPcmUB+udCrumAIDAICx06Qjvglw/Wrl02IAdTltqd4RQAAAAB0KoKaYVV1X0t+l7E0EUKe8C3Sz5siej/drN39vfz7Yo+Q9g8jktg0aN+xneXHHGuNS7dpc2PaYksGZ2HLn9t/1spuy/mffn1LGtRIkFFnNVhnqGzHW67eyVQCxMe9xHwOcd/HV8XOdv2f/PD09+RprE+h1JLo5T/Ogq+V8bT50U8Zrx89+a6FjnNm6c8HkPVi0WFd3LVwj9D2ZTq2eL0JjgH6KLvNo6JHSUU20abiVl00OlxHLd6n4/H6CI9Ej2y40dmq51jZSsQXbyvrb/nyIKI4vWxjZm/KfddheQiYq3PXMVHtW9Yw/jna46NxmGAGkPObPx5+n5tw9H7nH9X3L7MppYuWZt1RH1dEGoe5p8nxcByqTOU/WUh3ntv2HwLyLl5HKnivLIokcs+fjMWD9zm1b69oWuHITwbbetWAX7jpuN9ct3ONlxLaUwjFNuG97dWhWgU2sQg6V1TK357uR+PuwaEZYJ3hme4EZjT7aEXSokbhZxTGPXOa7wCPNyhsbu+x9ILdtIuReS1Vel0cJl9slNoe1djbFVDjzb8Rzl9bbod6ws2ccKeukU/YURiCWe/DQGu/DiMZAYwyzltyg0FxIhE62VXV2vyJ0HHN73lhtq95Rj63Tq++1lEW8xqWEWercpiD8FXCQMHSKSOc1Ac5fZByxe5p+vPMYIFcBFDKl9zbjcpCAIm3yHWivs4shftYFVkgPwi8rTtogG1mnV4nhWYvXizlgi8F1z8o7FAFUyji8Pj7OhmVfBNBpCy+Py+6vvp3BoeeDnGAPkuSmhWdjDGGIAMWqc+7CI2M6vflIxE/b9Tux7bBPIvMam9aqCDL2Yyxen4qTDuo5qgCatDRyvYikkH0N1IQRU7IjjLyF64TYfC+T7mMwzLt7OdC2EGsaVCsq+iKCJgNuCyG5D3AOM5hvYzVxSmRK23yfQqF3CaDTFgyMcYNdRTp3k6ksgqHToy0xXgbyEKQw4j6V4U2HZQmIn7oI6stgaSZ4gXbR1PNrRM9ihPV22XI9tyKA2oiFibXVvTb4edMIkxUUaY34Yz8PI3zmgTrFlNrO9cDaciriso/1i2c77sC3WpU5JnLRBz+XKRT83Y4ORysgjCdnPcnh1FbOpqSJVxIvEOoo0MtwjE3YStFAaPi8ZNqR2Jm8ThSY27YxiyTGm8bMmTq9l7+DBKt7/yr+U4BGNHyR/rvlQyTkK2wbNMue39fEta+oqlahfYl878az8GPNtp4o7fTnFp6Rb5b1roNiQ01pnthnVco40Hp/fiRT8h3JxEImt5usJf36EzEhVBYwCdrkiUSIKSS+u1GWberQRu7WkseFSMzokyT00b5vE0Wiv7sWkvmllghx2uBdNs/30OH81w0SvZ52ZAs0Cfx8kw1q2lvewwR+oZMg3j0NN9lh00SeWSrlf2sKTDOqWDpMHVSf2ZeXVOCxRqOzQOchGDodNKPzhcNosrRt8aLWHkOMhLReBHP9T6LbjmNhy+4SaHllzz8fiPfHx6vwxdbVrcNnj219+cQohEoSq2WI+0m1SYw4uVyGPxU2FX1c5m1KbXUv0Hk0rsvCGqSYQVAhY5cIhk4DzdSPJqPrXMJMDWVKI7q0Imbe4Jq3tQHFJpFkOvKh5CDJRT/9VyWg006tLK1g0g7Suoz/+IGJ8B4sx1oddy7DjSOtpn21fE/pJkIJIO1DjqkAmwY/b7o3gqH7xccO2qNWKO9LmFwYD/L3hoLVAGNoXgFt/Z5J89xiizcEJgOmYXgwYqYGSGk1aGh8Av8LSSwv0l7AB51Koq0YBojM0P0b1c06uKamcw4Z8FlN3ezb42Fgz1M7FW2Ey1XAuj1TlnXWQR29d/zcEvPQqjgxg/FUUjaEFD8+oSHJeSn3Ap7LvPTVhoxZR/djrptHMAQzga4pPF7StrZI0GQOLyRO3quFDDfrrMbYlhI+q/xCdLldDlquH43ouheo7ENb/VSVtHMI+MZLFZJgfqS9HYbER4BUGzJ2kSpe4/25Ffc4pK5GddBs5JpbQ/fH/swjle2r4rMXPEo1GkERa3GFJpYqb7FutHvj3dKcWtneaZsI6rMnaC7+U4ZJ2r29gCPuTaO2eufTRhyNRqSYYCyNS45psNc8eRy+I6EmI9dKwN5ZcT6X8HFirt6JgmbjJWS7rl9Nht9JJHv3UV6CwU+tXX1UXGsh7cSF3XnahraEyLnyuT8EbMd9FUHX4p+J/zZVu7fXgjGpOp9f9mWNtb3GTHHe0jbqW+WoLhPoilAj10z+9lKGGAm6dtCs1PF7Xq7vdewVJprnF0MAVSL+zo7ENTZvKXgfq45c0/8cS9hkuFPbF/ZlYU3lYZx5fj/WRudBeOdgUPKA18vsi3tuzz0PeG6Nh+b7Wsfq+nBPUn6YA6e0I9hZwHMe2qO0Rq7wbNOuaM8/j1SXhfTHExWzfrVUGY4ngcvdBuQKWg2+NcLjojbwupBwexFmVlSYc14lXF+5NI+Vuki53e0SQFWcTOj50mqX+QP7Yj4EaFAaoXa7JoZcO9UZAqhTzkQXcKw1SLeijyHRGAdtO4+5+WtfBNAkYv36iiAXW/MxoTo8FmJ/MuX7dLs2AJnb/moasF1f1vrAMrF37lya57QqEhd4TqvAQgiUbVSBYU0blTb4uVwzaKWiYcwEuqJKHhhrKe+hxJ2jZwmyn41IRfxorpMlVIdmFH8j485npsnSvS0z/LcI77AR09Xq6RRig2a2PE3FT5VMNGn2HG9kP+IIYhJABGlEyc8Nf9PM7R8IdEmV+C/WiGlIS1bHJo7b4L+e1s+h7dguR9g2cmUfsU3olBJnc+zK4/JLdHFdMQZ/odIDfJMeDPhc8wBVau5bpI5n0uDF1DSY5RYht1A2lEygaxFksh1fRHrJphIv/gbi0NY7+bHn9VStHhsTmqkvM2VTvPH/txIvmDyTl5V9ly206WrrlmpBSB7ovL7xlMkKoPrD/yRuGwv6qHSfWKMjZfm3KXvNA5sJpDDin9v2GGOa9iTCSIwtVfS4vpdtCSDX66ScjXs2IoGfiy6Ngou4mUvcpH51YVJNR00Dtt+ZFTx/IgithSSY8DCUAKoLCSOCPkjYALsjj4epUa0/PP+vaTkhrhAyL9wXK4ZCrTpw3X5B09GlIoDKgbaFPKFrpD5Vdi7j8GRr4kM1yS7b8nJU+5X9soLlxgqwQ4e2OLWfMZ+vPEuP4r+VhYv4Oe5T43jX8PvLmuLLbKWeNHixDiM27lJ2uzZdXcPVvY59ZYWPKzhm51val31uX/4jaTanfuAwmtFMwX1NZHTUJwH0oHxeMTulw0jl1nQwPzYIsvfiNzV/HqnDMuX8N4G2kymeWeFhz40TIMQiHu2g7DDB97R34sfwz9NTlAScuX25fEZkml2y/yg6N2OQfu74zJHCiFReMB/m4j4vfSHtuqs1DeKfnrTzmeeI14ibDw6fu1O09Q8K0RQrO+4nRxGUiy4gPFZ7eHR8dq7Py5drcZ/+dq3jkLYgF90Gn5r60rRxjQ2PifGcnAZ+XptEScj4mT7SS/FjeBfpvIU9ZhIv4E47sp8GVurViKsU6MMLeisv2XM1xs2Fe4UBPFUIWo2HzVW8L3vYZgvH51bFTsTIPTJVtJ2yozoual4J1/Y9lbTjlZr2Ea72wfd5VaukNeIY8TNwAVSvHO0Kr6nj6OEokRdsLtAHqtweWYTR2q1iFH9uP+/S6Wjalut0cNHDZ3ev6Fyq+g0tQDQ2rMs6Lmzbch3sDVUAaRKmhljVZWzLvxI3eWlqnEniiQ53sad4SXznHRfKz5eO5ckTqD+CodM3buvE2I9Lk0xTRL8fkYsQ13ir+oZmz75qSiK0+Mk7bmPa9uhKNlAb4ZqvrQgols2ApRf5bwIMJvf7Ln40AqjKJDrzrKzQnz9JpP5ieBNgt/g17dF3Q8EyUrm+K+8hVMbpiehT/PfR4N56tJFQ4vJU2b6KBOzS2HG1y6HFqmmnX2S404qFvb9iCDfjIoAuax3NtehTZIcWCK7Lk9sCL1B7TOTFe5KJ3woMTSZvjXhfKD8fQgRVWdRdO7wYU0NtoZ2mmFmR3EQMXHsIqRR2XB97vqlM3OPhFhGuX8pLotahUO3qHjMLf3IC6HCD4DGCSLPSQJvhuXAo0yShOpwlVp4hc75m3Cei27dGE8gqylGcMRDflfdjyvMofp7VamsDTWf3vcfPvvTorKbit69R7vlcfMoYmrnSHpUDtBOaAUHsZzEEb0lh7+NqaA1lz2G0vc34Pu7o/H1G6C4dzkmC9TgTiM3hGx3ZpW1rhzs6Na3HRRsvc+XRoVTv2aO9v2yHYT+1nfqN0rtRDMAQaxLV1ev3Ul62F8jfEEtV3d6Jn+forONO/1L0QbhDFEC54+d+t1CWau/C4x7WdWnLvj/QdvJmHiBN3oei1lm8t9/zccNe7TAi1YguxYbySTkyaHO1gCaX0FNi5amM+y9H8bK07bEybh9te/Tp0Hzm8iuh1bQ9lRvafhNPo09ulhD3oh1p7jsMNq4DvbOlvCwFb4pvXjCNLSg2iPIm9vb/fYDj5zT9QcznH7JOu8hXNJP0s3CX1kYvhj6qfvdGA9I09jzQy7ErIE3r/WkSkX8g7q7zzN5/IRADzaqpUNlSS/ELZCys8WgicLPABvJqQG3TGOWv0tzrGrKOS2knF0ooO1uvyyHiumHtQ0ftd2Hb75GktYjG2IjvMqIdDjYJoKl0k8ug2NEgtcHPi4YP8kF0sQNHCKAozDsyEt8blvmzpBGs/yDDCsY0nEn4xKa+LKW/S59/yDDJFM+uSyG/kJcte3y2Mgkl3m+tvSvH1rlsigHqKpHTLiOtDX5u+nJrVwjMhGDoGJx0ZBSajo5j7FA/ps55133tJ1K/KZTDh9sBD9j61JE/WEFvQiiqlWOx21Nhr1NtIH0mI93RYG+L4V60XA4XF33IjU9jiagZeiU4XQTg+QTbbuscu3InL2XAwYsJiI8+i58qK/pQcd2INU9QDM2tMPlg29dFQ7Fa2P78wp7vH/tzLsPNVeTMux0vx6ylh77L+6N1d4da7lvYDiRz/PyRDHCpYAJGwRiEtnZdvggoWioPjGZTxlB19m0Eo7pKhGj3eAtRvyl4+JrU2VLAddulrp5TsaV8uxZELBE3bry1DP7YHjFflAfHl1E7DbIIWEZtht8pzSqKMWgjD8WVxNnb7Uzam4payLA9P9sGbGct1e+V9Nfz89DjsmsHrq4D1r4OCos3DsRPAAFUGdNYiZyu7Ll3GS2f4OeQhlArpk5oVtGohETozr3eicbCeJXMfHusgORSXvKNjHF0f2XrdxHp/IWt37Me1u9SXqZAxtA5ut5jKntKQqICaN2whuh46obEhbaDnzcZD41RTS1T9dCo9tq5CNQRLSJ3nOttaV4TQiHKX03HfBJWIS5rdRFqIHQrL8ngih6+K1V9zEckjDVTQKE3JoYe8VYixG0YxVzlL8gURtoYD5+ldjPRLQ+cR6inqei9UOWOOmxz5FEojPc8sfK8ReUdPLD16WrITMdwL+G9hT7Uy58p6u/e3kfMEX0m7cbWlIGFaNU+virqd7lWv2Xkew5pC6qOP0YMiNYOd/38Tcyd6zZMrqEYgAB6ZWCm8jqbav0FLKhmaIls7agb1lLSDw6sv0d5Sx3bmNhmr8q1A4bxrP8oPj+WhQMQUAABAACkiJnemik+X8VKsZIXAQQAANBbjBfoUfQxPqWsYkkXgkcIAQQAANBDNLFAmyiej5/C8nIEEAAAQM+4kXD78hkhVMoq23QVl1f9fReZ/B2bmNd+/yivg8x3JTx0pV5O8/P32t/r/48AAgAAGAhGRLSVSb7PFDWBVAm9EgEEAACACBoblYfoXsKlL0EAAQAAtCyCzMqwQ6qiEUYEDSIuCgEEAABjYv58nFMNQShllTD0Rx/FEAIIAADGhpkKM6vDcqoiuBjy2fEBAQQAANAiRgCdI4SCU1ghdIsAAgAASBfjEToRNrMOTSmr7NoLBBAAAEDa1DfQZdXYgIUQAggAAGAz1ca5Rgx9tv/OI1ynWPu3CSj+z/Gz62TyOqmiWFFXESrJohZzX2eSyHJ6BBAAAICeuoiohNI2qnw62/7dFdnaEVPk1TEbzl5IxxmoEUAAAACwSRxN7fE1gigqn49vXQpBBBAAAAC4UE0HHgQURMfSUWwQAggAAAC0TGpiqOnquYUVQgggAAAA6JUYMiLoSPw9Q62LIAQQAAAAhKLKqTTz+K5ZIXaFAAIAAIC+kslq89lc+b19aWmZPAIIAAAAYnFohZBrjFD5fHyRFpbI7/FsAAAAIBJmPzDj1XFd7p49H6dtFAwPEAAAAMTGeIAexc0TZLw/nySyFwgPEAAAAMTGiJlvCrF0GLtACCAAAABog0JWMT4uHCCAAAAAYCi4CqBp7IIQAwQAAABtoIkD+r9GiVmYdzwPAACAVzu6m1VLS6olKKfSbMuMoOABAgCAsQufc9m89NpkJb5ACAVhJqt8QCqNggACAACII37u5O14E+MJOhb3PDbgLjDfopTVUvhoEAQNAABj5VJ2B9ua///1fMwloembnpDbuvNJbFjELhwCCAAAxkgmug07jRfjESHkhMnhc2ePzPMc97ELyRQYAACMEeOVuPT8rokJMls8/JCWNu7skaA8aiB66vX7IXaBWQUGAABjZNLwuzN7lFYM/RyhGDLTg7kVPSHz9nxvo/B4gAAAYIzMZTWtFZKlFUFm+uZhgIJoao+vVvhkEa5h6u0LAggAACAOpgO/a+E6he3U/+2ZKKoETmYFjxE+sWOfjIDU7ByPAAIAAPDgUeJ4MVw6etPJl1YYlfKyRURbAqkSNFUCyPf2Z9ZRnRhMuoFFWxdDAAEAwFjJpR0vkC/rYqgSTC5UgmaT6EmRVsUPAggAAMbOTFarwVjaPiLxgwACAABYeUbuEEGts7Ti57aLi5MIEQAAxo6JxzHbLhRURat1/qUr8YMAAgAAWFGtQDoTNj+NzYUVP2WXhWAKDAAA4G/MVJiJC5pRFUEpZDXlVaZQGDxAAAAAf1PFpnwRpsVCCZ99e5SpFAoPEAAAwNvkstruYUZVqIXPRaoiEgEEAADgRvZ8nFghxIqxzVQbxZr9vB5SLigCCAAAQM+hrLxCh1TF/ymejx9W/PQiiBwBBAAA4M/EiqADWU2VjckzZETPTyt6yr4VHgEEAAAQDiOGqt3SpwO7t7ImeszPXqcLQAABAADEYVITQm3tqB4SI3JMHM9v+3s5pIeDAAIAAGiPzB5GGH20v3ctjIy4WVqhU+1S/zD0B4EAAgAASIPc/qwLos9r4mgiu6fWHuT19NT9muDZ9rnRgAACAACA0UEmaAAAAEAAAQAAACCAAAAAABBAAAAAAAggAAAAAAQQAAAAAAIIAAAAAAEEAAAAgAACAAAAQAABAAAAIIAAAAAAEEAAAAAACCAAAAAABBAAAAAAAggAAAAAAQQAAAAIIAAAAAAEEAAAAMDw+J8AAwAJMvd5qSh2sgAAAABJRU5ErkJggg==" alt="SalesGlobe">
+  </div>
+  <div class="header-tool">Quota Methodology Selector</div>
+</header>
+
+<div class="container">
+
+  <!-- ══ SCREEN: Welcome ══════════════════════════════════ -->
+  <div id="screen-welcome" class="screen active">
+    <div class="welcome-hero">
+      <h1>Quota Methodology <span>Selector</span></h1>
+      <p class="hero-sub">Answer 6 questions about your sales environment to receive a tailored recommendation on the right quota-setting approach — with rationale, trade-offs, and implementation considerations.</p>
+      <div class="method-chips">
+        <span class="method-chip">Flat</span>
+        <span class="method-chip">Indexed</span>
+        <span class="method-chip">Analytic</span>
+        <span class="method-chip">Territory-Planned</span>
+        <span class="method-chip">Account-Planned</span>
+      </div>
+      <button class="btn btn-primary" onclick="startAssessment()">Start Assessment →</button>
+    </div>
+    <div class="welcome-cards">
+      <div class="welcome-card">
+        <h3>5 Methodologies Assessed</h3>
+        <p>From simple flat quotas to sophisticated account-planned approaches — we identify your best fit across the full spectrum.</p>
+      </div>
+      <div class="welcome-card">
+        <h3>6 Key Decision Dimensions</h3>
+        <p>Data maturity, role type, market dynamics, territory structure, planning culture, and precision requirements.</p>
+      </div>
+      <div class="welcome-card">
+        <h3>Instant Ranked Results</h3>
+        <p>Receive a prioritized recommendation with scoring, rationale, and expandable detail on each alternative.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN: Questions ════════════════════════════════ -->
+  <div id="screen-questions" class="screen">
+    <div class="progress-section">
+      <div class="progress-meta">
+        <span class="progress-cat" id="prog-cat"></span>
+        <span class="progress-count" id="prog-count"></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-text" id="q-text"></div>
+      <div class="options-grid" id="options-grid"></div>
+    </div>
+    <div class="q-nav">
+      <button class="btn btn-secondary" id="btn-back" onclick="goBack()">← Back</button>
+      <span class="nav-hint" id="nav-hint">Select an answer to continue</span>
+      <button class="btn btn-primary" id="btn-next" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+    <!-- ══ SCREEN: Results ══════════════════════════════════ -->
+  <div id="screen-results" class="screen">
+    <div class="results-header">
+      <div class="results-eyebrow">Assessment Complete — Top Recommendation</div>
+      <div class="results-headline" id="res-headline"></div>
+      <div class="results-subline" id="res-subline"></div>
+      <div class="results-user-info" id="res-user-info"></div>
+    </div>
+
+    <div class="actions-bar">
+      <button class="btn btn-secondary" onclick="restartAssessment()">← Start Over</button>
+      <button class="btn btn-primary" onclick="downloadPDF()">Download PDF Summary</button>
+      <label class="consultant-toggle" onclick="toggleConsultantMode()">
+        <div class="toggle-switch" id="consultant-switch"></div>
+        Consultant Notes
+      </label>
+    </div>
+
+    <div class="rec-card" id="rec-card"></div>
+
+    <div class="panel">
+      <div class="panel-title">Methodology Match Scores</div>
+      <div id="scores-container"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">What Drove This Recommendation</div>
+      <div id="insights-container"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Data Requirement vs. Implementation Complexity</div>
+      <p style="font-size:0.85rem;color:var(--grey);margin-bottom:24px;">Where each methodology sits across two key dimensions. Your top recommendation is highlighted.</p>
+      <canvas id="matrixCanvas" width="1000" height="460"></canvas>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Other Approaches to Consider</div>
+      <div id="alt-container"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tool-footer">
+  © 2026 SalesGlobe. All rights reserved.&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://www.salesglobe.com" target="_blank">salesglobe.com</a>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+const QUESTIONS = [
+  { id:"data", category:"Data Maturity", text:"How much reliable historical sales performance data do you have?",
+    options:[
+      {label:"Very limited", desc:"New company, new market, or existing data is unreliable and incomplete", scores:{flat:4,indexed:2,analytic:0,territory:0,account:0}},
+      {label:"Moderate",     desc:"Some data exists but coverage or quality is inconsistent across the team", scores:{flat:1,indexed:4,analytic:2,territory:1,account:1}},
+      {label:"Good",         desc:"2–3 years of clean, rep-level performance data is available", scores:{flat:0,indexed:2,analytic:4,territory:2,account:2}},
+      {label:"Robust",       desc:"Multi-year, high-quality data with strong CRM hygiene and completeness", scores:{flat:0,indexed:1,analytic:4,territory:3,account:3}}
+    ]},
+  { id:"role", category:"Role Type", text:"What best describes the primary sales role being assessed?",
+    options:[
+      {label:"Overlay / Specialist / Pre-sales", desc:"Support roles that assist AEs but do not carry primary revenue quota independently", scores:{flat:4,indexed:3,analytic:0,territory:0,account:0}},
+      {label:"New-logo hunters",                 desc:"Prospecting-heavy reps primarily focused on acquiring net-new customers", scores:{flat:0,indexed:1,analytic:3,territory:4,account:0}},
+      {label:"Account managers",                 desc:"Reps focused on renewal, retention, and expansion within existing accounts", scores:{flat:1,indexed:1,analytic:0,territory:0,account:5}},
+      {label:"Mixed / Hybrid",                   desc:"Reps responsible for both new business development and account growth", scores:{flat:1,indexed:2,analytic:2,territory:2,account:1}}
+    ]},
+  { id:"market", category:"Market Dynamics", text:"How would you characterize the market this role sells into?",
+    options:[
+      {label:"New or emerging",          desc:"Limited benchmarks, unpredictable patterns, or a largely untapped market", scores:{flat:4,indexed:2,analytic:0,territory:1,account:0}},
+      {label:"High growth",              desc:"Rapid expansion with clear market signals and visible near-term opportunity", scores:{flat:0,indexed:3,analytic:1,territory:4,account:1}},
+      {label:"Stable and mature",        desc:"Predictable market with established historical patterns suitable for modeling", scores:{flat:0,indexed:2,analytic:4,territory:1,account:2}},
+      {label:"Highly variable or disrupted", desc:"Volatile conditions where historical data may not reliably predict future performance", scores:{flat:3,indexed:2,analytic:0,territory:1,account:0}}
+    ]},
+  { id:"territory", category:"Territory Structure", text:"How are sales territories structured for this role?",
+    options:[
+      {label:"No formal territories",         desc:"Reps work a general market, shared lead pool, or an unassigned geography", scores:{flat:4,indexed:1,analytic:0,territory:0,account:0}},
+      {label:"Geographic or segment-based",   desc:"Defined territories by region, industry vertical, or company-size segment", scores:{flat:0,indexed:3,analytic:2,territory:4,account:0}},
+      {label:"Named account territories",     desc:"Each rep owns a specific list of named companies or assigned accounts", scores:{flat:0,indexed:1,analytic:1,territory:1,account:5}},
+      {label:"Mix of geographic and named",   desc:"Combination of assigned territory coverage with some named account ownership", scores:{flat:0,indexed:2,analytic:2,territory:3,account:2}}
+    ]},
+  { id:"planning", category:"Planning Culture", text:"How strong is the planning culture at this organization?",
+    options:[
+      {label:"Minimal",     desc:"Reps don't do formal territory or account planning; quota is set top-down", scores:{flat:3,indexed:2,analytic:2,territory:0,account:0}},
+      {label:"Developing",  desc:"Some planning happens but it is inconsistent or informal in practice", scores:{flat:1,indexed:2,analytic:3,territory:1,account:0}},
+      {label:"Established", desc:"Reps regularly produce structured territory plans with manager review", scores:{flat:0,indexed:1,analytic:2,territory:4,account:1}},
+      {label:"Rigorous",    desc:"Reps build detailed account-level plans; planning is core to the sales process", scores:{flat:0,indexed:0,analytic:1,territory:3,account:4}}
+    ]},
+  { id:"precision", category:"Precision Needs", text:"How important is quota precision and individual fairness to this organization?",
+    options:[
+      {label:"Simplicity matters most",    desc:"Ease of administration and communication is the top priority", scores:{flat:4,indexed:1,analytic:0,territory:0,account:0}},
+      {label:"Moderate differentiation",  desc:"Some differentiation is useful but we don't want to over-engineer the process", scores:{flat:1,indexed:3,analytic:1,territory:1,account:0}},
+      {label:"High precision needed",     desc:"Quotas must accurately reflect each rep's individual territory opportunity", scores:{flat:0,indexed:1,analytic:3,territory:3,account:1}},
+      {label:"Maximum precision",         desc:"We need the most rigorous approach possible and can support a complex process", scores:{flat:0,indexed:0,analytic:4,territory:2,account:3}}
+    ]}
+];
+
+const METHODS = {
+  flat:      { name:"Flat Quota",              tagline:"Simple. Uniform. Fast to deploy.",              color:"#857874",
+    desc:"A single quota applied uniformly across all reps in a role or territory group. Flat quotas are the simplest to administer and communicate — and are perceived as fair when territories have similar opportunity levels.",
+    bestFor:"Overlay and specialist roles, new or emerging markets, small teams with homogeneous territories, or organizations where simplicity and speed of deployment take priority over precision.",
+    pros:["Simple to administer, explain, and defend","Perceived as fair when territory opportunity is equal","Fast to deploy — no data modeling required","Strong starting point for newer sales organizations"],
+    cons:["Ignores territory differences — can demotivate reps in low-potential areas","High-potential territories may be undertapped","No mechanism to account for market variability across reps"],
+    consultantNote:"When presenting this to a client, anchor on the equity narrative: 'everyone starts from the same baseline.' Works especially well for overlay roles where reps share accounts and it's difficult to attribute revenue to an individual. Flag that flat quotas require a credible top-down number — if the corporate target is unrealistic, the flat quota amplifies that problem immediately.",
+    dataLabel:"Low", complexityLabel:"Low", dataLevel:1, complexityLevel:1 },
+  indexed:   { name:"Indexed Quota",           tagline:"Balanced. Adjustable. Data-informed.",          color:"#205D92",
+    desc:"Quotas adjusted using index factors — such as market potential, account penetration rate, or growth trends — to reflect relative territory opportunity. More nuanced than flat quotas without requiring full statistical modeling.",
+    bestFor:"Organizations with moderate data maturity and clearly differentiated territories; mixed role types; or where top-down quota allocation needs territory-level customization.",
+    pros:["Balances simplicity with fairness across unequal territories","Manageable with moderate data quality","Flexible — indices can be recalibrated as market conditions evolve","Better rep acceptance than a purely top-down allocation"],
+    cons:["Index quality depends heavily on input data quality","Requires periodic recalibration as market conditions shift","Can become overly complex if too many indices are layered"],
+    consultantNote:"The key design choice is which indices to use and how to weight them. Start with 2–3 indices max — adding more creates noise rather than precision. Common high-value indices: total addressable market (TAM) by territory, prior-year growth rate, and account penetration rate. Weight each index by its statistical correlation to rep performance. Always show the client how quota shifts when indices change — it builds trust in the model.",
+    dataLabel:"Moderate", complexityLabel:"Moderate", dataLevel:2, complexityLevel:2 },
+  analytic:  { name:"Analytic Quota",          tagline:"Data-driven. Objective. Statistically rigorous.", color:"#4C9A9C",
+    desc:"Statistical or regression-based quotas derived from historical performance data, market variables, and predictive modeling. Produces highly defensible, objective quotas with minimal manager bias built in.",
+    bestFor:"Mature, stable markets with strong historical data; hunter roles with well-established performance benchmarks; large sales forces that require a consistent, auditable quota-setting methodology.",
+    pros:["Most objective and data-defensible methodology available","Removes manager bias from the quota-setting process","Scales consistently across large sales organizations","Produces repeatable, auditable results year over year"],
+    cons:["Data-intensive — requires clean, multi-year rep-level data","Can be perceived as a 'black box' by reps and frontline managers","Less adaptive when market conditions shift rapidly","Requires analytical capability to build, validate, and maintain models"],
+    consultantNote:"Before recommending analytic quotas, run a data quality audit. The model is only as good as the inputs. Key validation: check that at least 70% of reps have 2+ years of data, CRM coverage exceeds 80%, and there are no major territory restructurings in the historical period. When presenting the model to clients, show the 'prediction vs. actual' accuracy — this is your proof point. Anticipate the 'black box' objection by preparing a plain-English explanation of each variable in the model.",
+    dataLabel:"High", complexityLabel:"High", dataLevel:4, complexityLevel:4 },
+  territory: { name:"Territory-Planned Quota", tagline:"Bottom-up. Opportunity-grounded. Rep-engaged.",  color:"#27394F",
+    desc:"Quotas built bottom-up from opportunity and pipeline planning at the territory level. Reps and managers collaboratively identify specific opportunities and growth targets, which roll up to form an individual quota.",
+    bestFor:"New-logo hunters in growth markets with clearly defined geographic or segment-based territories; organizations with strong planning discipline where rep input genuinely improves forecast accuracy.",
+    pros:["High rep buy-in — quota is grounded in real, identified opportunities","Surfaces territory-level market intelligence during the planning process","Adaptable to changing conditions through active planning updates","Builds pipeline management and forecasting discipline across the team"],
+    cons:["Requires genuine planning discipline to be effective in practice","Reps may sandbag opportunity estimates to anchor a lower quota","Time-intensive annual process for reps, managers, and operations","Quality of quotas varies directly with quality of rep-level planning"],
+    consultantNote:"The sandbag risk is real and must be managed structurally. Design the process so rep plans are reviewed against external market data — TAM, win rates, pipeline velocity — not just manager intuition. Build in a 'reconciliation step' where bottom-up totals are compared to top-down targets, and establish clear rules for bridging the gap. The planning template matters: give reps too much freedom and you get garbage in; too little and you lose the buy-in benefit.",
+    dataLabel:"Moderate–High", complexityLabel:"Moderate–High", dataLevel:3, complexityLevel:3 },
+  account:   { name:"Account-Planned Quota",   tagline:"Account-specific. Precise. Relationship-anchored.", color:"#E62B1E",
+    desc:"Quotas built bottom-up from account-level revenue plans. Each named account receives a specific revenue target that rolls up to form a rep's total quota — the most precise quota-setting methodology available.",
+    bestFor:"Account management roles in named-account models; complex enterprise sales where each customer relationship has a distinct growth trajectory; organizations with mature, disciplined account planning processes.",
+    pros:["Highest level of quota precision of any methodology","Aligns quota directly to specific customer relationships and expansion plans","Creates clear accountability between rep and manager at the account level","Most credible for customers with detailed renewal and growth roadmaps"],
+    cons:["Most time-intensive methodology — requires account-by-account analysis","Effectiveness depends heavily on the quality of the account planning process","Difficult to scale across large or highly fragmented account portfolios","Requires mature CRM infrastructure and account planning discipline"],
+    consultantNote:"Account-planned quotas live or die by the account planning process. Before recommending this, assess: Does the client have a standardized account plan template? Do managers actually review and challenge plans? Is there CRM infrastructure to track account-level performance? If not, recommend building the planning discipline first (usually 6–12 months) before introducing account-planned quotas. A hybrid approach — analytic baseline + account-level adjustments for top 20% of accounts — is often a good bridge.",
+    dataLabel:"Moderate", complexityLabel:"Very High", dataLevel:3, complexityLevel:5 }
+};
+
+const INSIGHTS = {
+  data: [
+    "Limited historical data rules out statistical modeling. Simpler methodologies that don't rely on historical performance patterns are the strongest fit.",
+    "Moderate data quality is well-suited to an indexed approach — enough to differentiate territories, but not enough to support full predictive modeling.",
+    "Good data availability opens the door to analytic modeling or robust territory planning — both benefit from 2–3 years of clean rep-level history.",
+    "Robust data is the foundation for either a rigorous analytic model or a highly precise account-level planning approach."
+  ],
+  role: [
+    "Overlay and specialist roles typically share opportunity across multiple AEs, making a simple flat or indexed quota the most practical approach.",
+    "New-logo hunters benefit most from a territory-based planning approach, where quotas are anchored in concrete pipeline opportunities by geography or segment.",
+    "Account managers with named account assignments are best served by account-planned quotas — the methodology most tightly linked to individual customer relationships.",
+    "Mixed/hybrid roles require a balanced methodology. Indexed or territory-planned approaches work well when both hunting and farming responsibilities must be captured."
+  ],
+  market: [
+    "In a new or emerging market, limited historical benchmarks favor simpler methodologies that don't overfit to patterns that may not be predictive going forward.",
+    "High-growth markets reward a territory-planned approach, where reps can identify specific opportunities and translate them directly into quota targets.",
+    "Stable, mature markets with predictable patterns are ideal for analytic modeling, where historical performance data provides a reliable basis for quota setting.",
+    "In volatile or disrupted markets, simpler or indexed methodologies are more defensible than models built on historical data that may no longer be predictive."
+  ],
+  territory: [
+    "Without formal territory definitions, differentiated quota approaches are difficult to administer fairly. A flat quota is the most practical starting point.",
+    "Geographic or segment-based territories are well-suited to territory-planned or indexed quotas, where opportunity can be estimated at the territory level.",
+    "Named account territories strongly favor an account-planned methodology, where individual account targets roll up to form the rep's total quota.",
+    "Mixed territory structures call for a methodology that can handle both geographic and named account dynamics — territory-planned or indexed approaches work well."
+  ],
+  planning: [
+    "Without formal planning discipline, bottom-up quota methods won't gain traction. Simpler top-down or analytically derived quotas are more realistic to implement.",
+    "A developing planning culture is best supported by analytic or indexed methods that can run without full rep participation, while building toward greater engagement.",
+    "An established planning culture is a strong enabler of territory-planned quotas, where structured rep input meaningfully improves quota accuracy and buy-in.",
+    "A rigorous planning culture is the foundation for account-planned quotas — the methodology that most directly rewards disciplined, account-by-account forecasting."
+  ],
+  precision: [
+    "When simplicity is the top priority, a flat quota is the right call — fast to deploy, easy to communicate, and administratively lightweight.",
+    "Moderate precision requirements are well-served by an indexed approach, which introduces meaningful differentiation without requiring complex data models.",
+    "High precision requirements support analytic or territory-planned methods, which are more resource-intensive but deliver stronger individual-level accuracy.",
+    "A need for maximum precision is the strongest signal for either analytic or account-planned quotas — both deliver the highest individual accuracy in the right context."
+  ]
+};
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let currentQ = 0;
+let answers  = {};
+let consultantMode = false;
+
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-" + id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function startAssessment() { currentQ = 0; answers = {}; showScreen("questions"); renderQuestion(); }
+function restartAssessment() { currentQ = 0; answers = {}; showScreen("welcome"); }
+function goBackToQuestions() { showScreen("questions"); renderQuestion(); } // kept for future use
+
+function goBack() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+  else showScreen("welcome");
+}
+
+function goNext() {
+  const q = QUESTIONS[currentQ];
+  if (answers[q.id] === undefined) return;
+  if (currentQ < QUESTIONS.length - 1) { currentQ++; renderQuestion(); }
+  else showResults();
+}
+
+function selectOption(idx) {
+  const q = QUESTIONS[currentQ];
+  answers[q.id] = idx;
+  document.querySelectorAll(".option-card").forEach((c,i) => c.classList.toggle("selected", i === idx));
+  document.getElementById("btn-next").disabled = false;
+  document.getElementById("nav-hint").style.opacity = "0";
+  if (currentQ < QUESTIONS.length - 1) setTimeout(goNext, 550);
+}
+
+function renderQuestion() {
+  const q   = QUESTIONS[currentQ];
+  const pct = (currentQ / QUESTIONS.length) * 100;
+  document.getElementById("prog-cat").textContent   = q.category;
+  document.getElementById("prog-count").textContent = "Question " + (currentQ+1) + " of " + QUESTIONS.length;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("q-text").textContent    = q.text;
+  document.getElementById("btn-back").style.visibility = currentQ > 0 ? "visible" : "hidden";
+  const nxt = document.getElementById("btn-next");
+  nxt.textContent = currentQ === QUESTIONS.length - 1 ? "See Results →" : "Next →";
+  nxt.disabled    = answers[q.id] === undefined;
+  document.getElementById("nav-hint").style.opacity = answers[q.id] === undefined ? "1" : "0";
+  const grid = document.getElementById("options-grid");
+  grid.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const c = document.createElement("div");
+    c.className = "option-card" + (answers[q.id] === i ? " selected" : "");
+    c.onclick = () => selectOption(i);
+    c.innerHTML = "<div class=\"option-check\"></div><div class=\"option-label\">" + opt.label + "</div><div class=\"option-desc\">" + opt.desc + "</div>";
+    grid.appendChild(c);
+  });
+}
+
+// ══════════════════════════════════════════════════
+// LEAD CAPTURE
+// ══════════════════════════════════════════════════
+
+
+// ══════════════════════════════════════════════════
+// CONSULTANT MODE
+// ══════════════════════════════════════════════════
+function toggleConsultantMode() {
+  consultantMode = !consultantMode;
+  document.getElementById("consultant-switch").classList.toggle("on", consultantMode);
+  document.querySelectorAll(".consultant-note").forEach(n => n.classList.toggle("visible", consultantMode));
+}
+
+// ══════════════════════════════════════════════════
+// PDF DOWNLOAD
+// ══════════════════════════════════════════════════
+function downloadPDF() {
+  // Temporarily expand all alt details for print
+  document.querySelectorAll(".alt-detail").forEach(d => d.classList.add("open"));
+  document.querySelectorAll(".consultant-note").forEach(n => n.classList.add("visible"));
+  window.print();
+  // Restore after print dialog closes
+  setTimeout(() => {
+    document.querySelectorAll(".alt-detail").forEach(d => d.classList.remove("open"));
+    if (!consultantMode) document.querySelectorAll(".consultant-note").forEach(n => n.classList.remove("visible"));
+  }, 2000);
+}
+
+// ══════════════════════════════════════════════════
+// SCORING & RESULTS
+// ══════════════════════════════════════════════════
+function computeScores() {
+  const t = {flat:0,indexed:0,analytic:0,territory:0,account:0};
+  QUESTIONS.forEach(q => {
+    const idx = answers[q.id];
+    if (idx !== undefined) Object.entries(q.options[idx].scores).forEach(([k,v]) => t[k] += v);
+  });
+  return t;
+}
+
+function showResults() {
+  const scores = computeScores();
+  const ranked = Object.entries(scores).sort((a,b)=>b[1]-a[1]).map(([key,score])=>({key,score,...METHODS[key]}));
+  const maxScore = ranked[0].score;
+  const top = ranked[0];
+
+  document.getElementById("res-headline").textContent = top.name;
+  document.getElementById("res-subline").textContent  = top.tagline;
+  document.getElementById("res-user-info").innerHTML = "";
+
+  // Rec card
+  const rec = document.getElementById("rec-card");
+  rec.style.borderTopColor = top.color;
+  rec.innerHTML =
+    "<div class=\"rec-badge\">★ Top Recommendation</div>" +
+    "<div class=\"rec-name\">" + top.name + "</div>" +
+    "<div class=\"rec-tagline\">" + top.tagline + "</div>" +
+    "<div class=\"rec-desc\">" + top.desc + "</div>" +
+    "<div class=\"rec-grid\">" +
+      "<div><div class=\"rec-sec-label\">Strengths</div><ul class=\"rec-list\">" + top.pros.map(p=>"<li>"+p+"</li>").join("") + "</ul></div>" +
+      "<div><div class=\"rec-sec-label\">Watch Out For</div><ul class=\"rec-list\">" + top.cons.map(c=>"<li>"+c+"</li>").join("") + "</ul></div>" +
+    "</div>" +
+    "<div class=\"rec-meta-row\">" +
+      "<div><div class=\"meta-label\">Data Requirement</div><div class=\"meta-val\">" + top.dataLabel + "</div></div>" +
+      "<div><div class=\"meta-label\">Implementation Complexity</div><div class=\"meta-val\">" + top.complexityLabel + "</div></div>" +
+      "<div><div class=\"meta-label\">Particularly Well-Suited For</div><div class=\"meta-val best-for\">" + top.bestFor + "</div></div>" +
+    "</div>" +
+    "<div class=\"consultant-note" + (consultantMode ? " visible" : "") + "\">" +
+      "<div class=\"consultant-note-label\">Consultant Notes</div>" + top.consultantNote +
+    "</div>";
+
+  // Scores
+  const sc = document.getElementById("scores-container");
+  sc.innerHTML = "";
+  ranked.forEach((m, i) => {
+    const pct = Math.round((m.score / maxScore) * 100);
+    const row = document.createElement("div");
+    row.className = "score-row";
+    row.innerHTML =
+      "<div class=\"score-header\"><div class=\"score-label\"><span class=\"rank-badge " + (i===0?"rank-1":"rank-other") + "\">" + (i+1) + "</span>" + m.name + "</div><div class=\"score-pct\">" + pct + "%</div></div>" +
+      "<div class=\"score-track\"><div class=\"score-bar\" style=\"background:" + m.color + "\" data-w=\"" + pct + "%\"></div></div>";
+    sc.appendChild(row);
+  });
+
+  // Insights
+  const ins = document.getElementById("insights-container");
+  ins.innerHTML = "";
+  QUESTIONS.forEach(q => {
+    const idx = answers[q.id];
+    if (idx !== undefined) {
+      const d = document.createElement("div");
+      d.className = "insight-row";
+      d.innerHTML = "<div class=\"insight-cat\">" + q.category + "</div><div class=\"insight-text\">" + INSIGHTS[q.id][idx] + "</div>";
+      ins.appendChild(d);
+    }
+  });
+
+  // Alternatives
+  const alt = document.getElementById("alt-container");
+  alt.innerHTML = "";
+  ranked.slice(1,4).forEach((m, i) => {
+    const pct = Math.round((m.score / maxScore) * 100);
+    const div = document.createElement("div");
+    div.className = "alt-item";
+    div.innerHTML =
+      "<div class=\"alt-summary\" onclick=\"toggleAlt(" + i + ")\">" +
+        "<div><div class=\"alt-name\" style=\"color:" + m.color + "\"><span style=\"display:inline-block;width:10px;height:10px;background:" + m.color + ";border-radius:50%;margin-right:8px;\"></span>" + m.name + "</div>" +
+        "<div class=\"alt-desc\">" + m.desc + "</div>" +
+        "<div class=\"alt-badge\">Match score: " + pct + "% &nbsp;·&nbsp; Data: " + m.dataLabel + " &nbsp;·&nbsp; Complexity: " + m.complexityLabel + "</div></div>" +
+        "<div class=\"alt-arrow\" id=\"arr-" + i + "\">▼ Details</div>" +
+      "</div>" +
+      "<div class=\"alt-detail\" id=\"alt-d-" + i + "\">" +
+        "<div class=\"alt-detail-grid\">" +
+          "<div><div class=\"alt-detail-label\">Strengths</div><ul class=\"alt-detail-list\">" + m.pros.map(p=>"<li>"+p+"</li>").join("") + "</ul></div>" +
+          "<div><div class=\"alt-detail-label\">Considerations</div><ul class=\"alt-detail-list\">" + m.cons.map(c=>"<li>"+c+"</li>").join("") + "</ul></div>" +
+        "</div>" +
+        "<div class=\"consultant-note" + (consultantMode ? " visible" : "") + "\">" +
+          "<div class=\"consultant-note-label\">Consultant Notes</div>" + m.consultantNote +
+        "</div>" +
+        "<div class=\"alt-detail-footer\"><strong>Best For:</strong> " + m.bestFor + "</div>" +
+      "</div>";
+    alt.appendChild(div);
+  });
+
+  showScreen("results");
+  setTimeout(() => {
+    document.querySelectorAll(".score-bar").forEach(b => { b.style.width = b.dataset.w; });
+  }, 120);
+  setTimeout(() => drawMatrix(top.key), 200);
+}
+
+function toggleAlt(i) {
+  const d = document.getElementById("alt-d-" + i);
+  const a = document.getElementById("arr-" + i);
+  const open = d.classList.toggle("open");
+  a.textContent = open ? "▲ Hide" : "▼ Details";
+}
+
+// ══════════════════════════════════════════════════
+// MATRIX CANVAS
+// ══════════════════════════════════════════════════
+function drawMatrix(topKey) {
+  const canvas = document.getElementById("matrixCanvas");
+  const ctx    = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  const PAD = {top:50, right:50, bottom:70, left:100};
+  const PW = W - PAD.left - PAD.right;
+  const PH = H - PAD.top  - PAD.bottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = "#fafafa";
+  ctx.fillRect(PAD.left, PAD.top, PW, PH);
+
+  // Grid
+  ctx.strokeStyle = "#e8e8e8"; ctx.lineWidth = 1;
+  for (let i=1; i<=4; i++) {
+    const x = PAD.left + (i/5)*PW, y = PAD.top + (i/5)*PH;
+    ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top+PH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left+PW, y); ctx.stroke();
+  }
+
+  // Border
+  ctx.strokeStyle = "#ccc"; ctx.lineWidth = 1.5;
+  ctx.strokeRect(PAD.left, PAD.top, PW, PH);
+
+  // Axis labels
+  ctx.fillStyle = "#857874"; ctx.font = "bold 15px Calibri, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Implementation Complexity →", PAD.left + PW/2, H - 14);
+  ctx.save(); ctx.translate(20, PAD.top + PH/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText("Data Requirement →", 0, 0); ctx.restore();
+
+  // Axis tick labels
+  ctx.fillStyle = "#aaa"; ctx.font = "13px Calibri, Arial, sans-serif";
+  [["Low",0],["High",1]].forEach(([l,t]) => {
+    ctx.textAlign = "center";
+    ctx.fillText(l, PAD.left + t*PW, PAD.top + PH + 22);
+    ctx.textAlign = "right";
+    ctx.fillText(t===0 ? "Low" : "High", PAD.left - 10, PAD.top + (t===0 ? PH : 0) + 5);
+  });
+
+  // Plot points
+  Object.entries(METHODS).forEach(([key, m]) => {
+    const cx = PAD.left + ((m.complexityLevel - 0.5) / 5) * PW;
+    const cy = PAD.top  + ((5.5 - m.dataLevel)   / 5) * PH;
+    const isTop = key === topKey;
+    const r = isTop ? 34 : 26;
+
+    // Shadow
+    ctx.beginPath(); ctx.arc(cx, cy+3, r, 0, Math.PI*2);
+    ctx.fillStyle = "rgba(0,0,0,0.09)"; ctx.fill();
+
+    // Outer ring for top
+    if (isTop) {
+      ctx.beginPath(); ctx.arc(cx, cy, r+7, 0, Math.PI*2);
+      ctx.strokeStyle = m.color; ctx.lineWidth = 2.5; ctx.stroke();
+    }
+
+    // Circle
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.fillStyle = isTop ? m.color : m.color + "bb"; ctx.fill();
+    if (isTop) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 3; ctx.stroke(); }
+
+    // Label
+    const lines = ({flat:["Flat"],indexed:["Indexed"],analytic:["Analytic"],territory:["Territory","Planned"],account:["Account","Planned"]})[key];
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold " + (isTop ? 13 : 11) + "px Calibri, Arial, sans-serif";
+    ctx.textAlign = "center";
+    if (lines.length === 1) {
+      ctx.fillText(lines[0], cx, cy + 5);
+    } else {
+      ctx.fillText(lines[0], cx, cy - 2);
+      ctx.fillText(lines[1], cx, cy + 13);
+    }
+  });
+
+  ctx.fillStyle = "#aaa"; ctx.font = "12px Calibri, Arial, sans-serif"; ctx.textAlign = "left";
+  ctx.fillText("* Larger circle with ring = your top recommendation", PAD.left + 4, PAD.top + PH + 52);
+}
+</script>
+</body>
+</html>

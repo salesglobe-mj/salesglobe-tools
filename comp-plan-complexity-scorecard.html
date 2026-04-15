@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comp Plan Complexity Scorecard | SalesGlobe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+        }
+
+        body {
+            font-family: Calibri, "Segoe UI", Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #16213F;
+            color: white;
+            padding: 1rem 2.67rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        header .logo {
+            height: 2.22rem;
+            width: auto;
+            display: block;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.89rem 2.67rem 4.44rem;
+            background-color: #f0f0f0;
+            min-height: 100vh;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: #ddd;
+            border-radius: 0.22rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #E62B1E;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.89rem;
+            color: #666;
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+
+        /* Screen wrapper */
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background-color: #16213F;
+            color: white;
+            padding: 3rem 2.67rem;
+            border-radius: 0.22rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.44rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .welcome-hero .subtitle {
+            font-size: 1.11rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-hero p {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: #e0e0e0;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+
+        .info-card h3 {
+            font-size: 1.22rem;
+            color: #16213F;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .info-card p {
+            font-size: 0.94rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Questions Screen */
+        .question-container {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+
+        .question-header {
+            margin-bottom: 2rem;
+        }
+
+        .question-category {
+            font-size: 0.83rem;
+            color: #E62B1E;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .question-text {
+            font-size: 1.33rem;
+            color: #16213F;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-button {
+            text-align: left;
+            padding: 1.33rem;
+            border: 2px solid #ddd;
+            background-color: white;
+            border-radius: 0.22rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .option-button:hover {
+            border-color: #E62B1E;
+            background-color: #fef5f5;
+        }
+
+        .option-button.selected {
+            border-color: #E62B1E;
+            background-color: #ffebeb;
+            color: #16213F;
+            font-weight: 500;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: #16213F;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 1.5rem;
+            margin-right: 0.5rem;
+            font-weight: bold;
+            font-size: 0.89rem;
+        }
+
+        .option-button.selected .option-letter {
+            background-color: #E62B1E;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 0.78rem 1.67rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0.22rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #E62B1E;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #8D0801;
+        }
+
+        .btn-secondary {
+            background-color: #16213F;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #27394F;
+        }
+
+        .btn-secondary-outline {
+            background-color: transparent;
+            border: 2px solid #16213F;
+            color: #16213F;
+        }
+
+        .btn-secondary-outline:hover {
+            background-color: #16213F;
+            color: white;
+        }
+
+        .btn-teal {
+            background-color: #4C9A9C;
+            color: white;
+        }
+
+        .btn-teal:hover {
+            background-color: #3a7a7e;
+        }
+
+        /* Results Screen */
+        .results-header {
+            background-color: #16213F;
+            color: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .results-header h1 {
+            font-size: 2.22rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .rating-label {
+            font-size: 1.33rem;
+            color: #F4D58D;
+            font-weight: bold;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .toggle-switch input {
+            width: 2.5rem;
+            height: 1.33rem;
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-size: 0.94rem;
+            color: #333;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            border-top: 4px solid #E62B1E;
+            margin-bottom: 2rem;
+        }
+
+        .summary-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 2.78rem;
+            font-weight: bold;
+            color: #E62B1E;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-label {
+            font-size: 0.89rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+
+        .summary-text {
+            font-size: 0.94rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .summary-text .role-context {
+            font-weight: bold;
+            color: #16213F;
+        }
+
+        /* Diamond Chart */
+        .chart-section {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .chart-title {
+            font-size: 1.44rem;
+            color: #16213F;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.94rem;
+        }
+
+        .legend-color {
+            width: 1.33rem;
+            height: 1.33rem;
+            border-radius: 0.22rem;
+        }
+
+        .legend-complexity {
+            background-color: rgba(230, 43, 30, 0.4);
+            border: 2px solid #E62B1E;
+        }
+
+        .legend-alignment {
+            background-color: rgba(76, 154, 156, 0.4);
+            border: 2px solid #4C9A9C;
+        }
+
+        canvas {
+            margin: 2rem auto;
+            display: block;
+            border: 1px solid #f0f0f0;
+            border-radius: 0.22rem;
+        }
+
+        /* Facet Table */
+        .facet-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .facet-table th {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            font-size: 0.94rem;
+            color: #16213F;
+        }
+
+        .facet-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            font-size: 0.89rem;
+        }
+
+        .facet-table tr:hover {
+            background-color: #fafafa;
+        }
+
+        .score-cell {
+            font-weight: bold;
+            color: #E62B1E;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.33rem 0.67rem;
+            border-radius: 0.22rem;
+            font-size: 0.78rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-appropriate {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #81c784;
+        }
+
+        .status-elevated {
+            background-color: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffb74d;
+        }
+
+        .status-over-engineered {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef5350;
+        }
+
+        .status-under-powered {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #64b5f6;
+        }
+
+        /* Key Findings */
+        .findings-section {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.44rem;
+            color: #16213F;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #E62B1E;
+            padding-bottom: 1rem;
+        }
+
+        .finding-item {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            border-left: 4px solid #E62B1E;
+            background-color: #faf9f7;
+        }
+
+        .finding-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .finding-title {
+            font-size: 1.11rem;
+            color: #16213F;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .finding-what {
+            font-size: 0.89rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .finding-concern {
+            font-size: 0.89rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .finding-action {
+            font-size: 0.89rem;
+            color: #16213F;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* Recommendations */
+        .recommendations-section {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 2rem;
+        }
+
+        .recommendation-item {
+            margin-bottom: 1.5rem;
+            padding: 1.33rem;
+            background-color: #f5f5f5;
+            border-radius: 0.22rem;
+            border-left: 4px solid #4C9A9C;
+        }
+
+        .recommendation-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .recommendation-text {
+            font-size: 0.89rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Consultant Notes */
+        .consultant-notes {
+            display: none;
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 2rem;
+        }
+
+        .consultant-notes.visible {
+            display: block;
+        }
+
+        .consultant-note-item {
+            margin-bottom: 1.5rem;
+            padding: 1.33rem;
+            background-color: #fffaf5;
+            border-radius: 0.22rem;
+            border-left: 4px solid #857874;
+        }
+
+        .consultant-note-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .consultant-note-title {
+            font-size: 1rem;
+            color: #16213F;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .consultant-note-text {
+            font-size: 0.83rem;
+            line-height: 1.6;
+            color: #333;
+            font-style: italic;
+        }
+
+        /* Loader */
+        .loader {
+            display: inline-block;
+            width: 1.33rem;
+            height: 1.33rem;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #E62B1E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disabled-button {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            html {
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 1.5rem 1rem 3rem;
+            }
+
+            header {
+                padding: 0.75rem 1rem;
+            }
+
+            .welcome-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .question-container {
+                padding: 1.5rem;
+            }
+
+            .results-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .summary-scores {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toggle-switch {
+                margin-left: 0;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAC0CAYAAAB8BpMQAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LmRhYmFjYmIsIDIwMjEvMDQvMTQtMDA6Mzk6NDQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0MEFFNzdFQUVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0MEFFNzdFQkVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQwQUU3N0U4RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQwQUU3N0U5RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yvA/pQAAHKFJREFUeNrsnfFV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" alt="SalesGlobe Logo" class="logo">
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText"></div>
+        </div>
+
+        <!-- Screen 1: Welcome -->
+        <div class="screen active" id="screenWelcome">
+            <div class="welcome-hero">
+                <h1>Comp Plan Complexity Scorecard</h1>
+                <div class="subtitle">Evaluate your sales compensation plan against the Sales Compensation Diamond</div>
+                <p>Complexity in a compensation plan isn't inherently bad — but misaligned complexity is. This tool scores your plan across all eight facets of the Sales Compensation Diamond and identifies where complexity is working for you, and where it may be working against you.</p>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <h3>8 Diamond Facets Scored</h3>
+                    <p>Comprehensive assessment across all dimensions of compensation design from strategic alignment to mechanics.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Role-Appropriate Complexity</h3>
+                    <p>Your plan is evaluated in the context of your specific sales role and motion to identify optimal design.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Targeted Simplification Guidance</h3>
+                    <p>Actionable recommendations to reduce friction and improve rep engagement and earnings clarity.</p>
+                </div>
+            </div>
+
+            <div class="button-group" style="justify-content: center;">
+                <button class="btn btn-primary" onclick="goToScreen(2)">Start Assessment →</button>
+            </div>
+        </div>
+
+        <!-- Screen 2: Role Context Question 1 -->
+        <div class="screen" id="screenQ1">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Role Context</div>
+                    <div class="question-text">What best describes the primary sales role this plan covers?</div>
+                </div>
+                <div class="options" id="q1Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(1)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q1Next" onclick="goToScreen(3)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Role Context Question 2 -->
+        <div class="screen" id="screenQ2">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Role Context</div>
+                    <div class="question-text">How would you describe the sales motion for this role?</div>
+                </div>
+                <div class="options" id="q2Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(2)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q2Next" onclick="goToScreen(4)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4-11: Diamond Facets (Q3-Q10) -->
+        <div class="screen" id="screenQ3">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 1: C-Level Goals & Sales Roles</div>
+                    <div class="question-text">How clearly are strategic business priorities translated into this role's plan design?</div>
+                </div>
+                <div class="options" id="q3Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(3)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q3Next" onclick="goToScreen(5)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ4">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 2: Target Pay</div>
+                    <div class="question-text">How is Target Total Compensation (TTC) positioned relative to the market?</div>
+                </div>
+                <div class="options" id="q4Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(4)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q4Next" onclick="goToScreen(6)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ5">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 3: Pay Mix</div>
+                    <div class="question-text">What is the pay mix (base:incentive ratio) for this role, and does it match the role's influence over revenue?</div>
+                </div>
+                <div class="options" id="q5Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(5)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q5Next" onclick="goToScreen(7)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ6">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 4: Upside Potential</div>
+                    <div class="question-text">How much can a top performer earn above target, and is the upside clearly structured?</div>
+                </div>
+                <div class="options" id="q6Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(6)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q6Next" onclick="goToScreen(8)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ7">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 5: Thresholds</div>
+                    <div class="question-text">What threshold structure is required before reps begin earning incentive?</div>
+                </div>
+                <div class="options" id="q7Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(7)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q7Next" onclick="goToScreen(9)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ8">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 6: Measures & Priorities</div>
+                    <div class="question-text">How many performance measures does the plan include, and how are they weighted?</div>
+                </div>
+                <div class="options" id="q8Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(8)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q8Next" onclick="goToScreen(10)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ9">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 7: Levels & Timing</div>
+                    <div class="question-text">How frequently are incentives calculated and paid out?</div>
+                </div>
+                <div class="options" id="q9Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(9)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q9Next" onclick="goToScreen(11)" disabled>Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen" id="screenQ10">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-category">Facet 8: Mechanics</div>
+                    <div class="question-text">How would you describe the plan's formula and calculation complexity?</div>
+                </div>
+                <div class="options" id="q10Options"></div>
+                <div class="button-group">
+                    <button class="btn btn-secondary-outline" onclick="goToScreen(10)">← Back</button>
+                    <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                    <button class="btn btn-primary disabled-button" id="q10Next" onclick="generateResults()" disabled>View Results →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 12: Results -->
+        <div class="screen" id="screenResults">
+            <div class="results-header">
+                <h1>Scorecard Complete</h1>
+                <div class="rating-label" id="ratingLabel"></div>
+            </div>
+
+            <div class="actions-bar">
+                <button class="btn btn-secondary" onclick="startOver()">Start Over</button>
+                <button class="btn btn-secondary" onclick="downloadPDF()">Download PDF</button>
+                <div class="toggle-switch">
+                    <label class="toggle-label">Consultant Notes</label>
+                    <input type="checkbox" id="consultantToggle" onchange="toggleConsultantNotes()">
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="summary-card">
+                <div class="summary-scores">
+                    <div class="score-box">
+                        <div class="score-number" id="complexityScore">-</div>
+                        <div class="score-label">Complexity Score</div>
+                    </div>
+                    <div class="score-box">
+                        <div class="score-number" id="alignmentScore">-</div>
+                        <div class="score-label">Alignment Score</div>
+                    </div>
+                </div>
+                <div class="summary-text">
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Assessed for:</strong> <span class="role-context" id="roleContext"></span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Appropriate complexity range for this role:</strong> <span id="complexityRange"></span>
+                    </div>
+                    <div id="scoreSummary"></div>
+                </div>
+            </div>
+
+            <!-- Diamond Chart -->
+            <div class="chart-section">
+                <div class="chart-title">Sales Compensation Diamond Assessment</div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-complexity"></div>
+                        Complexity (Red)
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-alignment"></div>
+                        Alignment (Teal)
+                    </div>
+                </div>
+                <canvas id="diamondChart" width="700" height="600"></canvas>
+                <table class="facet-table">
+                    <thead>
+                        <tr>
+                            <th>Facet</th>
+                            <th>Complexity</th>
+                            <th>Alignment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facetTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Key Findings -->
+            <div class="findings-section">
+                <div class="section-title">Key Findings</div>
+                <div id="keyFindings"></div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="recommendations-section">
+                <div class="section-title">Simplification Recommendations</div>
+                <div id="recommendations"></div>
+            </div>
+
+            <!-- Consultant Notes -->
+            <div class="consultant-notes" id="consultantNotes">
+                <div class="section-title">Consultant Notes</div>
+                <div id="consultantNotesContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        const questions = [
+            {
+                id: 'q1',
+                category: 'Role Context',
+                text: 'What best describes the primary sales role this plan covers?',
+                options: [
+                    { letter: 'A', text: 'Overlay / Specialist / Pre-sales support — shared credit, non-primary quota', roleScore: {overlay:5, hunter:0, am:0, hybrid:1} },
+                    { letter: 'B', text: 'New-logo hunter — primarily prospecting and closing new business', roleScore: {overlay:0, hunter:5, am:0, hybrid:1} },
+                    { letter: 'C', text: 'Account manager — renewal, retention, and expansion focus', roleScore: {overlay:0, hunter:0, am:5, hybrid:1} },
+                    { letter: 'D', text: 'Hybrid / Full-cycle rep — both hunting and farming responsibilities', roleScore: {overlay:0, hunter:1, am:1, hybrid:5} }
+                ]
+            },
+            {
+                id: 'q2',
+                category: 'Role Context',
+                text: 'How would you describe the sales motion for this role?',
+                options: [
+                    { letter: 'A', text: 'Transactional — short cycle, high volume, standardized deals', transactional:true, complexity_tolerance:1 },
+                    { letter: 'B', text: 'Solution / Consultative — mid-cycle, some customization', transactional:false, complexity_tolerance:2 },
+                    { letter: 'C', text: 'Enterprise / Strategic — long cycle, complex, high-value deals', transactional:false, complexity_tolerance:3 },
+                    { letter: 'D', text: 'Mixed — varies significantly across the rep\'s portfolio', transactional:false, complexity_tolerance:2 }
+                ]
+            },
+            {
+                id: 'q3',
+                category: 'Facet 1: C-Level Goals & Sales Roles',
+                facetIndex: 0,
+                facetName: 'C-Level Goals & Sales Roles',
+                text: 'How clearly are strategic business priorities translated into this role\'s plan design?',
+                options: [
+                    { letter: 'A', text: 'Very clear — the plan directly maps to 1–2 stated strategic priorities', complexity:1, alignment:5 },
+                    { letter: 'B', text: 'Mostly clear — the plan reflects priorities but some measures feel disconnected', complexity:2, alignment:3 },
+                    { letter: 'C', text: 'Unclear — the plan measures things that don\'t clearly tie to business strategy', complexity:3, alignment:2 },
+                    { letter: 'D', text: 'Misaligned — the plan incentivizes behaviors that conflict with stated strategy', complexity:2, alignment:1 }
+                ]
+            },
+            {
+                id: 'q4',
+                category: 'Facet 2: Target Pay',
+                facetIndex: 1,
+                facetName: 'Target Pay',
+                text: 'How is Target Total Compensation (TTC) positioned relative to the market?',
+                options: [
+                    { letter: 'A', text: 'Below market — TTC is below the 50th percentile for comparable roles', complexity:1, alignment:2 },
+                    { letter: 'B', text: 'At market — TTC is at or near the 50th percentile benchmark', complexity:1, alignment:5 },
+                    { letter: 'C', text: 'Above market — TTC is at the 75th percentile or higher', complexity:2, alignment:4 },
+                    { letter: 'D', text: 'Inconsistent — TTC varies significantly across reps in similar roles without clear rationale', complexity:4, alignment:1 }
+                ]
+            },
+            {
+                id: 'q5',
+                category: 'Facet 3: Pay Mix',
+                facetIndex: 2,
+                facetName: 'Pay Mix',
+                text: 'What is the pay mix (base:incentive ratio) for this role, and does it match the role\'s influence over revenue?',
+                options: [
+                    { letter: 'A', text: 'High base (80:20 or more) — minimal at-risk pay regardless of role influence', complexity:1, alignment:2 },
+                    { letter: 'B', text: 'Balanced (70:30 to 60:40) — appropriate for most solution/consultative roles', complexity:1, alignment:5 },
+                    { letter: 'C', text: 'Aggressive (50:50 or higher incentive) — high at-risk for high-influence roles', complexity:2, alignment:4 },
+                    { letter: 'D', text: 'Inconsistent or unclear — pay mix varies or isn\'t clearly defined across the team', complexity:4, alignment:1 }
+                ]
+            },
+            {
+                id: 'q6',
+                category: 'Facet 4: Upside Potential',
+                facetIndex: 3,
+                facetName: 'Upside Potential',
+                text: 'How much can a top performer earn above target, and is the upside clearly structured?',
+                options: [
+                    { letter: 'A', text: 'Limited upside — earnings are capped or accelerators are minimal above target', complexity:1, alignment:2 },
+                    { letter: 'B', text: 'Moderate upside — clear accelerators, earnings opportunity of 1.5–2x target incentive', complexity:2, alignment:5 },
+                    { letter: 'C', text: 'Aggressive upside — uncapped with strong accelerators, 2x+ target incentive achievable', complexity:3, alignment:4 },
+                    { letter: 'D', text: 'Unclear or ad hoc — upside is negotiated, inconsistent, or not well-defined', complexity:5, alignment:1 }
+                ]
+            },
+            {
+                id: 'q7',
+                category: 'Facet 5: Thresholds',
+                facetIndex: 4,
+                facetName: 'Thresholds',
+                text: 'What threshold structure is required before reps begin earning incentive?',
+                options: [
+                    { letter: 'A', text: 'No threshold — reps earn from dollar one', complexity:1, alignment:3 },
+                    { letter: 'B', text: 'Single threshold — one entry point (e.g., must reach 50% of quota to earn)', complexity:2, alignment:5 },
+                    { letter: 'C', text: 'Multiple thresholds — different thresholds for different measures or product lines', complexity:4, alignment:3 },
+                    { letter: 'D', text: 'Complex threshold matrix — thresholds interact or are conditional on other factors', complexity:5, alignment:2 }
+                ]
+            },
+            {
+                id: 'q8',
+                category: 'Facet 6: Measures & Priorities',
+                facetIndex: 5,
+                facetName: 'Measures & Priorities',
+                text: 'How many performance measures does the plan include, and how are they weighted?',
+                options: [
+                    { letter: 'A', text: '1 measure — single metric, maximum clarity', complexity:1, alignment:4 },
+                    { letter: 'B', text: '2 measures — primary + secondary, clear weighting', complexity:2, alignment:5 },
+                    { letter: 'C', text: '3 measures — requires more cognitive load but manageable', complexity:3, alignment:3 },
+                    { letter: 'D', text: '4 or more measures — high cognitive load, potential for conflicting priorities', complexity:5, alignment:2 }
+                ]
+            },
+            {
+                id: 'q9',
+                category: 'Facet 7: Levels & Timing',
+                facetIndex: 6,
+                facetName: 'Levels & Timing',
+                text: 'How frequently are incentives calculated and paid out?',
+                options: [
+                    { letter: 'A', text: 'Monthly — frequent feedback, high administrative burden', complexity:3, alignment:3 },
+                    { letter: 'B', text: 'Quarterly — balances motivation and administrative efficiency', complexity:2, alignment:5 },
+                    { letter: 'C', text: 'Semi-annual or annual — simple to administer, but low frequency of reinforcement', complexity:1, alignment:3 },
+                    { letter: 'D', text: 'Mixed — some components monthly, others quarterly or annually', complexity:4, alignment:3 }
+                ]
+            },
+            {
+                id: 'q10',
+                category: 'Facet 8: Mechanics',
+                facetIndex: 7,
+                facetName: 'Mechanics',
+                text: 'How would you describe the plan\'s formula and calculation complexity?',
+                options: [
+                    { letter: 'A', text: 'Simple rate — straightforward commission rate or bonus formula, easy to self-calculate', complexity:1, alignment:5 },
+                    { letter: 'B', text: 'Tiered rates with accelerators — clear acceleration above threshold, reps can model earnings', complexity:3, alignment:4 },
+                    { letter: 'C', text: 'Matrix or modifier-based — earnings depend on multiple intersecting variables', complexity:4, alignment:3 },
+                    { letter: 'D', text: 'Opaque or system-dependent — reps cannot easily self-calculate their expected payout', complexity:5, alignment:1 }
+                ]
+            }
+        ];
+
+        // State
+        const state = {
+            currentScreen: 1,
+            answers: {},
+            roleType: null,
+            complexityTolerance: null,
+            transactional: null,
+            facetScores: [{complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}]
+        };
+
+        // Initialize
+        function init() {
+            renderQuestions();
+            updateProgress();
+        }
+
+        // Render all questions
+        function renderQuestions() {
+            questions.forEach((q, idx) => {
+                const optionsContainer = document.getElementById(q.id + 'Options');
+                if (!optionsContainer) return;
+
+                optionsContainer.innerHTML = '';
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-button';
+                    btn.innerHTML = `<span class="option-letter">${opt.letter}</span>${opt.text}`;
+                    btn.onclick = () => selectOption(q.id, opt, idx + 2);
+                    optionsContainer.appendChild(btn);
+                });
+            });
+        }
+
+        // Select option
+        function selectOption(questionId, option, screenNum) {
+            state.answers[questionId] = option;
+
+            // Update UI
+            const buttons = document.querySelectorAll(`#${questionId}Options .option-button`);
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent.trim().startsWith(option.letter)) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            // Enable next button
+            const nextBtn = document.getElementById(questionId + 'Next');
+            if (nextBtn) {
+                nextBtn.classList.remove('disabled-button');
+                nextBtn.disabled = false;
+            }
+
+            // Process answers
+            if (questionId === 'q1') {
+                const roleScores = option.roleScore;
+                state.roleType = Object.keys(roleScores).find(k => roleScores[k] === 5);
+            }
+            if (questionId === 'q2') {
+                state.complexityTolerance = option.complexity_tolerance;
+                state.transactional = option.transactional;
+            }
+            if (questionId.startsWith('q') && questionId !== 'q1' && questionId !== 'q2') {
+                const qIdx = parseInt(questionId.substring(1)) - 3;
+                state.facetScores[qIdx].complexity = option.complexity;
+                state.facetScores[qIdx].alignment = option.alignment;
+            }
+
+            // Auto-advance
+            if (screenNum < 12) {
+                setTimeout(() => goToScreen(screenNum), 550);
+            }
+        }
+
+        // Navigate screens
+        function goToScreen(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+            let screenId = '';
+            if (screenNum === 1) screenId = 'screenWelcome';
+            else if (screenNum === 2) screenId = 'screenQ1';
+            else if (screenNum === 3) screenId = 'screenQ2';
+            else if (screenNum >= 4 && screenNum <= 11) screenId = `screenQ${screenNum - 1}`;
+            else if (screenNum === 12) screenId = 'screenResults';
+
+            const screen = document.getElementById(screenId);
+            if (screen) screen.classList.add('active');
+
+            state.currentScreen = screenNum;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        // Update progress
+        function updateProgress() {
+            const totalSteps = 10;
+            const progressSteps = Math.max(0, state.currentScreen - 2);
+            const percentage = (progressSteps / totalSteps) * 100;
+
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `Question ${Math.min(progressSteps, totalSteps)} of ${totalSteps}`;
+        }
+
+        // Generate results
+        function generateResults() {
+            // Calculate scores
+            let totalComplexity = 0, totalAlignment = 0;
+            state.facetScores.forEach(f => {
+                totalComplexity += f.complexity;
+                totalAlignment += f.alignment;
+            });
+            const avgComplexity = totalComplexity / 8;
+            const avgAlignment = totalAlignment / 8;
+
+            // Determine rating
+            let rating = '';
+            if (avgComplexity <= 2.0) rating = 'Streamlined Plan';
+            else if (avgComplexity <= 3.0) rating = 'Balanced Plan';
+            else if (avgComplexity <= 4.0) rating = 'Complex Plan';
+            else rating = 'High-Complexity Plan';
+
+            document.getElementById('ratingLabel').textContent = rating;
+            document.getElementById('complexityScore').textContent = avgComplexity.toFixed(1);
+            document.getElementById('alignmentScore').textContent = avgAlignment.toFixed(1);
+
+            // Role context
+            const motion = state.answers.q2;
+            let motionDesc = 'Transactional';
+            if (state.transactional === false && state.complexityTolerance === 2) motionDesc = 'Solution/Consultative';
+            if (state.complexityTolerance === 3) motionDesc = 'Enterprise/Strategic';
+            if (state.complexityTolerance === 2 && motion && motion.text.includes('Mixed')) motionDesc = 'Mixed';
+
+            document.getElementById('roleContext').textContent = `${state.roleType} in ${motionDesc} environment`;
+
+            const rangeText = state.complexityTolerance === 1 ? 'Low' : state.complexityTolerance === 2 ? 'Medium' : 'High';
+            document.getElementById('complexityRange').textContent = rangeText;
+
+            // Summary interpretation
+            let summaryText = '';
+            if (avgAlignment >= 4) {
+                summaryText = `Your plan is well-aligned with strategic objectives and your rep's role. Focus is on managing ${avgComplexity > 3 ? 'the complexity' : 'clarity and engagement'}.`;
+            } else if (avgAlignment >= 3) {
+                summaryText = `Your plan has reasonable alignment but shows some measure disconnects. Review which facets are pulling in different directions.`;
+            } else {
+                summaryText = `Your plan shows significant misalignment between design and strategic intent. Recommend a redesign to re-establish clear line of sight.`;
+            }
+
+            if (avgComplexity > state.complexityTolerance + 1) {
+                summaryText += ` The plan is over-engineered for this role's complexity tolerance — simplification will improve adoption and earnings clarity.`;
+            }
+
+            document.getElementById('scoreSummary').innerHTML = summaryText;
+
+            // Render facet table
+            const facetNames = ['C-Level Goals & Sales Roles', 'Target Pay', 'Pay Mix', 'Upside Potential', 'Thresholds', 'Measures & Priorities', 'Levels & Timing', 'Mechanics'];
+            let tableHTML = '';
+            state.facetScores.forEach((score, idx) => {
+                const complexity = score.complexity;
+                const alignment = score.alignment;
+                let status = 'Appropriate';
+                if (complexity <= state.complexityTolerance + 1) status = 'Appropriate';
+                else if (complexity === state.complexityTolerance + 2) status = 'Elevated';
+                else if (complexity >= state.complexityTolerance + 3) status = 'Over-engineered';
+                else if (complexity < state.complexityTolerance - 1) status = 'Under-powered';
+
+                const statusClass = `status-${status.toLowerCase().replace('-', '-')}`;
+                tableHTML += `
+                    <tr>
+                        <td>${facetNames[idx]}</td>
+                        <td class="score-cell">${complexity}/5</td>
+                        <td class="score-cell">${alignment}/5</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('facetTableBody').innerHTML = tableHTML;
+
+            // Draw diamond chart
+            drawDiamondChart();
+
+            // Key findings
+            const gaps = state.facetScores.map((f, idx) => ({
+                idx,
+                gap: f.complexity - (state.complexityTolerance + 1)
+            })).filter(g => g.gap > 0).sort((a, b) => b.gap - a.gap);
+
+            let findingsHTML = '';
+            gaps.slice(0, 3).forEach(gap => {
+                const facetName = facetNames[gap.idx];
+                const answer = state.answers[`q${gap.idx + 3}`];
+                const complexity = state.facetScores[gap.idx].complexity;
+
+                let concern = '';
+                let action = '';
+
+                if (gap.idx === 0) { // C-Level Goals
+                    concern = 'When the plan doesn\'t map clearly to strategy, reps lose sight of why they\'re being measured on certain metrics.';
+                    action = 'SIMPLIFY: Tie every measure to 1-2 core business priorities. Remove any measure that can\'t answer "how does this drive revenue or retention?"';
+                } else if (gap.idx === 1) { // Target Pay
+                    concern = 'Inconsistent TTC signals that pay decisions are arbitrary, undermining confidence in the pay-for-performance model.';
+                    action = 'SIMPLIFY: Establish clear TTC bands by role and seniority level, benchmarked to market. Apply consistently.';
+                } else if (gap.idx === 2) { // Pay Mix
+                    concern = 'An unclear or inconsistent pay mix creates confusion about how much earnings are at-risk, reducing motivation or creating false expectations.';
+                    action = 'SIMPLIFY: Define a single pay mix for this role (e.g., 70:30) and apply it uniformly. Document the rationale.';
+                } else if (gap.idx === 3) { // Upside
+                    concern = 'Ad hoc or negotiated upside erodes the credibility of the plan and creates perception of unfairness.';
+                    action = 'SIMPLIFY: Define clear, published upside structure with accelerators. Make it available to all reps in the role.';
+                } else if (gap.idx === 4) { // Thresholds
+                    concern = 'Complex thresholds increase the risk that reps will perceive earning as impossible and stop trying.';
+                    action = 'SIMPLIFY: Use a single, transparent threshold (e.g., 50% of quota = entry point). Avoid conditional or multi-dimensional thresholds.';
+                } else if (gap.idx === 5) { // Measures
+                    concern = `With ${complexity} measures, reps struggle to prioritize and often perceive conflicting incentives.`;
+                    action = 'SIMPLIFY: Identify which 1-2 measures drive 80% of desired behavior. Eliminate or move others to secondary metrics.';
+                } else if (gap.idx === 6) { // Timing
+                    concern = 'Mixed or overly frequent payout schedules add administrative complexity and can confuse reps about earnings visibility.';
+                    action = 'SIMPLIFY: Move to a single payout cadence (quarterly is optimal for most roles). Keep accelerators simple.';
+                } else if (gap.idx === 7) { // Mechanics
+                    concern = 'If reps can\'t self-calculate their expected payout, the plan fails the behavioral test and won\'t drive intended behaviors.';
+                    action = 'SIMPLIFY: Design a formula simple enough that reps can model earnings in a spreadsheet. Use a commission rate or tiered bonus, not nested matrices.';
+                }
+
+                findingsHTML += `
+                    <div class="finding-item">
+                        <div class="finding-title">${facetName}</div>
+                        <div class="finding-what">You selected: <em>${answer.text.substring(0, 70)}...</em></div>
+                        <div class="finding-concern">Why this matters: ${concern}</div>
+                        <div class="finding-action">→ ${action}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('keyFindings').innerHTML = findingsHTML || '<p style="color: #666;">No significant over-engineering detected. Your plan complexity is well-aligned with role requirements.</p>';
+
+            // Recommendations
+            let recommendationsHTML = '';
+            if (state.roleType === 'overlay') {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Simplify toward a flat or indexed measure structure.</strong> Overlay roles succeed with maximum clarity on shared credit mechanics. Avoid tiering or thresholds that create perception of unfairness in shared-win scenarios.</div>
+                    </div>
+                `;
+            }
+            if (state.roleType === 'hunter' && avgComplexity > 3) {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Hunters focus best with 1–2 clear metrics.</strong> If your plan has 3+ measures, you're competing for rep attention. Consider consolidating into a primary metric (new ARR) and a behavioral accelerator (e.g., feature adoption).</div>
+                    </div>
+                `;
+            }
+            if (state.roleType === 'am' && state.facetScores[7].complexity >= 4) {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Account managers need to self-model their earnings.</strong> Opacity kills motivation and account planning discipline. Use a simple formula (e.g., % of expansion ARR above renewal) that AMs can calculate in their account planning spreadsheet.</div>
+                    </div>
+                `;
+            }
+            if (state.facetScores[5].complexity >= 4) {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Prioritize your measures.</strong> Identify which 1–2 metrics drive 80% of the behavior you want. Eliminate or move to secondary (non-compensated) metrics anything that doesn't directly impact revenue or retention.</div>
+                    </div>
+                `;
+            }
+            if (state.facetScores[4].complexity >= 4) {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Simplify thresholds.</strong> Complex threshold matrices are administratively burdensome and often cause reps to give up before they start. Standardize on a single entry threshold (e.g., 50% of quota).</div>
+                    </div>
+                `;
+            }
+            if (avgComplexity > 3.5) {
+                recommendationsHTML += `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text"><strong>Consider a ground-up redesign.</strong> Plans that score 3.5+ in complexity often suffer from "exception accumulation" — layers of adjustments, overrides, and special cases added over time. A fresh design anchored to 1–2 core principles will outperform incremental patches.</div>
+                    </div>
+                `;
+            }
+            if (!recommendationsHTML) {
+                recommendationsHTML = `
+                    <div class="recommendation-item">
+                        <div class="recommendation-text">Your plan is well-designed for the role and motion. Continue to monitor adoption and earnings clarity with reps through stay interviews and comp plan surveys.</div>
+                    </div>
+                `;
+            }
+            document.getElementById('recommendations').innerHTML = recommendationsHTML;
+
+            // Consultant Notes
+            const consultantNotesHTML = `
+                <div class="consultant-note-item">
+                    <div class="consultant-note-title">On Complexity Overall</div>
+                    <div class="consultant-note-text">When presenting this scorecard to a client, anchor the conversation in rep behavior, not plan design. Ask: "Can your reps explain their comp plan in two minutes?" If not, the plan is working against you. The goal is a plan simple enough that every rep can self-calculate their expected payout for any given deal — that's the behavioral test.</div>
+                </div>
+                <div class="consultant-note-item">
+                    <div class="consultant-note-title">On Measures</div>
+                    <div class="consultant-note-text">The most common mistake in comp plan design is adding measures to solve a motivation problem that actually has a structural root cause. Before adding a measure, ask: "Is the behavior we're trying to drive achievable with the current role and territory design?" Adding a measure won't fix a coverage model problem.</div>
+                </div>
+                <div class="consultant-note-item">
+                    <div class="consultant-note-title">On Thresholds</div>
+                    <div class="consultant-note-text">Threshold complexity is often a symptom of distrust — management doesn't trust that reps will work hard without barriers to earning. The data usually shows that threshold complexity reduces the number of reps who attempt to exceed target, not the number who fall below it. Show the client their attainment distribution clustered at threshold as the proof point.</div>
+                </div>
+                <div class="consultant-note-item">
+                    <div class="consultant-note-title">On Mechanics</div>
+                    <div class="consultant-note-text">Opaque mechanics are a sign that the plan evolved over time through exception accumulation rather than deliberate design. The fix is a ground-up redesign, not another patch. Position this as a governance issue: "Your plan has grown in complexity without a corresponding growth in the behaviors it's trying to drive."</div>
+                </div>
+            `;
+            document.getElementById('consultantNotesContent').innerHTML = consultantNotesHTML;
+
+            goToScreen(12);
+        }
+
+        // Draw diamond chart
+        function drawDiamondChart() {
+            const canvas = document.getElementById('diamondChart');
+            const ctx = canvas.getContext('2d');
+            const centerX = 350, centerY = 300, maxRadius = 200;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '12px Calibri, "Segoe UI", Arial, sans-serif';
+
+            // Draw concentric rings
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 5; i++) {
+                const r = (i / 5) * maxRadius;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+
+            // Draw axes and labels
+            const facetNames = ['C-Level Goals', 'Target Pay', 'Pay Mix', 'Upside', 'Thresholds', 'Measures', 'Levels & Timing', 'Mechanics'];
+            const angleStep = (2 * Math.PI) / 8;
+
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 8; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = centerX + maxRadius * Math.cos(angle);
+                const y = centerY + maxRadius * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                // Labels
+                const labelDist = maxRadius + 35;
+                const labelX = centerX + labelDist * Math.cos(angle);
+                const labelY = centerY + labelDist * Math.sin(angle);
+
+                ctx.fillStyle = '#333';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 11px Calibri, "Segoe UI", Arial, sans-serif';
+                ctx.fillText(facetNames[i], labelX, labelY);
+            }
+
+            // Draw complexity polygon
+            ctx.fillStyle = 'rgba(230, 43, 30, 0.25)';
+            ctx.strokeStyle = '#E62B1E';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < 8; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const complexity = state.facetScores[i].complexity;
+                const r = (complexity / 5) * maxRadius;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw alignment polygon
+            ctx.fillStyle = 'rgba(76, 154, 156, 0.25)';
+            ctx.strokeStyle = '#4C9A9C';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < 8; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const alignment = state.facetScores[i].alignment;
+                const r = (alignment / 5) * maxRadius;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw score dots
+            ctx.fillStyle = '#E62B1E';
+            for (let i = 0; i < 8; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const complexity = state.facetScores[i].complexity;
+                const r = (complexity / 5) * maxRadius;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#4C9A9C';
+            for (let i = 0; i < 8; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const alignment = state.facetScores[i].alignment;
+                const r = (alignment / 5) * maxRadius;
+                const x = centerX + r * Math.cos(angle);
+                const y = centerY + r * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        // Toggle consultant notes
+        function toggleConsultantNotes() {
+            const notes = document.getElementById('consultantNotes');
+            if (document.getElementById('consultantToggle').checked) {
+                notes.classList.add('visible');
+            } else {
+                notes.classList.remove('visible');
+            }
+        }
+
+        // Start over
+        function startOver() {
+            state.answers = {};
+            state.roleType = null;
+            state.complexityTolerance = null;
+            state.transactional = null;
+            state.facetScores = [{complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}, {complexity:0, alignment:0}];
+            document.getElementById('consultantToggle').checked = false;
+            document.getElementById('consultantNotes').classList.remove('visible');
+            renderQuestions();
+            goToScreen(1);
+        }
+
+        // Download PDF (basic implementation)
+        function downloadPDF() {
+            alert('PDF download feature would be implemented with a server-side PDF generation service or client-side library like pdfkit. For now, you can use your browser\'s Print > Save as PDF feature.');
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en"><!-- v20260327-rebuild -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Quota Attainment Diagnostic | SalesGlobe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+        }
+
+        body {
+            font-family: Calibri, "Segoe UI", Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #16213F;
+            padding: 0.9rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 66.67rem;
+            margin: 0 auto;
+            padding: 0 2.67rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            height: 2.22rem;
+            width: auto;
+        }
+
+        .header-title {
+            color: white;
+            font-size: 1.33rem;
+            font-weight: bold;
+            margin-left: 1.33rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.83rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.55rem 1.22rem;
+            border: none;
+            border-radius: 0.22rem;
+            font-size: 0.89rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #E62B1E;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #8D0801;
+        }
+
+        .btn-secondary {
+            background-color: #205D92;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #16213F;
+        }
+
+        .btn-teal {
+            background-color: #4C9A9C;
+            color: white;
+            padding: 0.33rem 0.83rem;
+            font-size: 0.78rem;
+        }
+
+        .btn-teal:hover {
+            background-color: #2a6a6d;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 66.67rem;
+            margin: 0 auto;
+            padding: 2.89rem 2.67rem 4.44rem;
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Welcome Screen */
+        .welcome-hero {
+            background: linear-gradient(135deg, #16213F 0%, #27394F 100%);
+            padding: 3.33rem 2.67rem;
+            border-radius: 0.22rem;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(76, 154, 156, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .welcome-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(230, 43, 30, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .welcome-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-title {
+            font-size: 2.44rem;
+            font-weight: bold;
+            margin-bottom: 0.83rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.11rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 38.89rem;
+            margin: 0 auto 2.67rem;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(11.11rem, 1fr));
+            gap: 1.33rem;
+            margin-top: 2.67rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 1.67rem 1.33rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            text-align: center;
+            color: #16213F;
+        }
+
+        .info-card-number {
+            font-size: 1.78rem;
+            font-weight: bold;
+            color: #E62B1E;
+            margin-bottom: 0.33rem;
+        }
+
+        .info-card-label {
+            font-size: 0.89rem;
+            line-height: 1.4;
+        }
+
+        .start-button {
+            margin-top: 2.67rem;
+        }
+
+        /* Questions Screen */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.83rem;
+            font-size: 0.89rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.33rem;
+            background: #ddd;
+            border-radius: 0.11rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #E62B1E;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: white;
+            padding: 2.22rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .question-category {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #16213F;
+            padding: 0.28rem 0.67rem;
+            border-radius: 0.22rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-bottom: 0.83rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .question-title {
+            font-size: 1.44rem;
+            font-weight: bold;
+            color: #16213F;
+            margin-bottom: 1.67rem;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.11rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            padding: 1.22rem;
+            border: 2px solid #ddd;
+            border-radius: 0.22rem;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            border-color: #E62B1E;
+            background-color: #fafafa;
+        }
+
+        .option-radio {
+            width: 1.33rem;
+            height: 1.33rem;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            margin-right: 1.11rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            margin-top: 0.11rem;
+        }
+
+        .option.selected .option-radio {
+            border-color: #E62B1E;
+            background-color: #E62B1E;
+        }
+
+        .option.selected .option-radio::after {
+            content: '✓';
+            color: white;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-label {
+            display: block;
+            font-weight: 600;
+            color: #16213F;
+            margin-bottom: 0.28rem;
+        }
+
+        .option-description {
+            font-size: 0.89rem;
+            color: #666;
+        }
+
+        .question-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .btn-nav {
+            padding: 0.67rem 1.67rem;
+        }
+
+        /* Results Screen */
+        .results-header {
+            background: linear-gradient(135deg, #16213F 0%, #27394F 100%);
+            padding: 2.22rem;
+            border-radius: 0.22rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .results-header-main {
+            font-size: 1.89rem;
+            font-weight: bold;
+            margin-bottom: 0.33rem;
+        }
+
+        .results-header-cause {
+            font-size: 1.33rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .consultant-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.67rem;
+            margin-left: auto;
+        }
+
+        .toggle-label {
+            font-size: 0.89rem;
+            font-weight: 600;
+            color: #16213F;
+        }
+
+        .toggle-switch {
+            width: 2.44rem;
+            height: 1.33rem;
+            background-color: #ddd;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0.11rem;
+        }
+
+        .toggle-switch.active {
+            background-color: #4C9A9C;
+        }
+
+        .toggle-slider {
+            width: 1.11rem;
+            height: 1.11rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(1.11rem);
+        }
+
+        .top-finding {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            margin-bottom: 2rem;
+            border-top: 4px solid #E62B1E;
+        }
+
+        .finding-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.33rem;
+        }
+
+        .finding-icon {
+            font-size: 2.22rem;
+        }
+
+        .finding-title {
+            font-size: 1.33rem;
+            font-weight: bold;
+            color: #16213F;
+        }
+
+        .finding-description {
+            font-size: 0.94rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.33rem;
+        }
+
+        .finding-section {
+            margin-bottom: 1.33rem;
+        }
+
+        .finding-section-title {
+            font-size: 0.89rem;
+            font-weight: bold;
+            color: #16213F;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.67rem;
+        }
+
+        .finding-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .finding-list li {
+            padding: 0.33rem 0 0.33rem 1.67rem;
+            position: relative;
+            font-size: 0.89rem;
+            color: #555;
+        }
+
+        .finding-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #E62B1E;
+            font-weight: bold;
+        }
+
+        .consultant-note {
+            background-color: #f9f9f9;
+            padding: 1.33rem;
+            border-left: 3px solid #4C9A9C;
+            margin-top: 1.33rem;
+            display: none;
+            font-size: 0.89rem;
+            color: #555;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .consultant-note.active {
+            display: block;
+        }
+
+        .consultant-note-label {
+            font-weight: bold;
+            color: #4C9A9C;
+            margin-bottom: 0.67rem;
+            display: block;
+            font-style: normal;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Score Chart */
+        .score-chart {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            margin-bottom: 2rem;
+        }
+
+        .score-chart-title {
+            font-size: 1.11rem;
+            font-weight: bold;
+            color: #16213F;
+            margin-bottom: 1.67rem;
+        }
+
+        .score-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.33rem;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .score-label {
+            width: 11.11rem;
+            font-weight: 600;
+            color: #16213F;
+            font-size: 0.89rem;
+        }
+
+        .score-label-icon {
+            margin-right: 0.33rem;
+        }
+
+        .score-bar-container {
+            flex: 1;
+            height: 1.33rem;
+            background-color: #f0f0f0;
+            border-radius: 0.22rem;
+            overflow: hidden;
+            margin: 0 1rem;
+        }
+
+        .score-bar {
+            height: 100%;
+            background-color: #E62B1E;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.67rem;
+            color: white;
+            font-weight: bold;
+            font-size: 0.78rem;
+            animation: fillBar 1s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fillBar {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .score-percentage {
+            width: 3.33rem;
+            text-align: right;
+            font-weight: bold;
+            color: #16213F;
+            font-size: 0.89rem;
+        }
+
+        /* Insights */
+        .insights-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            margin-bottom: 2rem;
+        }
+
+        .insights-title {
+            font-size: 1.11rem;
+            font-weight: bold;
+            color: #16213F;
+            margin-bottom: 1.33rem;
+        }
+
+        .insight {
+            margin-bottom: 1.33rem;
+            padding-bottom: 1.33rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .insight:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .insight-label {
+            font-size: 0.78rem;
+            font-weight: bold;
+            color: #857874;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.33rem;
+        }
+
+        .insight-text {
+            font-size: 0.89rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Expandable Sections */
+        .alternative-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.22rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            margin-bottom: 2rem;
+        }
+
+        .alternative-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .alternative-header:hover {
+            color: #E62B1E;
+        }
+
+        .alternative-title {
+            font-size: 1.11rem;
+            font-weight: bold;
+            color: #16213F;
+        }
+
+        .alternative-toggle {
+            font-size: 1.33rem;
+            color: #E62B1E;
+            transition: transform 0.3s ease;
+        }
+
+        .alternative-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .alternative-content {
+            display: none;
+            margin-top: 1.33rem;
+            padding-top: 1.33rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .alternative-content.active {
+            display: block;
+        }
+
+        .alternative-finding {
+            margin-bottom: 1.33rem;
+        }
+
+        .alternative-finding-rank {
+            font-size: 0.78rem;
+            color: #857874;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.33rem;
+        }
+
+        .alternative-finding-name {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #16213F;
+            margin-bottom: 0.33rem;
+        }
+
+        .alternative-finding-desc {
+            font-size: 0.89rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Print Styles */
+        @media print {
+            .header, .nav-buttons, .question-nav, .action-bar {
+                display: none;
+            }
+
+            .consultant-note {
+                display: block !important;
+            }
+
+            .alternative-content {
+                display: block !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .container {
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .results-header, .top-finding, .score-chart, .insights-section, .alternative-section {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+        }
+    
+        /* Q1 distribution chart options */
+        .option-with-chart {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px !important;
+        }
+        .option-with-chart .option-radio {
+            flex-shrink: 0;
+            align-self: center;
+        }
+        .option-with-chart .option-text {
+            flex: 1;
+            min-width: 0;
+        }
+        .option-chart {
+            flex-shrink: 0;
+            width: 160px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+        }
+        @media (max-width: 600px) {
+            .option-with-chart { flex-wrap: wrap; }
+            .option-chart { width: 100%; }
+        }
+
+        </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAkAAAAC0CAYAAAB8BpMQAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDA2IDc5LmRhYmFjYmIsIDIwMjEvMDQvMTQtMDA6Mzk6NDQgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCAyMi40IChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo0MEFFNzdFQUVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo0MEFFNzdFQkVBNEUxMUVCQkVFQ0Y4NjhFRjhCOTJDOSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjQwQUU3N0U4RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjQwQUU3N0U5RUE0RTExRUJCRUVDRjg2OEVGOEI5MkM5Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yvA/pQAAHKFJREFUeNrsnfFV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" alt="SalesGlobe" class="header-logo">
+                <span class="header-title" id="headerTitle">Quota Attainment Diagnostic</span>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="startOverBtn" onclick="startOver()" style="display: none;">Start Over</button>
+                <button class="btn btn-secondary" id="downloadBtn" onclick="downloadPDF()" style="display: none;">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcomeScreen">
+            <div class="welcome-hero">
+                <div class="welcome-hero-content">
+                    <h1 class="welcome-title">Quota Attainment Diagnostic</h1>
+                    <p class="welcome-subtitle">Identify the root causes of attainment distribution problems in your sales organization. This diagnostic analyzes seven key factors to pinpoint which structural issues are limiting your team's performance.</p>
+                </div>
+            </div>
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-card-number">6</div>
+                    <div class="info-card-label">Root Causes Analyzed</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-number">7</div>
+                    <div class="info-card-label">Diagnostic Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-number">∞</div>
+                    <div class="info-card-label">Prioritized Action Plan</div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-primary start-button" onclick="startDiagnostic()">Start Diagnostic →</button>
+            </div>
+        </div>
+
+        <!-- Questions Screen -->
+        <div class="screen" id="questionsScreen">
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span id="progressText">Question 1 of 7</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-category" id="questionCategory"></div>
+                <h2 class="question-title" id="questionTitle"></h2>
+                <div class="options-container" id="optionsContainer"></div>
+            </div>
+
+            <div class="question-nav">
+                <button class="btn btn-secondary btn-nav" id="prevBtn" onclick="previousQuestion()" style="display: none;">← Previous</button>
+                <span></span>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <div class="results-header">
+                <div class="results-header-main">Diagnostic Complete</div>
+                <div class="results-header-cause" id="topCauseName"></div>
+            </div>
+
+            <div class="action-bar">
+                <button class="btn btn-secondary" id="startOverBtn2" onclick="startOver()">Start Over</button>
+                <button class="btn btn-secondary" id="downloadBtn2" onclick="downloadPDF()">Download PDF</button>
+                <div class="consultant-toggle">
+                    <span class="toggle-label">Consultant Notes</span>
+                    <div class="toggle-switch" id="consultantToggle" onclick="toggleConsultantNotes()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top-finding" id="topFindingCard"></div>
+
+            <div class="score-chart">
+                <h3 class="score-chart-title">Root Cause Scores</h3>
+                <div id="scoreChartContainer"></div>
+            </div>
+
+            <div class="insights-section">
+                <h3 class="insights-title">What Your Answers Tell Us</h3>
+                <div id="insightsContainer"></div>
+            </div>
+
+            <div class="alternative-section">
+                <div class="alternative-header" onclick="toggleAlternative(2)">
+                    <div class="alternative-title" id="alt2Title"></div>
+                    <span class="alternative-toggle">▼</span>
+                </div>
+                <div class="alternative-content" id="alt2Content"></div>
+            </div>
+
+            <div class="alternative-section">
+                <div class="alternative-header" onclick="toggleAlternative(3)">
+                    <div class="alternative-title" id="alt3Title"></div>
+                    <span class="alternative-toggle">▼</span>
+                </div>
+                <div class="alternative-content" id="alt3Content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Root Causes Data
+        const rootCauses = {
+            quota: {
+                name: "Quota Setting",
+                color: "#E62B1E",
+                icon: "🎯",
+                desc: "Quotas are being set too high, inconsistently, or without sufficient data — creating a structural ceiling on attainment before the year begins.",
+                symptoms: [
+                    "Below 50% of reps achieving quota",
+                    "Uniform underperformance across all teams and geographies",
+                    "Quotas increasing faster than market growth or rep capacity",
+                    "No correlation between rep effort and attainment outcomes"
+                ],
+                actions: [
+                    "Audit quota-setting methodology vs. market potential data",
+                    "Analyze quota increase rates vs. actual revenue growth rates",
+                    "Review quota-setting process: top-down mandate vs. data-driven allocation",
+                    "Consider moving from flat or top-down to indexed or analytic methodology",
+                    "Benchmark quota attainment distribution against industry norms (target: 60–65% at/above quota)"
+                ],
+                consultantNote: "The fastest diagnostic: compare quota growth rate to revenue growth rate over 3 years. If quotas are growing 15% annually but revenue is growing 8%, the math tells the story. Also check whether the corporate number was set first and then 'waterfalled down' — this is the most common root cause of systematic underattainment and the hardest to fix politically."
+            },
+            territory: {
+                name: "Territory Equity",
+                color: "#205D92",
+                icon: "🗺️",
+                desc: "Territories have unequal opportunity — some reps are structurally set up to win while others face an uphill battle regardless of effort or skill.",
+                symptoms: [
+                    "Attainment strongly correlated with geographic region or market segment",
+                    "Territory swaps consistently followed by performance changes",
+                    "Veteran reps protect specific territories aggressively",
+                    "High rep turnover in specific territories year after year"
+                ],
+                actions: [
+                    "Conduct territory opportunity analysis using external market potential data",
+                    "Calculate and compare Total Addressable Market (TAM) across territories",
+                    "Rebalance territories based on opportunity equity, not just revenue history",
+                    "Implement indexed quota methodology to adjust for territory differences",
+                    "Establish annual territory review process tied to quota-setting cycle"
+                ],
+                consultantNote: "Use whitespace analysis: pull external data (Dun & Bradstreet, ZoomInfo, or industry databases) to estimate total addressable accounts by territory, then compare to current coverage. Territories with high TAM and low penetration are the tell. Watch for 'legacy territory' politics — senior reps who've held rich territories for 5+ years and would resist rebalancing. Executive air cover is required before presenting this finding."
+            },
+            talent: {
+                name: "Talent & Performance",
+                color: "#4C9A9C",
+                icon: "👤",
+                desc: "The right people may not be in the right roles — whether due to hiring quality, onboarding gaps, performance management failure, or role-to-skill misalignment.",
+                symptoms: [
+                    "Strong manager-to-manager variance in attainment (same territories, different results)",
+                    "New rep ramp times are lengthening year over year",
+                    "Performance improvement plans (PIPs) are rare or ineffective",
+                    "High performers are leaving; low performers are staying"
+                ],
+                actions: [
+                    "Analyze attainment distribution by manager — identify 'talent multipliers' vs. detractors",
+                    "Audit hiring profiles against top performer characteristics",
+                    "Assess onboarding and ramp program effectiveness vs. industry benchmarks",
+                    "Evaluate performance management process — is the bottom 10–15% being managed proactively?",
+                    "Review retention data: are you losing top quartile performers at higher rates?"
+                ],
+                consultantNote: "Manager quality is often the single most powerful predictor of team attainment — more than territory, quota, or comp plan. Run a 'manager effect' analysis: hold territory and quota constant, and show attainment variance across managers. If you find 2–3x variance between best and worst managers, that's the finding. Talent issues are politically sensitive — always present with data, never with anecdote."
+            },
+            coverage: {
+                name: "Coverage Model",
+                color: "#27394F",
+                icon: "🏗️",
+                desc: "The sales coverage model — role design, territory structure, or account assignments — may not be aligned to how customers want to buy or where market opportunity actually exists.",
+                symptoms: [
+                    "Attainment varies significantly by account size or segment",
+                    "Reps spending time on wrong activities (admin, wrong customer tier)",
+                    "Unclear role boundaries creating coverage gaps or conflicts",
+                    "Sales cycle length increasing without change in product complexity"
+                ],
+                actions: [
+                    "Map current coverage model against Five C-Level Goals framework",
+                    "Analyze time allocation: where are reps actually spending their selling time?",
+                    "Identify coverage gaps: which customer segments or territories are under-resourced?",
+                    "Assess role clarity: are hunters and farmers clearly delineated?",
+                    "Model alternative coverage structures against revenue potential"
+                ],
+                consultantNote: "Coverage model problems often look like quota problems or talent problems on the surface. The diagnostic question is: 'Would a different rep in this role with this territory also struggle?' If yes, it's structural — coverage or territory. Use the SalesGlobe Revenue Roadmap to show the client that compensation and quotas (Enablement) can't fix a broken Coverage or Strategy layer."
+            },
+            comp: {
+                name: "Comp Plan Design",
+                color: "#F4D58D",
+                icon: "💰",
+                desc: "The incentive plan mechanics may be creating unintended behaviors — discouraging certain activities, rewarding the wrong outcomes, or failing to differentiate pay between high and low performers.",
+                symptoms: [
+                    "Reps clustered at threshold — doing just enough to earn incentive then stopping",
+                    "High performers earning similar pay to median performers",
+                    "Significant focus on product lines or activities the plan doesn't reward",
+                    "Frequent requests for exceptions or plan adjustments mid-year"
+                ],
+                actions: [
+                    "Map plan mechanics against desired rep behaviors — are incentives aligned?",
+                    "Analyze payout distribution: is pay differentiating sufficiently across performance levels?",
+                    "Review threshold and accelerator structure — is the design encouraging sandbagging at threshold?",
+                    "Assess measure alignment: are the right metrics being incentivized?",
+                    "Consider simplifying plan if reps can't explain how they're paid within 2 minutes"
+                ],
+                consultantNote: "The two-minute rule: ask a rep to explain their comp plan in two minutes. If they can't, the plan is too complex. Also look for 'threshold clustering' in the attainment distribution — a spike of reps at 100% or just above threshold is a classic sign that the plan mechanics are driving gaming behavior rather than genuine performance. Run a Sales Compensation Diamond assessment to identify which facets are misaligned."
+            },
+            market: {
+                name: "Market & External Factors",
+                color: "#857874",
+                icon: "🌐",
+                desc: "Macroeconomic conditions, competitive dynamics, or market disruption may be creating headwinds that are outside the sales organization's direct control.",
+                symptoms: [
+                    "Win rates declining across all reps and segments",
+                    "Average deal size shrinking industry-wide",
+                    "Competitive displacement increasing",
+                    "New logos harder to acquire across all territories"
+                ],
+                actions: [
+                    "Benchmark attainment trends against industry peers and publicly available data",
+                    "Analyze win/loss data for competitive displacement patterns",
+                    "Assess whether quota assumptions reflected market conditions at time of setting",
+                    "Adjust in-year quota or plan mechanics if market conditions have materially changed",
+                    "Separate 'market headwind' from internal performance issues in exec reporting"
+                ],
+                consultantNote: "Market factors are real but often over-cited by sales leaders as an excuse for internal problems. The diagnostic test: compare your win rates and deal sizes to competitors and industry benchmarks. If competitors are growing while you're declining, it's probably not the market. If the whole industry is contracting, adjust the narrative accordingly. Always try to isolate market effect from internal effect before presenting findings — clients appreciate intellectual honesty."
+            }
+        };
+
+        // Questions Data
+        const questions = [
+            {
+                id: 1,
+                category: "Attainment Distribution",
+                title: "Which best describes your current quota attainment distribution?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Tight band near 100%",
+                        description: "Most reps clustered right around target",
+                        scores: { quota: 1, territory: 1, talent: 2, coverage: 1, comp: 3, market: 1 }
+                    },
+                    {
+                        label: "B",
+                        text: "Left-skewed",
+                        description: "Majority of reps below quota, few high performers",
+                        scores: { quota: 4, territory: 2, talent: 2, coverage: 2, comp: 2, market: 3 }
+                    },
+                    {
+                        label: "C",
+                        text: "Right-skewed",
+                        description: "Most reps above quota, few underperformers",
+                        scores: { quota: 4, territory: 1, talent: 1, coverage: 1, comp: 1, market: 1 }
+                    },
+                    {
+                        label: "D",
+                        text: "Bimodal",
+                        description: "Clear split between over- and underperformers",
+                        scores: { quota: 2, territory: 3, talent: 3, coverage: 3, comp: 2, market: 1 }
+                    }
+                ],
+                insight: {
+                    A: "Attainment Distribution: A tight band near target usually signals a comp plan design issue — the mechanics may be discouraging performance above 100%.",
+                    B: "Attainment Distribution: Left-skewed distributions are the strongest signal of a quota-setting problem — when most reps miss, the targets are usually the issue, not the people.",
+                    C: "Attainment Distribution: Right-skewed distributions suggest quotas may be set too low, or the plan is over-rewarding median performance.",
+                    D: "Attainment Distribution: Bimodal distributions typically point to territory inequity or talent variance — something structural is separating winners from losers."
+                }
+            },
+            {
+                id: 2,
+                category: "Year-over-Year Trend",
+                title: "How has your attainment pattern changed over the past 2–3 years?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Getting worse each year",
+                        description: "More reps missing quota",
+                        scores: { quota: 3, territory: 2, talent: 2, coverage: 2, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "B",
+                        text: "Getting better",
+                        description: "Improving each year",
+                        scores: { quota: 1, territory: 1, talent: 1, coverage: 1, comp: 1, market: 1 }
+                    },
+                    {
+                        label: "C",
+                        text: "Stable",
+                        description: "Same pattern for 2+ years",
+                        scores: { quota: 2, territory: 3, talent: 2, coverage: 2, comp: 2, market: 1 }
+                    },
+                    {
+                        label: "D",
+                        text: "New this year",
+                        description: "First time we've seen this",
+                        scores: { quota: 2, territory: 1, talent: 1, coverage: 1, comp: 1, market: 3 }
+                    }
+                ],
+                insight: {
+                    A: "Year-over-Year Trend: A worsening trend signals a systemic issue that isn't self-correcting — quota escalation outpacing market growth is the most common culprit.",
+                    B: "Year-over-Year Trend: Improving attainment is a positive signal — focus on accelerating what's working rather than diagnosing a crisis.",
+                    C: "Year-over-Year Trend: A stable pattern suggests the root cause is structural and embedded in the system — probably territory design or quota methodology.",
+                    D: "Year-over-Year Trend: A new problem this year points to a recent change — new quota, new product, new market condition, or leadership change as the likely trigger."
+                }
+            },
+            {
+                id: 3,
+                category: "Manager/Team Variance",
+                title: "Is the attainment problem consistent across all managers and teams?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Yes — uniform",
+                        description: "Underperformance is uniform across all teams",
+                        scores: { quota: 4, territory: 2, talent: 1, coverage: 2, comp: 2, market: 3 }
+                    },
+                    {
+                        label: "B",
+                        text: "No — manager variance",
+                        description: "Some managers' teams consistently outperform others",
+                        scores: { quota: 1, territory: 1, talent: 4, coverage: 2, comp: 1, market: 1 }
+                    },
+                    {
+                        label: "C",
+                        text: "Geographic/segment variance",
+                        description: "Certain regions/markets underperform",
+                        scores: { quota: 2, territory: 4, talent: 1, coverage: 3, comp: 1, market: 3 }
+                    },
+                    {
+                        label: "D",
+                        text: "Mixed",
+                        description: "Some variation but no clear pattern",
+                        scores: { quota: 2, territory: 2, talent: 2, coverage: 2, comp: 2, market: 2 }
+                    }
+                ],
+                insight: {
+                    A: "Manager/Team Variance: Uniform underperformance across all teams rules out talent as the primary cause — the problem is systemic, not managerial.",
+                    B: "Manager/Team Variance: Strong manager-to-manager variance points to talent and coaching quality as a primary driver — some leaders are creating performance, not just inheriting it.",
+                    C: "Manager/Team Variance: Geographic or segment-based variance is the clearest signal of territory inequity — some reps are structurally disadvantaged regardless of effort.",
+                    D: "Manager/Team Variance: Mixed variance without a clear pattern suggests multiple contributing causes — a deeper data analysis is needed to isolate the primary driver."
+                }
+            },
+            {
+                id: 4,
+                category: "Tenure Patterns",
+                title: "How does attainment vary by rep tenure?",
+                options: [
+                    {
+                        label: "A",
+                        text: "New reps struggle",
+                        description: "New reps miss far more than veterans — gap is widening",
+                        scores: { quota: 3, territory: 1, talent: 3, coverage: 2, comp: 1, market: 1 }
+                    },
+                    {
+                        label: "B",
+                        text: "Veterans underperform",
+                        description: "Veterans underperform relative to newer reps",
+                        scores: { quota: 1, territory: 2, talent: 3, coverage: 2, comp: 3, market: 1 }
+                    },
+                    {
+                        label: "C",
+                        text: "No clear pattern",
+                        description: "All tenures are struggling similarly",
+                        scores: { quota: 3, territory: 2, talent: 1, coverage: 2, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "D",
+                        text: "Tenure milestone",
+                        description: "Performance splits at a specific tenure milestone (e.g., year 2–3 slump)",
+                        scores: { quota: 1, territory: 1, talent: 2, coverage: 2, comp: 3, market: 1 }
+                    }
+                ],
+                insight: {
+                    A: "Tenure Patterns: New reps struggling far more than veterans suggests onboarding, ramp quota design, or hiring quality as primary issues.",
+                    B: "Tenure Patterns: Veterans underperforming relative to newer reps often signals a comp plan that doesn't reward sustained high performance — or a complacency issue in the culture.",
+                    C: "Tenure Patterns: When all tenures struggle equally, the cause is systemic — quota setting, territory, or market are more likely culprits than talent.",
+                    D: "Tenure Patterns: A tenure-milestone slump often reflects a comp plan design issue — reps hit a ceiling in earnings or motivation at a specific career stage."
+                }
+            },
+            {
+                id: 5,
+                category: "Territory & Market Variance",
+                title: "Are there clear geographic or market segment differences in attainment?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Yes — consistent territory",
+                        description: "Certain territories or segments consistently underperform regardless of who's in them",
+                        scores: { quota: 2, territory: 5, talent: 1, coverage: 3, comp: 1, market: 2 }
+                    },
+                    {
+                        label: "B",
+                        text: "No — even spread",
+                        description: "Problem spread relatively evenly across all territories",
+                        scores: { quota: 4, territory: 1, talent: 2, coverage: 1, comp: 3, market: 2 }
+                    },
+                    {
+                        label: "C",
+                        text: "Account size variance",
+                        description: "Enterprise or SMB performing differently",
+                        scores: { quota: 2, territory: 2, talent: 2, coverage: 4, comp: 2, market: 1 }
+                    },
+                    {
+                        label: "D",
+                        text: "Territory + tenure",
+                        description: "Correlates with rep tenure in those territories",
+                        scores: { quota: 2, territory: 3, talent: 3, coverage: 2, comp: 1, market: 1 }
+                    }
+                ],
+                insight: {
+                    A: "Territory Variance: When territory performance is consistent regardless of who's in the role, the territory itself is the variable — opportunity equity is the core issue.",
+                    B: "Territory Variance: Even spread of underperformance eliminates territory as a primary cause — look to quota setting, comp plan design, or market factors instead.",
+                    C: "Territory Variance: Account-size variance points to a coverage model issue — roles, territories, or account assignments may not be aligned to how customers of different sizes buy.",
+                    D: "Territory Variance: Tenure-correlated territory performance suggests reps in harder territories are leaving before they can ramp — pointing to both territory inequity and retention risk."
+                }
+            },
+            {
+                id: 6,
+                category: "Business Context",
+                title: "How much has your business changed in the last 12–18 months?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Major changes",
+                        description: "New products, pricing, go-to-market model, or leadership",
+                        scores: { quota: 2, territory: 1, talent: 1, coverage: 3, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "B",
+                        text: "Moderate changes",
+                        description: "Some product or market evolution",
+                        scores: { quota: 2, territory: 1, talent: 1, coverage: 2, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "C",
+                        text: "Minimal changes",
+                        description: "Business model has been relatively stable",
+                        scores: { quota: 3, territory: 3, talent: 2, coverage: 1, comp: 3, market: 1 }
+                    },
+                    {
+                        label: "D",
+                        text: "Significant external disruption",
+                        description: "Market, competitive, or economic",
+                        scores: { quota: 1, territory: 1, talent: 1, coverage: 1, comp: 1, market: 5 }
+                    }
+                ],
+                insight: {
+                    A: "Business Context: Major business changes often disrupt attainment before the sales force adapts — coverage model and quota methodology should be reviewed against the new reality.",
+                    B: "Business Context: Moderate changes can create attainment drift without a clear single cause — look for compound effects across quota, coverage, and comp.",
+                    C: "Business Context: Stable business context with poor attainment points strongly to internal structural issues — quota methodology, territory design, or comp plan mechanics.",
+                    D: "Business Context: Significant external disruption is a real but often over-cited factor — benchmark against industry peers to separate market headwind from internal performance issues."
+                }
+            },
+            {
+                id: 7,
+                category: "Overall Attainment Rate",
+                title: "Roughly what percentage of your reps are achieving quota this year?",
+                options: [
+                    {
+                        label: "A",
+                        text: "Below 50%",
+                        description: "Well below industry norms",
+                        scores: { quota: 5, territory: 2, talent: 2, coverage: 2, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "B",
+                        text: "50–65%",
+                        description: "Below typical benchmark",
+                        scores: { quota: 3, territory: 2, talent: 2, coverage: 2, comp: 2, market: 2 }
+                    },
+                    {
+                        label: "C",
+                        text: "65–75%",
+                        description: "Near industry norm",
+                        scores: { quota: 1, territory: 2, talent: 2, coverage: 2, comp: 2, market: 1 }
+                    },
+                    {
+                        label: "D",
+                        text: "Above 75%",
+                        description: "Above typical benchmarks",
+                        scores: { quota: 1, territory: 1, talent: 1, coverage: 1, comp: 1, market: 1 }
+                    }
+                ],
+                insight: {
+                    A: "Overall Attainment Rate: Below 50% attainment is a five-alarm signal — at this level, quota setting methodology must be the first thing examined and corrected.",
+                    B: "Overall Attainment Rate: 50–65% attainment is below healthy norms. Industry benchmark is 60–65% at or above quota — multiple factors are likely contributing.",
+                    C: "Overall Attainment Rate: Near-norm attainment suggests the issue may be distribution shape rather than overall level — look at who is hitting quota, not just how many.",
+                    D: "Overall Attainment Rate: Above 75% attainment raises a different question — are quotas set low enough that they're no longer stretching performance? Evaluate quota methodology for rigor."
+                }
+            }
+        ];
+
+        // State Management
+        let currentQuestion = 0;
+        let scores = { quota: 0, territory: 0, talent: 0, coverage: 0, comp: 0, market: 0 };
+        let answers = {};
+        let consultantNotesVisible = false;
+
+        // Initialize
+        function startDiagnostic() {
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('questionsScreen').classList.add('active');
+            document.getElementById('headerTitle').textContent = 'Question 1 of 7';
+            document.getElementById('startOverBtn').style.display = 'inline-block';
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            const question = questions[index];
+
+            // Update header
+            document.getElementById('headerTitle').textContent = `Question ${index + 1} of 7`;
+
+            // Update progress
+            const percent = Math.round(((index + 1) / 7) * 100);
+            document.getElementById('progressText').textContent = `Question ${index + 1} of 7`;
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+            document.getElementById('progressFill').style.width = percent + '%';
+
+            // Update question content
+            document.getElementById('questionCategory').textContent = question.category;
+            document.getElementById('questionTitle').textContent = question.title;
+
+            // Render options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            question.options.forEach((option, optIndex) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (answers[index]?.label === option.label) {
+                    optionDiv.classList.add('selected');
+                }
+                // Q1 gets distribution chart visuals
+                var chartA = '<svg viewBox="0 0 200 88" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;"><rect width="200" height="88" fill="#f7f7f7" rx="3"/><line x1="10" y1="72" x2="190" y2="72" stroke="#ddd" stroke-width="1"/><path d="M 25,72 C 45,72 65,9 100,9 C 135,9 155,72 175,72 Z" fill="#205D92" fill-opacity="0.2" stroke="#205D92" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="6" x2="100" y2="72" stroke="#E62B1E" stroke-width="1.5" stroke-dasharray="3,3"/><text x="50" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Below</text><text x="100" y="83" font-size="8" fill="#E62B1E" text-anchor="middle" font-family="Arial,sans-serif">Quota</text><text x="150" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Above</text></svg>';
+                var chartB = '<svg viewBox="0 0 200 88" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;"><rect width="200" height="88" fill="#f7f7f7" rx="3"/><line x1="10" y1="72" x2="190" y2="72" stroke="#ddd" stroke-width="1"/><path d="M 10,72 C 22,72 44,9 65,9 C 86,9 118,52 190,68 L 190,72 L 10,72 Z" fill="#E62B1E" fill-opacity="0.18" stroke="#E62B1E" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="6" x2="100" y2="72" stroke="#E62B1E" stroke-width="1.5" stroke-dasharray="3,3"/><text x="50" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Below</text><text x="100" y="83" font-size="8" fill="#E62B1E" text-anchor="middle" font-family="Arial,sans-serif">Quota</text><text x="150" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Above</text></svg>';
+                var chartC = '<svg viewBox="0 0 200 88" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;"><rect width="200" height="88" fill="#f7f7f7" rx="3"/><line x1="10" y1="72" x2="190" y2="72" stroke="#ddd" stroke-width="1"/><path d="M 10,68 C 82,52 115,9 136,9 C 157,9 178,72 190,72 L 10,72 Z" fill="#4C9A9C" fill-opacity="0.2" stroke="#4C9A9C" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="6" x2="100" y2="72" stroke="#E62B1E" stroke-width="1.5" stroke-dasharray="3,3"/><text x="50" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Below</text><text x="100" y="83" font-size="8" fill="#E62B1E" text-anchor="middle" font-family="Arial,sans-serif">Quota</text><text x="150" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Above</text></svg>';
+                var chartD = '<svg viewBox="0 0 200 88" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;"><rect width="200" height="88" fill="#f7f7f7" rx="3"/><line x1="10" y1="72" x2="190" y2="72" stroke="#ddd" stroke-width="1"/><path d="M 10,72 C 25,72 42,9 62,9 C 82,9 90,60 100,60 C 110,60 118,9 138,9 C 158,9 175,72 190,72 Z" fill="#27394F" fill-opacity="0.2" stroke="#27394F" stroke-width="2" stroke-linejoin="round"/><line x1="100" y1="6" x2="100" y2="72" stroke="#E62B1E" stroke-width="1.5" stroke-dasharray="3,3"/><text x="50" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Below</text><text x="100" y="83" font-size="8" fill="#E62B1E" text-anchor="middle" font-family="Arial,sans-serif">Quota</text><text x="150" y="83" font-size="8" fill="#aaa" text-anchor="middle" font-family="Arial,sans-serif">Above</text></svg>';
+                var charts = {A: chartA, B: chartB, C: chartC, D: chartD};
+                if (index === 0 && charts[option.label]) {
+                    optionDiv.classList.add('option-with-chart');
+                    optionDiv.innerHTML =
+                        '<div class="option-radio"></div>' +
+                        '<div class="option-text">' +
+                        '<span class="option-label">' + option.label + ' - ' + option.text + '</span>' +
+                        '<span class="option-description">' + option.description + '</span>' +
+                        '</div>' +
+                        '<div class="option-chart">' + charts[option.label] + '</div>';
+                } else {
+                    optionDiv.innerHTML =
+                        '<div class="option-radio"></div>' +
+                        '<div class="option-text">' +
+                        '<span class="option-label">' + option.label + ' - ' + option.text + '</span>' +
+                        '<span class="option-description">' + option.description + '</span>' +
+                        '</div>';
+                }
+
+                optionDiv.onclick = () => selectOption(index, option, optionDiv);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update navigation
+            document.getElementById('prevBtn').style.display = index > 0 ? 'inline-block' : 'none';
+
+            // Scroll to question
+            window.scrollTo(0, 0);
+        }
+
+        function selectOption(qIndex, option, element) {
+            // Remove previous selection
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            element.classList.add('selected');
+
+            // Record answer
+            answers[qIndex] = option;
+
+            // Update scores
+            Object.keys(option.scores).forEach(key => {
+                scores[key] += option.scores[key];
+            });
+
+            // Auto-advance (except last question)
+            if (qIndex < 6) {
+                setTimeout(() => {
+                    nextQuestion();
+                }, 550);
+            } else {
+                // Last question - show results after delay
+                setTimeout(() => {
+                    showResults();
+                }, 550);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < 6) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questionsScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+            document.getElementById('headerTitle').textContent = 'Diagnostic Complete';
+            document.getElementById('startOverBtn').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
+            document.getElementById('startOverBtn2').style.display = 'inline-block';
+            document.getElementById('downloadBtn2').style.display = 'inline-block';
+
+            // Get sorted scores
+            const sorted = Object.entries(scores)
+                .sort((a, b) => b[1] - a[1])
+                .map(([key]) => key);
+
+            // Update header
+            const topCause = sorted[0];
+            document.getElementById('topCauseName').textContent = rootCauses[topCause].name;
+
+            // Render top finding
+            renderTopFinding(topCause);
+
+            // Render score chart
+            renderScoreChart(sorted);
+
+            // Render insights
+            renderInsights();
+
+            // Render alternatives
+            renderAlternatives(sorted);
+
+            window.scrollTo(0, 0);
+        }
+
+        function renderTopFinding(causeKey) {
+            const cause = rootCauses[causeKey];
+            const html = `
+                <div class="finding-header">
+                    <span class="finding-icon">${cause.icon}</span>
+                    <span class="finding-title">${cause.name}</span>
+                </div>
+                <p class="finding-description">${cause.desc}</p>
+
+                <div class="finding-section">
+                    <h4 class="finding-section-title">Symptoms Present</h4>
+                    <ul class="finding-list">
+                        ${cause.symptoms.map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="finding-section">
+                    <h4 class="finding-section-title">Recommended Actions</h4>
+                    <ul class="finding-list">
+                        ${cause.actions.map(a => `<li>${a}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="consultant-note" id="consultantNote">
+                    <span class="consultant-note-label">Consultant Note</span>
+                    ${cause.consultantNote}
+                </div>
+            `;
+            document.getElementById('topFindingCard').innerHTML = html;
+            document.getElementById('topFindingCard').style.borderTopColor = cause.color;
+        }
+
+        function renderScoreChart(sorted) {
+            const maxScore = Math.max(...Object.values(scores));
+            let html = '';
+            sorted.forEach((key, index) => {
+                const cause = rootCauses[key];
+                const score = scores[key];
+                const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+                html += `
+                    <div class="score-row" style="animation-delay: ${index * 0.1}s;">
+                        <div class="score-label">
+                            <span class="score-label-icon">${cause.icon}</span>
+                            ${cause.name}
+                        </div>
+                        <div class="score-bar-container">
+                            <div class="score-bar" style="width: ${percent}%; background-color: ${cause.color}; animation-delay: ${index * 0.1}s;">
+                                ${percent > 10 ? percent + '%' : ''}
+                            </div>
+                        </div>
+                        <div class="score-percentage">${score}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreChartContainer').innerHTML = html;
+        }
+
+        function renderInsights() {
+            let html = '';
+            Object.keys(answers).forEach(qIndex => {
+                const qNum = parseInt(qIndex) + 1;
+                const answer = answers[qIndex];
+                const insight = questions[parseInt(qIndex)].insight[answer.label];
+                html += `
+                    <div class="insight">
+                        <div class="insight-label">Question ${qNum}</div>
+                        <div class="insight-text">${insight}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('insightsContainer').innerHTML = html;
+        }
+
+        function renderAlternatives(sorted) {
+            const cause2 = sorted[1];
+            const cause3 = sorted[2];
+
+            // Alternative 2
+            const cause2Data = rootCauses[cause2];
+            document.getElementById('alt2Title').textContent = `#2: ${cause2Data.name}`;
+            document.getElementById('alt2Content').innerHTML = `
+                <div class="alternative-finding">
+                    <div class="alternative-finding-rank">Second Root Cause</div>
+                    <div class="alternative-finding-name">${cause2Data.name}</div>
+                    <div class="alternative-finding-desc">${cause2Data.desc}</div>
+                </div>
+                <div class="alternative-finding">
+                    <div class="alternative-finding-rank">Key Symptoms</div>
+                    <ul class="finding-list">
+                        ${cause2Data.symptoms.slice(0, 2).map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            // Alternative 3
+            const cause3Data = rootCauses[cause3];
+            document.getElementById('alt3Title').textContent = `#3: ${cause3Data.name}`;
+            document.getElementById('alt3Content').innerHTML = `
+                <div class="alternative-finding">
+                    <div class="alternative-finding-rank">Third Root Cause</div>
+                    <div class="alternative-finding-name">${cause3Data.name}</div>
+                    <div class="alternative-finding-desc">${cause3Data.desc}</div>
+                </div>
+                <div class="alternative-finding">
+                    <div class="alternative-finding-rank">Key Symptoms</div>
+                    <ul class="finding-list">
+                        ${cause3Data.symptoms.slice(0, 2).map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function toggleConsultantNotes() {
+            const toggle = document.getElementById('consultantToggle');
+            const note = document.getElementById('consultantNote');
+            consultantNotesVisible = !consultantNotesVisible;
+            toggle.classList.toggle('active');
+            note.classList.toggle('active');
+        }
+
+        function toggleAlternative(num) {
+            const content = document.getElementById(`alt${num}Content`);
+            const header = content.previousElementSibling;
+            const toggle = header.querySelector('.alternative-toggle');
+            content.classList.toggle('active');
+            toggle.classList.toggle('expanded');
+        }
+
+        function startOver() {
+            currentQuestion = 0;
+            scores = { quota: 0, territory: 0, talent: 0, coverage: 0, comp: 0, market: 0 };
+            answers = {};
+            consultantNotesVisible = false;
+
+            document.getElementById('welcomeScreen').classList.add('active');
+            document.getElementById('questionsScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.remove('active');
+            document.getElementById('headerTitle').textContent = 'Quota Attainment Diagnostic';
+            document.getElementById('startOverBtn').style.display = 'none';
+            document.getElementById('downloadBtn').style.display = 'none';
+            document.getElementById('startOverBtn2').style.display = 'none';
+            document.getElementById('downloadBtn2').style.display = 'none';
+
+            window.scrollTo(0, 0);
+        }
+
+        function downloadPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
