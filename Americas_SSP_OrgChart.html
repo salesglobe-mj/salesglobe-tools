@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Americas S&SP | Interactive Org Explorer</title>
+<style>
+  :root {
+    --ey-yellow: #FFE600;
+    --ey-dark: #1A1A24;
+    --ey-gray: #2E2E3A;
+    --ey-mid: #4A4A5A;
+    --ey-light: #F5F5F8;
+    --ey-border: #E0E0E8;
+    --card-radius: 12px;
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--ey-light); color: var(--ey-dark); min-height: 100vh; }
+
+  /* ── Header ── */
+  header { background: var(--ey-dark); padding: 0 32px; display: flex; align-items: center; gap: 24px; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+  .logo-bar { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .ey-logo { background: var(--ey-yellow); color: var(--ey-dark); font-weight: 900; font-size: 18px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; letter-spacing: -1px; border-radius: 4px; }
+  .app-title { color: #fff; font-size: 15px; font-weight: 600; }
+  .app-subtitle { color: rgba(255,255,255,.45); font-size: 12px; margin-top: 2px; }
+  .breadcrumb-wrap { flex: 1; overflow: hidden; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .breadcrumb::-webkit-scrollbar { display: none; }
+  .bc-item { color: rgba(255,255,255,.55); font-size: 13px; cursor: pointer; white-space: nowrap; padding: 4px 10px; border-radius: 20px; transition: all var(--transition); border: 1px solid transparent; flex-shrink: 0; }
+  .bc-item:hover { color: var(--ey-yellow); border-color: rgba(255,230,0,.3); background: rgba(255,230,0,.06); }
+  .bc-item.active { color: var(--ey-yellow); font-weight: 600; cursor: default; pointer-events: none; }
+  .bc-sep { color: rgba(255,255,255,.25); font-size: 12px; flex-shrink: 0; }
+
+  /* ── Nav Tabs (top-level view switcher) ── */
+  .nav-tabs { background: var(--ey-gray); display: flex; gap: 0; border-bottom: 2px solid rgba(255,255,255,.08); padding: 0 32px; }
+  .nav-tab { color: rgba(255,255,255,.5); font-size: 13px; font-weight: 600; padding: 12px 20px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all var(--transition); letter-spacing: .3px; }
+  .nav-tab:hover { color: rgba(255,255,255,.8); }
+  .nav-tab.active { color: var(--ey-yellow); border-bottom-color: var(--ey-yellow); }
+
+  /* ── Vision Banner ── */
+  .vision-banner { background: linear-gradient(135deg,#1A1A24 0%,#2E2E4A 100%); border-bottom: 3px solid var(--ey-yellow); padding: 18px 32px; display: flex; align-items: center; gap: 20px; cursor: pointer; transition: background var(--transition); }
+  .vision-banner:hover { background: linear-gradient(135deg,#22223A 0%,#363660 100%); }
+  .vision-label { color: var(--ey-yellow); font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .vision-text { color: rgba(255,255,255,.85); font-size: 13px; line-height: 1.5; max-width: 900px; }
+  .vision-toggle { color: var(--ey-yellow); font-size: 20px; flex-shrink: 0; transition: transform var(--transition); user-select: none; }
+  .vision-toggle.open { transform: rotate(180deg); }
+  .vision-expanded { background: linear-gradient(135deg,#1A1A24 0%,#2E2E4A 100%); padding: 0 32px; max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .35s ease; }
+  .vision-expanded.open { max-height: 300px; padding: 0 32px 20px; }
+  .vision-expanded p { color: rgba(255,255,255,.65); font-size: 13px; line-height: 1.6; border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px; }
+
+  /* ── Main ── */
+  main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Current Node ── */
+  .current-node { background: var(--ey-dark); border-radius: var(--card-radius); padding: 22px 26px; margin-bottom: 20px; display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.18); }
+  .current-node::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--ey-yellow); border-radius:4px 0 0 4px; }
+  .current-avatar { width:56px; height:56px; border-radius:50%; background:var(--ey-yellow); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:var(--ey-dark); flex-shrink:0; letter-spacing:-1px; }
+  .current-info { flex:1; }
+  .current-name { color:#fff; font-size:21px; font-weight:700; margin-bottom:3px; }
+  .current-title { color:rgba(255,255,255,.6); font-size:13px; }
+  .current-badge { display:inline-block; margin-top:7px; padding:3px 12px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+  .back-btn { display:flex; align-items:center; gap:8px; color:var(--ey-yellow); font-size:13px; font-weight:600; cursor:pointer; padding:8px 16px; border-radius:8px; border:1px solid rgba(255,230,0,.3); background:rgba(255,230,0,.06); transition:all var(--transition); flex-shrink:0; }
+  .back-btn:hover { background:rgba(255,230,0,.12); border-color:rgba(255,230,0,.6); }
+  .back-btn.hidden { visibility:hidden; pointer-events:none; }
+
+  /* ── Collapsible Info Block ── */
+  .info-block { background:#fff; border:1px solid var(--ey-border); border-radius:var(--card-radius); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05); margin-bottom:16px; }
+  .info-block-header { display:flex; align-items:center; gap:14px; padding:14px 20px; cursor:pointer; transition:background var(--transition); }
+  .info-block-header:hover { background:var(--ey-light); }
+  .info-block-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .info-block-labels { flex:1; }
+  .info-block-title { font-size:13px; font-weight:700; color:var(--ey-dark); margin-bottom:2px; }
+  .info-block-sub { font-size:11px; color:var(--ey-mid); }
+  .info-block-toggle { font-size:16px; color:var(--ey-mid); transition:transform var(--transition); user-select:none; }
+  .info-block-toggle.open { transform:rotate(180deg); }
+  .info-block-body { max-height:0; overflow:hidden; transition:max-height .35s ease; border-top:0 solid var(--ey-border); }
+  .info-block-body.open { max-height:600px; overflow-y:auto; border-top-width:1px; }
+
+  /* ── Two-col grid inside info block ── */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:0; }
+  .two-col-cell { padding:16px 20px; }
+  .two-col-cell:first-child { border-right:1px solid var(--ey-border); }
+  .cell-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; color:var(--ey-mid); }
+  .cell-text { font-size:13px; color:var(--ey-mid); line-height:1.55; }
+
+  /* ── Sub-pillars grid ── */
+  .subpillar-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; padding:16px 20px; }
+  .subpillar-card { background:var(--ey-light); border:1px solid var(--ey-border); border-radius:10px; padding:14px 16px; }
+  .sp-name { font-size:13px; font-weight:700; color:var(--ey-dark); margin-bottom:6px; }
+  .sp-about { font-size:12px; color:var(--ey-mid); line-height:1.5; margin-bottom:8px; }
+  .sp-roles-label { font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--ey-mid); margin-bottom:4px; }
+  .sp-role-chip { display:inline-block; background:#fff; border:1px solid var(--ey-border); border-radius:20px; padding:2px 9px; font-size:11px; color:var(--ey-dark); margin:2px 2px 0 0; }
+
+  /* ── Career overview ── */
+  .career-overview { padding:16px 20px; }
+  .career-overview p { font-size:13px; color:var(--ey-mid); line-height:1.6; margin-bottom:10px; }
+  .career-overview p:last-child { margin-bottom:0; }
+  .career-bullets { list-style:none; margin:8px 0 0; }
+  .career-bullets li { font-size:13px; color:var(--ey-mid); line-height:1.5; padding:5px 0 5px 18px; position:relative; }
+  .career-bullets li::before { content:'→'; position:absolute; left:0; color:var(--ey-yellow); font-weight:700; }
+
+  /* ── Roles section ── */
+  .section-label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ey-mid); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--ey-border); }
+
+  /* ── Role card ── */
+  .role-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-bottom:28px; }
+  .role-card { background:#fff; border:1px solid var(--ey-border); border-radius:var(--card-radius); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+  .role-card-top { padding:16px 18px 12px; }
+  .role-card-name { font-size:15px; font-weight:700; color:var(--ey-dark); margin-bottom:4px; }
+  .role-rank-badge { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; margin-top:4px; }
+  .role-card-sections { border-top:1px solid var(--ey-border); }
+  .role-section { border-bottom:1px solid var(--ey-border); }
+  .role-section:last-child { border-bottom:none; }
+  .role-section-header { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; cursor:pointer; transition:background var(--transition); font-size:12px; font-weight:700; color:var(--ey-mid); letter-spacing:.5px; text-transform:uppercase; }
+  .role-section-header:hover { background:var(--ey-light); }
+  .role-section-toggle { font-size:12px; transition:transform var(--transition); }
+  .role-section-toggle.open { transform:rotate(180deg); }
+  .role-section-body { max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .role-section-body.open { max-height:400px; overflow-y:auto; }
+  .role-section-content { padding:10px 18px 14px; }
+  .role-bullet-list { list-style:none; }
+  .role-bullet-list li { font-size:12px; color:var(--ey-mid); line-height:1.5; padding:3px 0 3px 14px; position:relative; }
+  .role-bullet-list li::before { content:'•'; position:absolute; left:0; color:var(--ey-mid); }
+  .career-path-chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+  .cp-chip { background:var(--ey-light); border:1px solid var(--ey-border); border-radius:20px; padding:3px 10px; font-size:11px; color:var(--ey-dark); }
+
+  /* ── People grid (org chart cards) ── */
+  .org-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; }
+  .person-card { background:#fff; border-radius:var(--card-radius); border:1px solid var(--ey-border); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); transition:transform var(--transition),box-shadow var(--transition); }
+  .person-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.12); }
+  .card-color-bar { height:4px; width:100%; }
+  .card-body { padding:16px 16px 12px; }
+  .card-avatar-row { display:flex; align-items:flex-start; gap:11px; margin-bottom:10px; }
+  .card-avatar { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:#fff; flex-shrink:0; letter-spacing:-1px; }
+  .card-name-block { flex:1; min-width:0; }
+  .card-name { font-size:14px; font-weight:700; color:var(--ey-dark); line-height:1.2; margin-bottom:3px; }
+  .card-title { font-size:11px; color:var(--ey-mid); line-height:1.3; }
+  .card-meta { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+  .card-tag { font-size:10px; font-weight:600; padding:2px 8px; border-radius:20px; letter-spacing:.3px; }
+  .card-actions { display:flex; gap:7px; border-top:1px solid var(--ey-border); padding-top:10px; }
+  .card-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:4px; padding:6px 8px; border-radius:7px; font-size:11px; font-weight:600; cursor:pointer; transition:all var(--transition); border:none; outline:none; }
+  .btn-drill { background:var(--ey-dark); color:#fff; }
+  .btn-drill:hover { background:var(--ey-gray); }
+  .btn-drill:disabled { background:var(--ey-border); color:var(--ey-mid); cursor:default; }
+  .btn-expand { background:var(--ey-light); color:var(--ey-dark); border:1px solid var(--ey-border); }
+  .btn-expand:hover { background:var(--ey-border); }
+  .btn-expand.active { background:var(--ey-yellow); color:var(--ey-dark); border-color:var(--ey-yellow); }
+  .card-detail { max-height:0; overflow:hidden; transition:max-height .35s ease; background:var(--ey-light); border-top:0 solid var(--ey-border); }
+  .card-detail.open { max-height:420px; overflow-y:auto; border-top-width:1px; }
+  .card-detail-inner { padding:12px 16px; }
+  .detail-section { margin-bottom:10px; }
+  .detail-section:last-child { margin-bottom:0; }
+  .detail-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--ey-mid); margin-bottom:3px; }
+  .detail-text { font-size:12px; color:var(--ey-dark); line-height:1.5; }
+  .detail-chip-list { display:flex; flex-wrap:wrap; gap:4px; margin-top:3px; }
+  .detail-chip { background:#fff; border:1px solid var(--ey-border); border-radius:20px; padding:2px 9px; font-size:11px; color:var(--ey-dark); cursor:pointer; transition:all var(--transition); }
+  .detail-chip:hover { border-color:var(--ey-dark); background:var(--ey-dark); color:#fff; }
+
+  /* ── View tabs (People / Roles) ── */
+  .view-tabs { display:flex; gap:0; background:var(--ey-dark); border-radius:var(--card-radius) var(--card-radius) 0 0; overflow:hidden; margin-bottom:0; }
+  .view-tab { flex:1; text-align:center; padding:11px; font-size:13px; font-weight:600; color:rgba(255,255,255,.5); cursor:pointer; transition:all var(--transition); border-bottom:2px solid transparent; }
+  .view-tab:hover { color:rgba(255,255,255,.8); }
+  .view-tab.active { color:var(--ey-yellow); border-bottom-color:var(--ey-yellow); background:rgba(255,255,255,.04); }
+
+  /* ── Animations ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .fade-in { animation:fadeUp .28s ease forwards; }
+  .org-grid .person-card { animation:fadeUp .28s ease forwards; opacity:0; }
+  .org-grid .person-card:nth-child(1){animation-delay:.02s}.org-grid .person-card:nth-child(2){animation-delay:.05s}.org-grid .person-card:nth-child(3){animation-delay:.08s}.org-grid .person-card:nth-child(4){animation-delay:.11s}.org-grid .person-card:nth-child(5){animation-delay:.14s}.org-grid .person-card:nth-child(6){animation-delay:.17s}.org-grid .person-card:nth-child(7){animation-delay:.20s}.org-grid .person-card:nth-child(8){animation-delay:.23s}.org-grid .person-card:nth-child(9){animation-delay:.26s}.org-grid .person-card:nth-child(n+10){animation-delay:.29s}
+
+  @media(max-width:700px){
+    header{padding:0 14px} main{padding:14px} .nav-tabs{padding:0 14px}
+    .two-col{grid-template-columns:1fr} .two-col-cell:first-child{border-right:none;border-bottom:1px solid var(--ey-border)}
+    .vision-banner,.vision-expanded{padding-left:16px;padding-right:16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-bar">
+    <div class="ey-logo">EY</div>
+    <div><div class="app-title">Americas S&SP</div><div class="app-subtitle">Interactive Org Explorer</div></div>
+  </div>
+  <div class="breadcrumb-wrap">
+    <div class="breadcrumb" id="breadcrumb"></div>
+  </div>
+</header>
+
+<div class="vision-banner" onclick="toggleVision()">
+  <div style="flex:1">
+    <div class="vision-label">Team Vision</div>
+    <div class="vision-text">EY Americas S&SP is a catalyst for market-leading growth — click to expand</div>
+  </div>
+  <div class="vision-toggle" id="visionToggle">▼</div>
+</div>
+<div class="vision-expanded" id="visionExpanded">
+  <p>EY Americas Sales and Strategic Pursuits (S&SP) is a catalyst for market-leading growth. We revolutionize the way EY engages with clients, introducing innovative solutions to address their critical business issues through a deep sector and solutions lens. Dedicated to fostering meaningful relationships, implementing account growth strategies, infusing pursuit strategy and discipline, and applying commercial acumen and insights, we are committed to winning and propelling the business forward. We bring energy and sales expertise to teams, consistently exceeding targets, and shaping a prosperous future for our organization, our people, and our clients.</p>
+</div>
+
+<main>
+  <div class="current-node fade-in">
+    <div class="current-avatar" id="curAvatar"></div>
+    <div class="current-info">
+      <div class="current-name" id="curName"></div>
+      <div class="current-title" id="curTitle"></div>
+      <div id="curBadge" class="current-badge" style="display:none"></div>
+    </div>
+    <button class="back-btn hidden" id="backBtn" onclick="goUp()">↑ Up a level</button>
+  </div>
+
+  <!-- Pillar Overview (focus/value) -->
+  <div class="info-block" id="pillarInfoBlock" style="display:none">
+    <div class="info-block-header" onclick="toggleBlock('pillarInfo')">
+      <div class="info-block-icon" id="pillarInfoIcon">📋</div>
+      <div class="info-block-labels">
+        <div class="info-block-title" id="pillarInfoTitle"></div>
+        <div class="info-block-sub">Focus & Value — click to expand</div>
+      </div>
+      <div class="info-block-toggle" id="pillarInfoToggle">▼</div>
+    </div>
+    <div class="info-block-body" id="pillarInfoBody">
+      <div class="two-col">
+        <div class="two-col-cell">
+          <div class="cell-label">🎯 Focus</div>
+          <div class="cell-text" id="pillarFocus"></div>
+        </div>
+        <div class="two-col-cell">
+          <div class="cell-label">💡 Value</div>
+          <div class="cell-text" id="pillarValue"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sub-pillars (Sales Activation only) -->
+  <div class="info-block" id="subPillarBlock" style="display:none">
+    <div class="info-block-header" onclick="toggleBlock('subPillar')">
+      <div class="info-block-icon">🏛️</div>
+      <div class="info-block-labels">
+        <div class="info-block-title">Sub-Pillars</div>
+        <div class="info-block-sub">Account Management · ARC · Growth Driver Activation — click to expand</div>
+      </div>
+      <div class="info-block-toggle" id="subPillarToggle">▼</div>
+    </div>
+    <div class="info-block-body" id="subPillarBody">
+      <div class="subpillar-grid" id="subPillarGrid"></div>
+    </div>
+  </div>
+
+  <!-- Career Overview (top level only) -->
+  <div class="info-block" id="careerOverviewBlock" style="display:none">
+    <div class="info-block-header" onclick="toggleBlock('careerOverview')">
+      <div class="info-block-icon">🛤️</div>
+      <div class="info-block-labels">
+        <div class="info-block-title">Career Path & Progression Philosophy</div>
+        <div class="info-block-sub">S&SP team career development overview — click to expand</div>
+      </div>
+      <div class="info-block-toggle" id="careerOverviewToggle">▼</div>
+    </div>
+    <div class="info-block-body" id="careerOverviewBody">
+      <div class="career-overview">
+        <p>Across all pillars and roles within Americas S&SP, we prioritize the effective execution of individual responsibilities, teamwork, and professional growth. Career progression can manifest in various ways, both within and beyond the S&SP organization.</p>
+        <ul class="career-bullets">
+          <li><strong>Within team:</strong> Advance by taking on a role with a business need for a more senior-level resource within your functional team.</li>
+          <li><strong>Cross-pillar:</strong> Move across S&SP pillars to seek different challenges and leverage skills developed in prior roles.</li>
+          <li><strong>Beyond S&SP:</strong> Explore opportunities in other Clients & Industries pillars, CBS, or client service — S&SP tenure builds skills and relationships that position you for success anywhere.</li>
+        </ul>
+        <p style="margin-top:10px;font-style:italic;font-size:12px;">Note: The role-specific career paths shown in the Roles view are natural progressions — not absolute or comprehensive. Progression is based on individual interest, skills, and readiness.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Tabs (People / Roles) -->
+  <div id="viewTabsEl" style="display:none">
+    <div class="view-tabs">
+      <div class="view-tab active" id="tabPeople" onclick="switchView('people')">👥 People</div>
+      <div class="view-tab" id="tabRoles" onclick="switchView('roles')">📄 Roles & Career Paths</div>
+    </div>
+  </div>
+
+  <!-- People View -->
+  <div id="peopleView">
+    <div class="section-label" id="gridLabel" style="margin-top:16px">Direct Reports</div>
+    <div class="org-grid" id="orgGrid"></div>
+  </div>
+
+  <!-- Roles View -->
+  <div id="rolesView" style="display:none; margin-top:16px">
+    <div id="rolesContent"></div>
+  </div>
+</main>
+
+<script>
+// ─── Utilities ────────────────────────────────────────────────
+function pColor(p){ return ({
+  'Top':'#1A1A24','Sales Activation':'#0D5FA3','Core Growth Sales':'#1A7A4A',
+  'Industries & Accounts Sales':'#7B3FA0','Alliances Sales':'#C45C1A',
+  'Managed Services Sales':'#1A6B7A','Services & Solutions Sales':'#8A1A3A',
+  'Sales Transformation Office':'#4A6A1A'
+})[p]||'#555'; }
+
+function initials(n){ if(!n||n==='TBD') return '?'; return n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function bulletList(text){
+  if(!text) return '';
+  return text.split('\n').filter(s=>s.trim()).map(s=>`<li>${s.trim()}</li>`).join('');
+}
+
+// ─── Role Data ────────────────────────────────────────────────
+const ROLES = {
+  'Sales Activation': {
+    leaderDesc: 'Responsible for advancing the focus of the Sales Activation team on client-centric and client-facing activity and leading the deployment of Sales Activation resources where they can drive greatest impact in our accounts, sectors and growth drivers.',
+    subPillars: [
+      {
+        name: 'Account Management',
+        about: 'A team focused on driving Account Management Framework (AMF) excellence, cross-service line integration, and exceptional client service into our largest, most complex global accounts. Driving account strategy and innovation, client relationship growth, deal acceleration, and talent development.',
+        roles: ['Lead Account Manager','Senior Account Manager','Account Manager']
+      },
+      {
+        name: 'Account Resource Center',
+        about: 'A centralized resource hub for easy access to leading practice Account Management skillsets, tools and technologies aimed at accelerating account growth. A scalable, cost-effective model bringing standardized tools and AMF expertise to all accounts, with emphasis on Core and High Potential Core accounts.',
+        roles: ['Account Resource Center Leader','Senior Account Resource Center Strategist','Account Resource Center Strategist']
+      },
+      {
+        name: 'Growth Driver Activation Center',
+        about: 'A dedicated team focused on driving demand generation and growth for prioritized alliances, managed services, and solutions using data and insights. Two-pronged: account acceleration sessions (pull model) and last-mile activation campaigns for select solutions (push model).',
+        roles: ['Growth Driver Activation Leader','Senior Growth Driver Activation Strategist','Growth Driver Activation Strategist']
+      }
+    ],
+    roles: [
+      {
+        name: 'Lead Account Manager',
+        rank: 'Associate Director',
+        responsibilities: ['Lead team of sector account managers — counselor and performance management owner','Senior Account Manager on priority account','Lead recruiting, hiring, deployment, training and development of sector account managers','Drive collaboration with GCSPs, Sector leadership and other key stakeholders','Own and drive Account Management focused projects and initiatives'],
+        metrics: ['Manage and develop high-performing team','Lead community of sales activation team within sector','Influence leaders, impact sales excellence, elevate the Account Manager role','+ Senior Account Manager metrics'],
+        careerPath: ['Sales Activation Leadership','Sales Executive']
+      },
+      {
+        name: 'Senior Account Manager',
+        rank: 'Associate Director',
+        responsibilities: ['Manage one to two Premier, Strategic or Focus accounts','Drive AMF, co-develop strategy and drive execution of account plan','Facilitate SL planning activity, account integration, pursuit support and pipeline development','Understand client\'s business agenda and EY solutions','Pipeline generation, relationship development and deal coaching','Own targeted client relationships (Procurement, DEI, etc.)'],
+        metrics: ['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility, versatility and strong problem-solving ability','Establish credibility and trust with strong coaching and facilitation skills'],
+        careerPath: ['Sales Activation Leadership','Lead Account Manager','Senior ARC Strategist or Senior GDAC Strategist','Sales Executive']
+      },
+      {
+        name: 'Account Manager',
+        rank: 'Assistant Director',
+        responsibilities: ['Manage one to two Strategic or Focus accounts','Strategically drive and apply the AMF, co-develop strategy and drive execution of account plan','Client knowledge hub for account(s); connecting team to growth drivers and client business issues'],
+        metrics: ['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility, versatility and strong problem-solving ability'],
+        careerPath: ['Senior Account Manager','Lead Account Manager','ARC Strategist or GDAC Strategist','Senior ARC Strategist or Senior GDAC Strategist']
+      },
+      {
+        name: 'Account Resource Center Leader',
+        rank: 'Director',
+        responsibilities: ['Team leader, accountable for growth, development and performance of team','Sets and implements the strategic direction of the ARC, ensuring AMF excellence and innovative practices','Manage intake of accounts and deployment of team','Work with Americas & Global leadership across Clients & Industries Operating System, Core Growth Leaders, Industry & Sector Leaders'],
+        metrics: ['Manage and develop high-performing team','Develop strong rapport with Executive Leaders','Demonstrate AMF methodology expertise','Ability to accurately assess account needs and opportunities for successful intake and deployment','Operate internally and externally on local and global virtual basis to achieve results'],
+        careerPath: ['Sales Activation Leadership','Sales Executive']
+      },
+      {
+        name: 'Senior Account Resource Center Strategist',
+        rank: 'Associate Director',
+        responsibilities: ['Executing AMF-based consultations, account acceleration sessions, and building strong AMF foundation on accounts','Develop account-specific growth strategies and execute plans with account leaders on complex accounts','Lead innovation efforts to improve activation processes and disseminate leading practice AMF assets'],
+        metrics: ['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Mentor team members, proactively driving team collaboration','Operate internally and externally on local and global virtual basis'],
+        careerPath: ['Senior Account Manager','Sales Activation Leadership','Sales Executive']
+      },
+      {
+        name: 'Account Resource Center Strategist',
+        rank: 'Assistant Director',
+        responsibilities: ['Executing AMF-based consultations, account acceleration sessions, and building strong AMF foundation on accounts','Develop account-specific growth strategies and execute plans with account leaders','Knowledge hub for accounts, connecting to best practices to drive growth','Input on AMF leading practice asset development'],
+        metrics: ['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Strong collaboration internally and externally','Navigate across EY\'s Market Growth Operating System and other functions'],
+        careerPath: ['Senior ARC Strategist','Senior Account Manager']
+      },
+      {
+        name: 'Growth Driver Activation Leader',
+        rank: 'Director',
+        responsibilities: ['Team leader responsible for implementing and overseeing strategy','Drive sales and promote growth through activating Growth Drivers and lead generation','Work with Americas leadership across Clients & Industries Operating System, Service Lines, and Sectors','Manage intake and deployment for team'],
+        metrics: ['Demonstrate sales/solutions activation expertise','Influence and build collaborative relationships with stakeholders','Strong people management and coaching capabilities','Understanding of solution strategies and deployment'],
+        careerPath: ['Sales Activation Leadership','Sales Executive']
+      },
+      {
+        name: 'Senior Growth Driver Activation Strategist',
+        rank: 'Associate Director',
+        responsibilities: ['Aligned to sectors to grow footprint, or aligned to complex growth driver to drive cross-sector campaigns','Establish/drive GTM efforts, collaborate with sector/account leaders','Innovate and improve processes across Growth Driver ecosystem, simplify/accelerate growth'],
+        metrics: ['Influence leaders, impact sales excellence and grow pipeline','Navigate across EY\'s Growth Driver ecosystem','Mentor team members, proactively share best practices','Identify areas to optimize, design new processes'],
+        careerPath: ['Senior Account Manager','Sales Activation Leadership','Sales Executive']
+      },
+      {
+        name: 'Growth Driver Activation Strategist',
+        rank: 'Assistant Director',
+        responsibilities: ['Aligned to sectors to grow footprint, or aligned to complex growth driver to drive cross-sector campaigns','Co-develop strategy and action plans with SL/Sector leadership, SEs, AMs and GCSPs','Execute GTM activities including acceleration sessions and campaigns','Knowledge hub for focus area, simplify Growth Driver activation'],
+        metrics: ['Influence leaders, impact sales excellence and grow pipeline','Navigate across EY\'s Growth Driver ecosystem and Clients & Industries Growth Operating System'],
+        careerPath: ['Senior GDAC Strategist','Account Manager']
+      },
+      {
+        name: 'Optimization Leader (GDS Liaison)',
+        rank: 'Associate Director',
+        responsibilities: ['Develop and drive multi-shore support strategies and goals for GDS Sales enablement with Area, Global and GDS leadership','Influence continuous development/evolution of operating model, scope, role definitions and deployment models','Identify and promote optimization opportunities','Drive strategic expansion of GDS support delivery into additional countries','Influence recruiting, hiring, deployment, training and development of non-US based sales activation resources'],
+        metrics: ['Demonstrate expertise driving alignment cross-functionally across multiple shores and cultures','Solution development/implementation capabilities to expand account coverage','Influence and build collaborative relationships with leadership stakeholders in a matrixed organization'],
+        careerPath: ['Sales Activation Leadership']
+      },
+    ]
+  },
+  'Core Growth Sales': {
+    leaderDesc: 'Responsible for all Core Growth sales executives and driving GTM and Sales strategy and execution in the Core.',
+    roles: [
+      {
+        name: 'Core Growth Account Leader (GCSP/RCP)',
+        rank: 'Associate Director (smaller BoB) · Director* (playing AL on entire BoB)',
+        rankNote: '*Director rank is exception based',
+        responsibilities: ['Grow account compared to prior year with focus on profitability improvement','Drive commercial & pursuit/deal best practices including driving market/premium rates','Drive return on investment in accounts','Manage engagement economics effectively and in a timely manner for profitability','Maintain hygiene and strength of the pipeline and targeted sales conversion rates'],
+        metrics: ['Account Sales','Account TER','Account Margin (sold/delivered)','Q&RM compliance','SL Integration','FoP Integration','Commercial excellence','Growth driver activation','Sales forecasting','Working capital management (timely ETCs, cash and billings)','Voice of the Client discovery (ASQ & Win/Loss coverage)'],
+        careerPath: ['GCSP']
+      },
+      {
+        name: 'Core Growth Sales Executive',
+        rank: 'Associate Director · Director* (3-5 years origination goal achievement; demonstrated ability to differentially grow an account over 2-3 years)',
+        rankNote: '*Director rank is exception based',
+        responsibilities: ['Prospecting and Deal Origination','Client Relationship Management','Sales presentations and negotiations','Sales process management','Growth Driver knowledge and utilization'],
+        metrics: ['Origination','Personal Sales'],
+        careerPath: ['Account Executive','Account Leader']
+      },
+    ]
+  },
+  'Industries & Accounts Sales': {
+    leaderDesc: 'Responsible for the Sales Playbook across Industry Groups, Sectors, and their corresponding priority accounts — including deployment and sales execution at the account level.',
+    roles: [
+      {
+        name: 'Sector Sales Leader',
+        rank: 'Director · Managing Director** (grandfathered)',
+        rankNote: '*Director exception based: min $100M account/portfolio recurring GTER for eligibility',
+        responsibilities: ['Lead team of sector sales executives toward attainment of personal and team Sales & Origination targets','Lead hiring, training, and development of sector sales executives','Drive innovation in sales methodology and practices','Develop and execute a sector sales strategy based on market trends and client needs','Achieve or exceed personal sales & origination goals'],
+        metrics: ['Overall Sector Sales','Sector Sales Team Origination and Sales','Personal Origination and Sales'],
+        careerPath: ['S&SP Leadership']
+      },
+      {
+        name: 'Industries & Accounts Account Executive',
+        rank: 'Director',
+        responsibilities: ['Account Sales Strategy Development and execution including Growth Drivers','Global account sales coordination','Client Relationship Management (including significant C-Suite relationships)'],
+        metrics: ['Account Sales','Account TER','Personal Sales (large $) and Origination (lesser $)'],
+        careerPath: ['GCSP','Account Leader']
+      },
+      {
+        name: 'Industries & Accounts Sales Executive',
+        rank: 'Associate Director · Director* ($100M+ BoB)',
+        rankNote: '*Director exception based: min $100M account/portfolio recurring GTER',
+        responsibilities: ['Prospecting and Lead Generation','Client Relationship Management','Sales presentations and negotiations','Sales process management','Growth Driver knowledge and utilization'],
+        metrics: ['Origination','Personal Sales'],
+        careerPath: ['Account Executive','Account Leader']
+      },
+    ]
+  },
+  'Alliances Sales': {
+    leaderDesc: 'Responsible for all Alliances sales executives, building pipeline, and driving sales with EY\'s Alliance & Ecosystem partners.',
+    roles: [
+      {
+        name: 'Alliances Sales Sector Leader',
+        rank: 'Director',
+        responsibilities: ['Alignment and interlock with Alliance GTMLs, Sector Leaders and SSLs on strategy, priorities, campaigns and execution','Lead team of Alliance Sales Executives toward attainment of sales & origination targets','Achieve or exceed personal sales & origination goals','Own / oversee critical relationships with Alliance partner stakeholders','Drive innovation in sales methodology, alliance sales best practices and sector-based multi-alliance collaboration','Educate and activate sector teams on best practices for alliance success and co-sell motions','Lead hiring, training, and development of Alliance sales executives','Oversee operational excellence for internal and external metrics: pipeline/CRM, event ROI, etc.'],
+        metrics: ['Alliance Sales Sector Team Origination and Sales','Personal Origination and Sales'],
+        careerPath: ['S&SP Leadership','Alliance leadership']
+      },
+      {
+        name: 'Alliances Sales Executive',
+        rank: 'Assistant and Associate Directors · Director* (3+ year goal achievement; Min $35M Sales / $25M Origination; aligned to priority Alliance and sector)',
+        rankNote: '*Director rank is exception based',
+        responsibilities: ['Source leads from Alliance partner channel, clients and EY account teams','Pipeline growth, sales origination & qualification and pursuit/win strategies for alliance opportunities','Build and optimize Alliance partner channel relationships for leads, endorsements and competitive intelligence','Bring market insight on competitive landscape, EY\'s market position and new solution opportunities','Sales presentations, deal coaching, pursuit strategy & negotiations','Sales process management','Expertise in alliance partner technologies, sales motions and sector/function','Interlock with competency & sector stakeholders and Growth Drivers and Accounts sales colleagues'],
+        metrics: ['Origination','Personal Sales'],
+        careerPath: ['Sales Executive in another Pillar','Account Executive','Account Leader','Other Alliance leadership roles']
+      },
+    ]
+  },
+  'Managed Services Sales': {
+    leaderDesc: 'Responsible for Managed Services sales executives, leading deployment of resources based on strategic prioritization and demand insights, and driving consistency of execution.',
+    roles: [
+      {
+        name: 'Managed Services Sales Executive',
+        rank: 'Associate Director · Director* (Min $40M Sales / $30M Origination; $100M+ Pipeline Progression Goal; $20M+ Target Deal Size)',
+        rankNote: '*Director rank is exception based. Packaged MS solution roles only; complex, multi-tower managed services.',
+        responsibilities: ['Alignment with Sector Leader and SSL(s) on Managed Services Sector Sales strategy development and execution','Pipeline origination and qualification','Deal identification and origination','Managed Services branding, subject matter expert, sector ambassador','Relationship development','Sales process management'],
+        metrics: ['Origination','Personal Sales'],
+        careerPath: ['Account Executive','Account Leader']
+      },
+    ]
+  },
+  'Services & Solutions Sales': {
+    leaderDesc: 'Responsible for the execution of the sales strategy for solutions and service offerings and ensuring consistency and effectiveness of the Services/Solutions sales team.',
+    roles: [
+      {
+        name: 'Services & Solutions Sales Team Leader',
+        rank: 'Director · Managing Director** (grandfathered)',
+        responsibilities: ['Lead team of sales executives toward attainment of personal and team Sales & Origination targets','Lead hiring, training, and development of Services/Solutions sales executives','Drive innovation in sales methodology and practices','Achieve or exceed personal sales & origination goals'],
+        metrics: ['Solutions Sales Team Origination and Sales','Personal Origination and Sales'],
+        careerPath: ['S&SP Leadership']
+      },
+      {
+        name: 'Solutions Sales Executive',
+        rank: 'Associate Director · Director* (3+ years achieving origination/bookings targets; Min $25M Sales Bookings; Multi-year track record of penetrating new accounts)',
+        rankNote: '*Director rank is exception based. Must demonstrate ability to identify and close opportunities where solution includes a managed services component.',
+        responsibilities: ['Solutions pipeline identification and qualification','Domain/sector insights socialization and targeting','Collaboration across competency & sector stakeholders, Growth Drivers and Accounts sales colleagues','Prospecting and Lead Generation','Client Relationship Management','Sales presentations and negotiations','Sales process management'],
+        metrics: ['Origination','Personal Sales'],
+        careerPath: ['Account Executive','Account Leader','Services & Solutions Sales Team Leader']
+      },
+    ]
+  },
+  'Sales Transformation Office': {
+    leaderDesc: 'Responsible to work with the S&SP leadership team on the prioritization, implementation, and management of key processes and tools to support the Americas S&SP team. Manages S&SP specific transformational initiatives.',
+    roles: [
+      {
+        name: 'STO Program Lead',
+        rank: 'Associate Director',
+        responsibilities: ['Own development/management of S&SP Operations Procedures, overall or specialized processes','Manage STO Program Management team and priorities','Assess operational effectiveness and develop plans to improve YoY','Budget vs. actual management','Lead or support special projects as appropriate','Support/direct operational needs of Leadership team'],
+        metrics: ['Effectiveness of team and processes developed/managed','Communication skills and executive presence','Relationships with key stakeholders','Effective problem solving and decision-making','Adaptability to manage and drive change','Project Management: Meet milestones and achieve objectives of major initiatives','Time/cost savings through leveraging technology and innovative ways of working'],
+        careerPath: ['S&SP Leadership']
+      },
+      {
+        name: 'STO Program Manager / Analyst',
+        rank: 'Associate Director · GDS Assistant Director',
+        responsibilities: ['Talent-related operational processes: Deployment, roster, onboarding, distribution lists, team communications, related data analysis and reporting','Impact-related processes: Sales Performance Management, Impact assessments/value scorecard, related data analysis and reporting','Supporting special projects as appropriate','Supporting operational needs of Leadership Team'],
+        metrics: ['Communication skills and executive presence','Relationships with key stakeholders','Effective problem solving and decision-making','Adaptability to manage and drive change','Project Management: Meet milestones and achieve objectives','Time/cost savings through leveraging technology and innovative ways of working'],
+        careerPath: ['STO Program Lead']
+      },
+    ]
+  }
+};
+
+// ─── Org Data ─────────────────────────────────────────────────
+const ORG = {
+  id:'julie', name:'Julie Branicki', title:'Americas Sales & Strategic Pursuits Leader', pillar:'Top',
+  focus:'Lead the Americas Sales & Strategic Pursuits organization as a catalyst for market-leading growth. Drive go-to-market strategy, client relationship excellence, and pursuit discipline across all S&SP pillars.',
+  value:'Catalyst for growth, leading with energy and sales expertise. Unified leadership of all sales functions to exceed targets and shape a prosperous future for EY, its people, and clients.',
+  children:[
+    { id:'lindsay', name:'Lindsay Brown', title:'Sales Activation Leader', pillar:'Sales Activation',
+      focus:'Drive client relationship growth, create and advance pipeline and foster exceptional client service.',
+      value:'Sustain and strengthen EY\'s presence in our strategic accounts and across prioritized growth drivers through cultivating meaningful client relationships and accelerating pipeline development.',
+      children:[
+        {id:'allie',name:'Allie Moore',title:'Growth Driver Activation Center Leader',pillar:'Sales Activation',tag:'Growth Driver',children:[]},
+        {id:'jennifer',name:'Jennifer Hagedorn',title:'Growth Driver Activation Center Leader',pillar:'Sales Activation',tag:'Growth Driver',children:[]},
+        {id:'maggie',name:'Maggie Roberts',title:'Account Resource Center Leader',pillar:'Sales Activation',tag:'ARC',children:[]},
+        {id:'kaylie',name:'Kaylie Robichaux',title:'Optimization Leader (GDS Liaison)',pillar:'Sales Activation',tag:'Optimization',children:[]},
+        {id:'keith',name:'Keith Bardel',title:'Lead Account Manager — O&G, P&U, M&M',pillar:'Sales Activation',tag:'Lead AM',sector:'Energy',children:[]},
+        {id:'tara',name:'Tara Davis',title:'Lead Account Manager — Retail',pillar:'Sales Activation',tag:'Lead AM',sector:'Retail',children:[]},
+        {id:'christina',name:'Christina Pauling',title:'Lead Account Manager — Health & Life Sciences',pillar:'Sales Activation',tag:'Lead AM',sector:'H&LS',children:[]},
+        {id:'leah',name:'Leah Marin',title:'Lead Account Manager — Consumer Products',pillar:'Sales Activation',tag:'Lead AM',sector:'Consumer',children:[]},
+        {id:'ann',name:'Ann Fleming',title:'Lead Account Manager — BCM',pillar:'Sales Activation',tag:'Lead AM',sector:'BCM',children:[]},
+        {id:'jane',name:'Jane Armes',title:'Lead Account Manager — Technology, M&E & Telecom',pillar:'Sales Activation',tag:'Lead AM',sector:'TMT',children:[]},
+        {id:'carly',name:'Carly Levison',title:'Lead Account Manager — GPS',pillar:'Sales Activation',tag:'Lead AM',sector:'GPS',children:[]},
+        {id:'jessica',name:'Jessica Neumeyer',title:'Lead Account Manager — Mobility / A&D',pillar:'Sales Activation',tag:'Lead AM',sector:'Mobility',children:[]},
+        {id:'tyler',name:'Tyler Dikeman',title:'Lead Account Manager — Industrial Products',pillar:'Sales Activation',tag:'Lead AM',sector:'Industrial',children:[]},
+        {id:'dani',name:'Dani Sijthoff',title:'Lead Account Manager — WAM & Insurance',pillar:'Sales Activation',tag:'Lead AM',sector:'WAM',children:[]},
+        {id:'pe_sa',name:'TBD',title:'Lead Account Manager — Private Equity',pillar:'Sales Activation',tag:'Lead AM',sector:'PE',children:[]},
+      ]
+    },
+    { id:'scott', name:'Scott Pergola', title:'Core Growth Sales Leader', pillar:'Core Growth Sales', location:'Philadelphia',
+      focus:'Drive go-to-market and Sales strategy and execution in the core — in alignment with Core Growth, Hub OMP, and Sector leadership. Identify high-potential Core Growth accounts and deploy Sales Executives to drive incremental, meaningful sales.',
+      value:'Identify, nurture, and expand future firm Priority accounts. Develop tailored strategies to meet clients\' unique needs and ensure sustained engagement and success.',
+      children:[
+        {id:'chris',name:'Chris McLean',title:'Core Growth Sales Manager',pillar:'Core Growth Sales',location:'Houston',children:[]},
+      ]
+    },
+    { id:'jeff', name:'Jeff LeVant', title:'Industries & Accounts Sales Leader', pillar:'Industries & Accounts Sales',
+      focus:'Identify, qualify, and drive sales and relationship growth in the firm\'s largest, most complex and strategic accounts. Deliver comprehensive insights and solutions aligned with market trends and client business challenges.',
+      value:'Maintain, cultivate, and expand EY\'s presence within our largest and most strategic accounts. Drive sales, broaden reach, and increase wallet share by building strong relationships and bringing the breadth of the firm to every client interaction.',
+      children:[
+        {id:'wendy_w',name:'Wendy Walker',title:'Sector Sales Leader — Energy',pillar:'Industries & Accounts Sales',sector:'Energy',children:[]},
+        {id:'tammy',name:'Tammy Drinko',title:'Sector Sales Leader — Health & Life Sciences',pillar:'Industries & Accounts Sales',sector:'H&LS',children:[]},
+        {id:'ryan',name:'Ryan Davis',title:'Sector Sales Leader — Industrial Products & Mobility / A&D',pillar:'Industries & Accounts Sales',sector:'Industrial',children:[]},
+        {id:'brandon',name:'Brandon Bridwell',title:'Sector Sales Leader — Consumer Products & Retail',pillar:'Industries & Accounts Sales',sector:'Consumer',children:[]},
+        {id:'brian',name:'Brian Renaud',title:'Sector Sales Leader — WAM',pillar:'Industries & Accounts Sales',sector:'WAM',children:[]},
+        {id:'julie_l',name:'Julie Locke',title:'Sector Sales Leader — Technology',pillar:'Industries & Accounts Sales',sector:'Technology',children:[]},
+        {id:'shaun',name:'Shaun Murphy',title:'Sector Sales Leader — BCM',pillar:'Industries & Accounts Sales',sector:'BCM',children:[]},
+        {id:'troy_s',name:'Troy Sands',title:'Sector Sales Leader — Media & Telecom',pillar:'Industries & Accounts Sales',sector:'M&T',children:[]},
+        {id:'john_p',name:'John Prescott',title:'Sector Sales Leader — Insurance & RHC',pillar:'Industries & Accounts Sales',sector:'Insurance',children:[]},
+        {id:'howard',name:'Howard Weitzner',title:'Sector Sales Leader — GPS',pillar:'Industries & Accounts Sales',sector:'GPS',children:[]},
+        {id:'pe_ia',name:'TBD',title:'Sector Sales Leader — Private Equity',pillar:'Industries & Accounts Sales',sector:'PE',children:[]},
+      ]
+    },
+    { id:'wendy', name:'Wendy Ware', title:'Alliances Sales Leader', pillar:'Alliances Sales',
+      focus:'Originate and drive new sales and client relationships by optimizing Alliance partner relationships to maximize benefit to EY. Generate leads, provide competitive insights, secure endorsements and deliver EY solutions powered by Alliance partner technologies.',
+      value:'Increase EY\'s footprint & presence across clients and sectors. Source leads, relationships & market intelligence on competitive landscape and EY\'s position. Content & expertise on alliance partner technology and sales motions.',
+      children:[
+        {id:'bev',name:'Bev Bloodworth',title:'Alliance Sales Executive — TMT',pillar:'Alliances Sales',tag:'SAP',sector:'TMT',children:[]},
+        {id:'ira',name:'Ira Harvel',title:'Alliance Sales Executive — Energy (O&G, P&U, M&M, Chem)',pillar:'Alliances Sales',tag:'SAP',sector:'Energy',children:[]},
+        {id:'niki',name:'Niki Somerfield',title:'Alliance Sales Executive — Industrials & Mobility',pillar:'Alliances Sales',tag:'MSFT',sector:'Industrial',children:[]},
+        {id:'annie',name:'Annie Brooks',title:'Alliance Sales Executive — Health & Life Sciences',pillar:'Alliances Sales',tag:'SAP',sector:'H&LS',children:[]},
+        {id:'tamaryn',name:'Tamaryn Pratt',title:'Alliance Sales Executive — Financial Services',pillar:'Alliances Sales',tag:'Adobe',sector:'FinServ',children:[]},
+        {id:'yolanda',name:'Yolanda Riddick',title:'Alliance Sales Executive — GPS',pillar:'Alliances Sales',tag:'SAP',sector:'GPS',children:[]},
+        {id:'dan',name:'Dan Joslin',title:'Alliance Sales Executive — Cross Sector / Functional',pillar:'Alliances Sales',tag:'SAP',sector:'Cross-Sector',children:[]},
+        {id:'wendy_i',name:'Wendy Ware',title:'Alliance Sales Executive — Consumer Products & Retail (Interim)',pillar:'Alliances Sales',tag:'Interim',sector:'Consumer',children:[]},
+      ]
+    },
+    { id:'john', name:'John Schneider', title:'Managed Services Sales Leader', pillar:'Managed Services Sales',
+      focus:'Originate large complex Managed Services deals to drive sustained long-term value for our clients while differentiating EY in the marketplace. Establish robust sales foundation to enable client facing teams to identify and introduce complex multi-year deals.',
+      value:'Accelerate sales and revenue growth by leveraging existing client relationships to introduce multi-year Managed Services capabilities. Unlock GMS, GDS and other global sales capabilities to differentiating account plans across focus solution areas.',
+      children:[]
+    },
+    { id:'mark', name:'Mark Ehlert', title:'Services & Solutions Sales Leader', pillar:'Services & Solutions Sales',
+      focus:'Drive go-to-market and sales strategy for specific high value, repeatable solutions & services. Leverage data & analytics to drive sector prioritization and account targeting.',
+      value:'Domain expertise and competitive insights from these sales specialists help our clients unlock impactful productivity, quality and often, cost savings outcomes for their business.',
+      children:[
+        {id:'troy_r',name:'Troy Reichert',title:'Solutions Sales Leader — Cyber Security & Technology Solutions',pillar:'Services & Solutions Sales',children:[]},
+        {id:'john_pitz',name:'John Pitz',title:'Solutions Sales Leader — Assurance Solutions',pillar:'Services & Solutions Sales',children:[]},
+      ]
+    },
+    { id:'dawn', name:'Dawn Ziegler', title:'Americas Sales Transformation Office Leader', pillar:'Sales Transformation Office',
+      focus:'Drive innovation, streamline processes, and elevate overall sales performance. Run and oversee strategic initiatives, key business processes, and operational efficiencies to optimize cross-S&SP execution and integration.',
+      value:'Enable and support sales team efficiency and effectiveness through strategic direction and simplified processes.',
+      children:[
+        {id:'valerie',name:'Valerie Fernandez',title:'STO Program Lead — Sales Incentive Compensation',pillar:'Sales Transformation Office',children:[]},
+        {id:'kristen',name:'Kristen Van\'t Westeinde',title:'STO Program Lead',pillar:'Sales Transformation Office',children:[]},
+        {id:'kevin',name:'Kevin Astle',title:'STO Program Manager — Sales Performance Management',pillar:'Sales Transformation Office',children:[]},
+        {id:'michael',name:'Michael Edgar',title:'Sales & Tech Enablement Program Manager',pillar:'Sales Transformation Office',children:[]},
+      ]
+    },
+  ]
+};
+
+// ─── State ────────────────────────────────────────────────────
+let current = ORG, stack = [], visionOpen=false, expandedCards=new Set(), openBlocks=new Set(), currentView='people', roleOpenSections={};
+
+function findNode(id,root){ if(root.id===id) return root; for(const c of root.children||[]){ const f=findNode(id,c); if(f) return f; } return null; }
+
+// ─── Toggles ──────────────────────────────────────────────────
+function toggleVision(){ visionOpen=!visionOpen; document.getElementById('visionExpanded').classList.toggle('open',visionOpen); document.getElementById('visionToggle').classList.toggle('open',visionOpen); }
+
+function toggleBlock(key){
+  const body=document.getElementById(key+'Body'), toggle=document.getElementById(key+'Toggle');
+  if(!body) return;
+  if(openBlocks.has(key)){ openBlocks.delete(key); body.classList.remove('open'); toggle.classList.remove('open'); }
+  else { openBlocks.add(key); body.classList.add('open'); toggle.classList.add('open'); }
+}
+
+function switchView(v){
+  currentView=v;
+  document.getElementById('peopleView').style.display = v==='people'?'':'none';
+  document.getElementById('rolesView').style.display = v==='roles'?'':'none';
+  document.getElementById('tabPeople').classList.toggle('active', v==='people');
+  document.getElementById('tabRoles').classList.toggle('active', v==='roles');
+}
+
+function toggleRoleSection(roleIdx, secKey){
+  const k = roleIdx+'_'+secKey;
+  const body=document.getElementById('rs_'+k), toggle=document.getElementById('rst_'+k);
+  if(!body||!toggle) return;
+  if(roleOpenSections[k]){ delete roleOpenSections[k]; body.classList.remove('open'); toggle.classList.remove('open'); }
+  else { roleOpenSections[k]=true; body.classList.add('open'); toggle.classList.add('open'); }
+}
+
+// ─── Navigation ───────────────────────────────────────────────
+function drillInto(id){ const n=findNode(id,ORG); if(!n||!n.children||n.children.length===0) return; stack.push(current); current=n; expandedCards.clear(); roleOpenSections={}; currentView='people'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function goUp(){ if(!stack.length) return; current=stack.pop(); expandedCards.clear(); roleOpenSections={}; currentView='people'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function goBackTo(steps){ for(let i=0;i<steps;i++) if(stack.length) current=stack.pop(); expandedCards.clear(); roleOpenSections={}; currentView='people'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+// ─── Card expand ──────────────────────────────────────────────
+function toggleCard(id){
+  if(expandedCards.has(id)) expandedCards.delete(id); else expandedCards.add(id);
+  const d=document.getElementById('det_'+id), b=document.getElementById('expbtn_'+id);
+  if(d) d.classList.toggle('open', expandedCards.has(id));
+  if(b){ b.classList.toggle('active', expandedCards.has(id)); b.textContent=expandedCards.has(id)?'▲ Less':'▼ Details'; }
+}
+
+// ─── Render ───────────────────────────────────────────────────
+function render(){
+  const n=current, color=pColor(n.pillar), children=n.children||[];
+
+  // Avatar / name / title
+  const av=document.getElementById('curAvatar'); av.textContent=initials(n.name); av.style.background=color;
+  document.getElementById('curName').textContent=n.name;
+  document.getElementById('curTitle').textContent=n.title;
+  const badge=document.getElementById('curBadge');
+  if(n.pillar&&n.pillar!=='Top'){ badge.style.display='inline-block'; badge.textContent=n.pillar; badge.style.cssText+=`;background:${color}18;color:${color};border:1px solid ${color}44`; }
+  else badge.style.display='none';
+
+  // Back btn
+  document.getElementById('backBtn').classList.toggle('hidden', stack.length===0);
+
+  // Pillar info block
+  const pib=document.getElementById('pillarInfoBlock');
+  if(n.focus||n.value){
+    pib.style.display='';
+    document.getElementById('pillarInfoIcon').style.background=color+'18';
+    document.getElementById('pillarInfoTitle').textContent= n.pillar==='Top'?'Team Overview': n.pillar+' — Pillar Overview';
+    document.getElementById('pillarFocus').textContent=n.focus||'—';
+    document.getElementById('pillarValue').textContent=n.value||'—';
+    const pb=document.getElementById('pillarInfoBody'), pt=document.getElementById('pillarInfoToggle');
+    pb.classList.toggle('open', openBlocks.has('pillarInfo')); pt.classList.toggle('open', openBlocks.has('pillarInfo'));
+  } else pib.style.display='none';
+
+  // Sub-pillars block
+  const spb=document.getElementById('subPillarBlock');
+  const roleData=ROLES[n.pillar];
+  if(roleData&&roleData.subPillars){
+    spb.style.display='';
+    const grid=document.getElementById('subPillarGrid');
+    grid.innerHTML=roleData.subPillars.map(sp=>`
+      <div class="subpillar-card">
+        <div class="sp-name">${sp.name}</div>
+        <div class="sp-about">${sp.about}</div>
+        <div class="sp-roles-label">Roles</div>
+        ${sp.roles.map(r=>`<span class="sp-role-chip">${r}</span>`).join('')}
+      </div>`).join('');
+    const sb=document.getElementById('subPillarBody'), st=document.getElementById('subPillarToggle');
+    sb.classList.toggle('open', openBlocks.has('subPillar')); st.classList.toggle('open', openBlocks.has('subPillar'));
+  } else spb.style.display='none';
+
+  // Career overview (top level only)
+  const cob=document.getElementById('careerOverviewBlock');
+  if(n.pillar==='Top'){ cob.style.display='';
+    const cb=document.getElementById('careerOverviewBody'), ct=document.getElementById('careerOverviewToggle');
+    cb.classList.toggle('open', openBlocks.has('careerOverview')); ct.classList.toggle('open', openBlocks.has('careerOverview'));
+  } else cob.style.display='none';
+
+  // View tabs (only if this pillar has role data AND has people)
+  const vt=document.getElementById('viewTabsEl');
+  if(roleData && children.length>0){ vt.style.display=''; }
+  else { vt.style.display='none'; currentView='people'; }
+
+  // Sync tab state
+  document.getElementById('tabPeople').classList.toggle('active', currentView==='people');
+  document.getElementById('tabRoles').classList.toggle('active', currentView==='roles');
+  document.getElementById('peopleView').style.display = currentView==='people'?'':'none';
+  document.getElementById('rolesView').style.display = currentView==='roles'?'':'none';
+
+  // Breadcrumb
+  const bc=document.getElementById('breadcrumb');
+  const items=[...stack, n];
+  bc.innerHTML=items.map((node,i)=>{
+    const last=i===items.length-1, sep=i>0?'<span class="bc-sep">›</span>':'';
+    const stepsBack=items.length-1-i;
+    return last ? `${sep}<span class="bc-item active">${node.name}</span>`
+                : `${sep}<span class="bc-item" onclick="goBackTo(${stepsBack})">${node.name}</span>`;
+  }).join('');
+
+  // Grid label
+  document.getElementById('gridLabel').textContent = children.length===0?'' : stack.length===0?`Leadership Team (${children.length})`:`Direct Reports (${children.length})`;
+
+  // People grid
+  const grid=document.getElementById('orgGrid');
+  if(children.length===0){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ey-mid);font-size:14px;">No further direct reports on record.</div>`;
+  } else {
+    grid.innerHTML=children.map(c=>renderCard(c)).join('');
+  }
+
+  // Roles view
+  if(roleData){ renderRoles(roleData, color); }
+}
+
+function renderCard(c){
+  const color=pColor(c.pillar), hasKids=c.children&&c.children.length>0, isExp=expandedCards.has(c.id);
+  const tags=[];
+  if(c.tag) tags.push({l:c.tag,col:color});
+  if(c.sector) tags.push({l:c.sector,col:'#888'});
+  if(c.location) tags.push({l:'📍 '+c.location,col:'#888'});
+  const tagHtml=tags.map(t=>`<span class="card-tag" style="background:${t.col}18;color:${t.col};border:1px solid ${t.col}44">${t.l}</span>`).join('');
+  const chips=(c.children||[]).map(ch=>`<span class="detail-chip" onclick="drillInto('${c.id}')">${ch.name}</span>`).join('');
+  const hasDetail=chips.length>0;
+
+  return `<div class="person-card">
+    <div class="card-color-bar" style="background:${color}"></div>
+    <div class="card-body">
+      <div class="card-avatar-row">
+        <div class="card-avatar" style="background:${color}">${initials(c.name)}</div>
+        <div class="card-name-block"><div class="card-name">${c.name}</div><div class="card-title">${c.title}</div></div>
+      </div>
+      ${tagHtml?`<div class="card-meta">${tagHtml}</div>`:''}
+      <div class="card-actions">
+        <button class="card-btn btn-drill" ${!hasKids?'disabled':''} onclick="drillInto('${c.id}')">
+          ${hasKids?'↓ Drill Down ('+c.children.length+')':'No reports'}
+        </button>
+        ${hasDetail?`<button class="card-btn btn-expand ${isExp?'active':''}" id="expbtn_${c.id}" onclick="toggleCard('${c.id}')">${isExp?'▲ Less':'▼ Details'}</button>`:''}
+      </div>
+    </div>
+    ${hasDetail?`<div class="card-detail ${isExp?'open':''}" id="det_${c.id}">
+      <div class="card-detail-inner">
+        <div class="detail-section"><div class="detail-label">Direct Reports (${c.children.length})</div>
+          <div class="detail-chip-list">${chips}</div></div>
+      </div></div>`:''}
+  </div>`;
+}
+
+function renderRoles(roleData, color){
+  const rc=document.getElementById('rolesContent');
+  let html='';
+
+  if(roleData.leaderDesc){
+    html+=`<div style="background:#fff;border:1px solid var(--ey-border);border-radius:var(--card-radius);padding:16px 20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ey-mid);margin-bottom:6px">Leader Responsibilities</div>
+      <div style="font-size:13px;color:var(--ey-dark);line-height:1.55">${roleData.leaderDesc}</div>
+    </div>`;
+  }
+
+  if(roleData.roles&&roleData.roles.length){
+    html+=`<div class="section-label">Role Definitions, Ranks & Career Paths</div>`;
+    html+=`<div class="role-grid">`;
+    roleData.roles.forEach((role, idx)=>{
+      html+=`<div class="role-card">
+        <div class="role-card-top">
+          <div class="role-card-name">${role.name}</div>
+          <span class="role-rank-badge" style="background:${color}18;color:${color};border:1px solid ${color}44">${role.rank}</span>
+          ${role.rankNote?`<div style="font-size:11px;color:var(--ey-mid);margin-top:5px;line-height:1.4">${role.rankNote}</div>`:''}
+        </div>
+        <div class="role-card-sections">
+          ${renderRoleSection(idx,'resp','📋 Key Responsibilities', `<ul class="role-bullet-list">${bulletList(role.responsibilities.join('\n'))}</ul>`)}
+          ${renderRoleSection(idx,'metrics','📊 Metrics', `<ul class="role-bullet-list">${bulletList(role.metrics.join('\n'))}</ul>`)}
+          ${renderRoleSection(idx,'career','🛤️ Career Path', `<div class="career-path-chips">${role.careerPath.map(cp=>`<span class="cp-chip">${cp}</span>`).join('')}</div>`)}
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  rc.innerHTML=html;
+}
+
+function renderRoleSection(idx, secKey, label, content){
+  const k=idx+'_'+secKey;
+  const isOpen=!!roleOpenSections[k];
+  return `<div class="role-section">
+    <div class="role-section-header" onclick="toggleRoleSection(${idx},'${secKey}')">
+      <span>${label}</span>
+      <span class="role-section-toggle ${isOpen?'open':''}" id="rst_${k}">▼</span>
+    </div>
+    <div class="role-section-body ${isOpen?'open':''}" id="rs_${k}">
+      <div class="role-section-content">${content}</div>
+    </div>
+  </div>`;
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
