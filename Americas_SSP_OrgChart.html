@@ -77,6 +77,16 @@
   .sp-rlbl  { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--ey-mid); margin-bottom: 4px; }
   .sp-chip  { display: inline-block; background: #fff; border: 1px solid var(--ey-border); border-radius: 20px; padding: 2px 10px; font-size: 12px; margin: 2px 2px 0 0; }
 
+  /* ── KPI Framework ── */
+  .kpi-level-label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ey-mid); margin-bottom: 10px; padding: 14px 18px 0; }
+  .kpi-coming-soon { padding: 10px 18px 14px; font-size: 12px; color: var(--ey-mid); font-style: italic; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; padding: 10px 18px 16px; }
+  .kpi-card { border-radius: 9px; padding: 13px 15px; position: relative; overflow: hidden; }
+  .kpi-card-accent { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 4px 0 0 4px; }
+  .kpi-name { font-size: 13px; font-weight: 700; color: var(--ey-dark); margin-bottom: 5px; padding-left: 4px; }
+  .kpi-desc { font-size: 12px; color: var(--ey-mid); line-height: 1.5; padding-left: 4px; }
+  .kpi-divider { border: none; border-top: 1px solid var(--ey-border); margin: 4px 18px 0; }
+
   .career-body { padding: 18px 22px; }
   .career-body p { font-size: 15px; color: var(--ey-mid); line-height: 1.65; margin-bottom: 10px; }
   .career-bullets { list-style: none; margin: 8px 0; }
@@ -338,6 +348,21 @@
     </div>
   </div>
 
+  <!-- KPI Framework (Director+) -->
+  <div class="ib" id="kpiIB" style="display:none">
+    <div class="ib-head" onclick="toggleIB('kpi')">
+      <div class="ib-icon" style="background:#7B3FA018;font-size:16px;">🎯</div>
+      <div style="flex:1">
+        <div class="ib-title">All in KPI Framework</div>
+        <div class="ib-sub">Performance KPIs by level — click to expand</div>
+      </div>
+      <div class="ib-chev" id="kpiChev">▼</div>
+    </div>
+    <div class="ib-body" id="kpiBody">
+      <div id="kpiContent"></div>
+    </div>
+  </div>
+
   <!-- People / Roles tab switcher -->
   <div class="view-toggle" id="viewToggle">
     <div class="vt-tab active" id="tabPeople" onclick="switchView('people')">👥 People</div>
@@ -375,6 +400,25 @@ const pColor = p => PC[p] || '#555';
 const initials = n => (!n||n==='TBD') ? '?' : n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 const bullets  = arr => arr.map(s=>`<li>${s}</li>`).join('');
 
+// ─── KPI Framework ─────────────────────────────────────────────
+const KPI_FRAMEWORK = {
+  ppedd: {
+    label: 'All in KPIs for PPEDDs',
+    subtitle: 'Partners, Principals, Executive Directors & Directors',
+    intro: 'Six KPIs that connect to EY\'s All in strategy, highlighting essential measures and behaviors crucial for achieving the "Invest to win" and "Simplify to lead" imperatives. They promote collaboration, accountability, and foster a culture of high performance and continuous improvement.',
+    kpis: [
+      { name: 'Quality & Effective Risk Management', desc: 'Meet the high standards expected of our profession and capital markets, and enable each individual and team to deliver quality with integrity.', color: '#7B3FA0' },
+      { name: 'Finance & Operations', desc: 'Achieve excellence in financial performance by driving profitable revenue growth and enhancing operational efficiency.', color: '#8E44AD' },
+      { name: 'Client Value', desc: 'Create a client experience that is connected, proactive and insightful to drive client centricity and meet client needs.', color: '#6C3483' },
+      { name: 'Market & Brand', desc: 'Enhance EY\'s share and brand in the market.', color: '#1A6B7A' },
+      { name: 'Teaming for Growth', desc: 'Meet the needs of our clients and drive profitable growth through collaboration across all of EY.', color: '#1A7A4A' },
+      { name: 'People Leadership', desc: 'Demonstrate All in leadership — inspire confidence, fuel growth and create value.', color: '#C45C1A' },
+    ]
+  },
+  manager: null,        // Coming soon — Manager KPIs
+  seniorManager: null,  // Coming soon — Senior Manager KPIs
+};
+
 // ─── Role Data ─────────────────────────────────────────────────
 const ROLES = {
   'Sales Activation':{
@@ -386,11 +430,39 @@ const ROLES = {
     ],
     roles:[
       {name:'Lead Account Manager',rank:'Associate Director',responsibilities:['Lead team of sector account managers, serving as counselor and owning performance management','Senior Account Manager on priority account','Lead recruiting, hiring, deployment, training and development of sector account managers','Drive collaboration with GCSPs, Sector leadership and other key stakeholders','Own and drive Account Management focused projects and initiatives'],metrics:['Manage and develop high-performing team','Lead community of sales activation team within sector','Influence leaders, impact sales excellence, elevate the Account Manager role','+ Senior Account Manager metrics'],careerPath:['Sales Activation Leadership','Sales Executive']},
-      {name:'Senior Account Manager',rank:'Associate Director',responsibilities:['Manage one to two Premier, Strategic or Focus accounts','Drive AMF, co-develop strategy and drive execution of account plan','Facilitate SL planning, account integration, pursuit support and pipeline development','Pipeline generation, relationship development and deal coaching','Own targeted client relationships (Procurement, DEI, etc.)'],metrics:['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility and strong problem-solving','Establish credibility and trust with strong coaching and facilitation skills'],careerPath:['Sales Activation Leadership','Lead Account Manager','Senior ARC or GDAC Strategist','Sales Executive']},
-      {name:'Account Manager',rank:'Assistant Director',responsibilities:['Manage one to two Strategic or Focus accounts','Strategically drive and apply the AMF, co-develop strategy and execution of account plan','Client knowledge hub for account(s); connecting team to growth drivers and client business issues'],metrics:['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility and strong problem-solving'],careerPath:['Senior Account Manager','Lead Account Manager','ARC or GDAC Strategist']},
+      {name:'Senior Account Manager',rank:'Associate Director',
+       opportunity:'The Senior Account Manager works within our Sales Activation team, responsible for working with the GCSP, Sales Leader, Sales Activation Leader and the Sales Executive to drive account strategy and innovation, drive client relationship growth, accelerate sales and develop talent. Ensures cross-service line and cross-geography team integration on our largest, most complex global accounts.',
+       responsibilities:['Manage one to two Premier, Strategic or Focus accounts','Drive AMF, co-develop strategy and drive execution of account plan','Facilitate SL planning, account integration, pursuit support and pipeline development','Pipeline generation, relationship development and deal coaching','Own targeted client relationships (Procurement, DEI, etc.)','Own the ASQ process: develop the plan, lead interviews and drive follow-up action'],
+       skills:['Influence leaders, impact sales excellence and drive account actions','Operate internally and externally on a local and global virtual basis','Work with minimum supervision — agility, versatility and strong problem-solving','Act as key leader for strategic account activation','Strong communication skills including coaching and facilitation','Ability to establish credibility and trust'],
+       mustHave:['10-12+ years of account management or similar relevant experience','Demonstrated ability to communicate, present and influence at all levels','Effective influencing and relationship building skills with strong executive presence','Excellent written, verbal, and presentation skills','Strong attention to detail and organizational skills','Ability to manage multiple priorities simultaneously','Bachelor\'s degree (Marketing or Business preferred)'],
+       ideallyHave:['Experience delivering client-focused solutions based on customer needs','Strong business/commercial acumen and understanding of major industry sector trends','Leadership, facilitation, coaching and mentoring skills','Strategic thinking and analytical skills','Change management and strong project management experience'],
+       whatWeLookFor:'Individuals with strong business acumen and personal leadership. Innovative, creative thinkers who are strategic, collaborative and consultative and who can bring a fresh perspective.',
+       metrics:['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility and strong problem-solving','Establish credibility and trust with strong coaching and facilitation skills'],careerPath:['Sales Activation Leadership','Lead Account Manager','Senior ARC or GDAC Strategist','Sales Executive']},
+      {name:'Account Manager',rank:'Assistant Director',
+       opportunity:'The Account Manager works within our Sales Activation team, responsible for working with the GCSP, Sales Leader, Sales Activation Leader and the Sales Executive to drive account strategy and innovation, client relationship growth, accelerate sales and develop talent. Ensures cross-service line and cross-geography team integration on our largest, most complex global accounts.',
+       responsibilities:['Manage one to two Global 360 or Focus Core accounts','Drive key activities of EY\'s Account Management Framework (AMF)','Co-develop account strategy and drive global execution of account plans','Serve as knowledge hub connecting the team to EY growth drivers and client business issues','Understand client business agenda and EY solutions to leverage the global EY network'],
+       skills:['Influence leaders, impact sales excellence and drive account actions','Operate internally and externally on a local and global virtual basis','Work with minimum supervision — agility, versatility and strong problem-solving','Act as key leader for strategic account activation','Own the ASQ process by developing the plan, leading interviews and driving action'],
+       mustHave:['7-10+ years of account management or similar relevant experience','Demonstrated ability to communicate, present and influence at all levels','Effective influencing and relationship building skills with strong executive presence','Excellent written, verbal, and presentation skills','Strong attention to detail and organizational skills','Ability to manage multiple priorities simultaneously','Bachelor\'s degree (Marketing or Business preferred)'],
+       ideallyHave:['Experience delivering client-focused solutions based on customer needs','Strong business/commercial acumen and understanding of major industry sector trends','Leadership, facilitation, coaching and mentoring skills','Strategic thinking and analytical skills'],
+       whatWeLookFor:'Individuals with strong business acumen and personal leadership. Innovative, creative thinkers who are strategic, collaborative and consultative and who can bring a fresh perspective.',
+       metrics:['Influence leaders, impact sales excellence and drive account actions','Key leader for strategic account activation','Operate with minimum supervision, agility and strong problem-solving'],careerPath:['Senior Account Manager','Lead Account Manager','ARC or GDAC Strategist']},
       {name:'Account Resource Center Leader',rank:'Director',responsibilities:['Team leader — accountable for growth, development and performance of team','Set and implement the strategic direction of the ARC, ensuring AMF excellence and innovative practices','Manage intake of accounts and deployment of team','Work with Americas & Global leadership across Clients & Industries Operating System'],metrics:['Manage and develop high-performing team','Develop strong rapport with Executive Leaders','Demonstrate AMF methodology expertise','Accurately assess account needs for successful intake and deployment'],careerPath:['Sales Activation Leadership','Sales Executive']},
-      {name:'Senior Account Resource Center Strategist',rank:'Associate Director',responsibilities:['Execute AMF-based consultations, account acceleration sessions, and building strong AMF foundation','Develop account-specific growth strategies and execute plans with account leaders on complex accounts','Lead innovation efforts to improve activation processes and disseminate leading practice AMF assets'],metrics:['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Mentor team members, proactively driving team collaboration'],careerPath:['Senior Account Manager','Sales Activation Leadership','Sales Executive']},
-      {name:'Account Resource Center Strategist',rank:'Assistant Director',responsibilities:['Execute AMF-based consultations and account acceleration sessions','Develop account-specific growth strategies and execute plans with account leaders','Knowledge hub for accounts, connecting to best practices to drive growth','Input on AMF leading practice asset development'],metrics:['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Navigate across EY\'s Market Growth Operating System'],careerPath:['Senior ARC Strategist','Senior Account Manager']},
+      {name:'Senior Account Resource Center Strategist',rank:'Associate Director',
+       opportunity:'The Senior ARC Strategist works within Sales Activation, responsible for working across more complex accounts with GCSPs, Sales Leaders, and Sales Executives to drive account strategy, client relationship growth, and sales acceleration. As an Associate Director, leads innovation efforts to improve account activation processes and create best-in-class account management assets to disseminate widely. Reports to the ARC Leader under Sales Activation Leadership.',
+       responsibilities:['Execute AMF-based consultations, account acceleration sessions, and account Sprints (1:1 short-term alignment)','Work with GCSPs and account team leaders to co-develop account strategy and guide plan execution','Facilitate account growth strategy sessions and serve as knowledge hub for accounts','Lead innovation efforts to improve AMF processes, tools and best-in-class assets','Disseminate leading practice account management assets widely'],
+       skills:['Expertise in EY\'s Account Management Framework (AMF) methodology','Influence leaders, impact sales excellence and drive account actions','Operate internally and externally on a local and global virtual basis','Establish credibility quickly','Strong communication skills including coaching and facilitation','Navigate across the firm\'s Market Growth Operating System','Work with minimum supervision — agility, proactivity and versatility','Act as key leader for strategic account activation'],
+       mustHave:['10+ years of account management or similar relevant experience','Demonstrated ability to communicate, present and influence at all levels','Effective influencing and relationship building with strong executive presence','Excellent written, verbal, and presentation skills','Strong attention to detail and organizational skills','Ability to manage multiple priorities simultaneously','Bachelor\'s degree (Marketing or Business preferred)'],
+       ideallyHave:['Experience delivering client-focused solutions based on customer needs','Strong business/commercial acumen','Leadership, facilitation, coaching and mentoring skills','Strategic thinking and analytical skills','Strong project and time management skills'],
+       whatWeLookFor:'Individuals with strong business acumen and personal leadership. Innovative, creative thinkers who are strategic, collaborative and consultative and who can bring a fresh perspective.',
+       metrics:['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Mentor team members, proactively driving team collaboration'],careerPath:['Senior Account Manager','Sales Activation Leadership','Sales Executive']},
+      {name:'Account Resource Center Strategist',rank:'Assistant Director',
+       opportunity:'The ARC Strategist works within Sales Activation, responsible for working across many accounts with GCSPs, Sales Leaders, and Sales Executives to drive account strategy and innovation, client relationship growth, and sales acceleration. Innovates and improves upon standard AMF processes and tools to enhance account activation efforts. Reports to the ARC Leader under Sales Activation Leadership.',
+       responsibilities:['Execute AMF-based consultations, account acceleration sessions and account Sprints (1:1 short-term alignment) across many accounts','Work with GCSPs and account team leaders to co-develop account strategy and guide plan execution','Serve as knowledge hub for accounts, connecting to AMF best practices that drive growth','Input on AMF leading practice asset development and improvement'],
+       skills:['Influence leaders, impact sales excellence and drive account actions','Operate internally and externally on a local and global virtual basis','Establish credibility quickly','Navigate across the firm\'s Markets Growth Operating System and other supporting functions','Work with minimum supervision — agility, versatility and strong problem-solving','Act as key leader for strategic account activation'],
+       mustHave:['7-10+ years of account management or similar relevant experience','Demonstrated ability to communicate, present and influence at all levels','Effective influencing and relationship building with strong executive presence','Excellent written, verbal, and presentation skills','Strong attention to detail and organizational skills','Ability to manage multiple priorities simultaneously','Bachelor\'s degree (Marketing or Business preferred)'],
+       ideallyHave:['Experience delivering client-focused solutions based on customer needs','Strong business/commercial acumen and understanding of major industry sector trends','Leadership, facilitation, coaching and mentoring skills','Strategic thinking and analytical skills'],
+       whatWeLookFor:'Individuals with strong business acumen and personal leadership. Innovative, creative thinkers who are strategic, collaborative and consultative and who can bring a fresh perspective.',
+       metrics:['AMF methodology expertise and key leader for account activation','Influence leaders, impact sales & account excellence','Navigate across EY\'s Market Growth Operating System'],careerPath:['Senior ARC Strategist','Senior Account Manager']},
       {name:'Growth Driver Activation Leader',rank:'Director',responsibilities:['Team leader responsible for implementing and overseeing strategy','Drive sales through activating Growth Drivers and lead generation','Work with Americas leadership across Clients & Industries, Service Lines, and Sectors','Manage intake and deployment for team'],metrics:['Demonstrate sales/solutions activation expertise','Influence and build collaborative relationships with stakeholders','Strong people management and coaching capabilities'],careerPath:['Sales Activation Leadership','Sales Executive']},
       {name:'Senior Growth Driver Activation Strategist',rank:'Associate Director',responsibilities:['Aligned to sectors to grow footprint, or aligned to complex growth driver to drive cross-sector campaigns','Establish/drive GTM efforts, collaborate with sector/account leaders','Innovate and improve processes across Growth Driver ecosystem'],metrics:['Influence leaders, impact sales excellence and grow pipeline','Navigate across EY\'s Growth Driver ecosystem','Mentor team members, proactively share best practices'],careerPath:['Senior Account Manager','Sales Activation Leadership','Sales Executive']},
       {name:'Growth Driver Activation Strategist',rank:'Assistant Director',responsibilities:['Aligned to sectors to grow footprint, or aligned to complex growth driver for cross-sector campaigns','Co-develop strategy and action plans with SL/Sector leadership, SEs, AMs and GCSPs','Execute GTM activities including acceleration sessions and campaigns'],metrics:['Influence leaders, impact sales excellence and grow pipeline','Navigate across EY\'s Growth Driver ecosystem'],careerPath:['Senior GDAC Strategist','Account Manager']},
@@ -401,7 +473,14 @@ const ROLES = {
     leaderDesc:'Responsible for all Core Growth sales executives and driving GTM and Sales strategy and execution in the Core.',
     roles:[
       {name:'Core Growth Account Leader (GCSP/RCP)',rank:'Associate Director · Director* (exception based)',rankNote:'*Director playing AL on entire BoB, held to GCSP performance impact framework and KPIs',responsibilities:['Grow account compared to prior year with focus on profitability improvement','Drive commercial & pursuit/deal best practices including market/premium rates','Drive return on investment in accounts','Maintain hygiene and strength of pipeline and targeted sales conversion rates'],metrics:['Account Sales','Account TER','Account Margin (sold/delivered)','Q&RM compliance','SL & FoP Integration','Commercial excellence','Sales forecasting & working capital management'],careerPath:['GCSP']},
-      {name:'Core Growth Sales Executive',rank:'Associate Director · Director* (3-5 yrs origination goal achievement)',rankNote:'*Director: Demonstrated ability to differentially grow an account over 2-3 years',responsibilities:['Prospecting and Deal Origination','Client Relationship Management','Sales presentations and negotiations','Sales process management','Growth Driver knowledge and utilization'],metrics:['Origination','Personal Sales'],careerPath:['Account Executive','Account Leader']},
+      {name:'Core Growth Sales Executive',rank:'Associate Director · Director* (3-5 yrs origination goal achievement)',rankNote:'*Director: Demonstrated ability to differentially grow an account over 2-3 years',
+       opportunity:'Focused on specific accounts with high growth potential. Delivers exceptional client service by understanding client issues and challenges, leveraging firm capabilities to originate and drive new business opportunities to grow revenue and deepen customer relationships. Drives global account strategy, rigorous account planning and relationship development.',
+       responsibilities:['Prospecting and Deal Origination','Client Relationship Management','Sales presentations and negotiations','Sales process management','Growth Driver knowledge and utilization'],
+       skills:['Thrive in a matrixed organization, balancing client needs against business goals','Develop and execute sales strategy at assigned accounts to build relationships leading to billable engagements','Build networks connecting with colleagues across leadership and service lines to drive coordinated market effort','Trusted advisor to account Coordinating Partners and account team, acting in a consultative manner','Catalyst that pulls stakeholders together to drive strategic initiatives and enable revenue growth'],
+       mustHave:['10-12+ years of business development/sales experience in professional services and solutions','Extensive knowledge of relevant industry sector','Understands the consulting sales cycle; existing knowledge of EY (Big Four) service lines and capabilities','Proven record of selling complex digital, technology and/or managed services solutions to C-level of Fortune 500 companies','Strategic, large account experience','Outstanding client management, relationship skills, and strong executive presence','Strong knowledge of current sales tools, methodologies and go-to-market models','Strong knowledge of market trends, competitive landscape, and industry','Bachelor\'s degree or equivalent work experience'],
+       ideallyHave:['Advanced degree or MBA','Strong coaching and mentoring skills','Team selling experience','Ability to travel'],
+       whatWeLookFor:'Results-oriented sales professionals with proven ability to originate and close complex deals. Strategic thinkers who can build C-suite relationships and drive revenue growth at large, complex accounts.',
+       metrics:['Origination','Personal Sales'],careerPath:['Account Executive','Account Leader']},
     ]
   },
   'Industries & Accounts Sales':{
@@ -680,6 +759,17 @@ function render(){
   // Career overview
   const cIB=document.getElementById('careerIB');
   cIB.style.display = n.pillar==='Top' ? '' : 'none';
+
+  // KPI Framework — show at any pillar level (Director+ roles present)
+  const kpiIB=document.getElementById('kpiIB');
+  if(n.pillar && n.pillar!=='Top'){
+    kpiIB.style.display='';
+    document.getElementById('kpiBody').classList.toggle('open',openIBs.has('kpi'));
+    document.getElementById('kpiChev').classList.toggle('open',openIBs.has('kpi'));
+    renderKPIs();
+  } else {
+    kpiIB.style.display='none';
+  }
   if(n.pillar==='Top'){
     document.getElementById('careerBody').classList.toggle('open',openIBs.has('career'));
     document.getElementById('careerChev').classList.toggle('open',openIBs.has('career'));
@@ -770,9 +860,14 @@ function renderRoles(roleData, color){
           ${r.rankNote?`<div class="rc-note">${r.rankNote}</div>`:''}
         </div>
         <div class="rc-sections">
+          ${r.opportunity ? rcSec(ri,'opp','💼 The Opportunity',`<p style="font-size:13px;color:var(--ey-mid);line-height:1.6">${r.opportunity}</p>`) : ''}
           ${rcSec(ri,'resp','📋 Key Responsibilities',`<ul class="bullet-list">${bullets(r.responsibilities)}</ul>`)}
+          ${r.skills ? rcSec(ri,'skills','⭐ Skills & Attributes for Success',`<ul class="bullet-list">${bullets(r.skills)}</ul>`) : ''}
+          ${r.mustHave ? rcSec(ri,'must','✅ To Qualify — Must Have',`<ul class="bullet-list">${bullets(r.mustHave)}</ul>`) : ''}
+          ${r.ideallyHave ? rcSec(ri,'ideal','➕ Ideally You\'ll Also Have',`<ul class="bullet-list">${bullets(r.ideallyHave)}</ul>`) : ''}
           ${rcSec(ri,'metrics','📊 Metrics',`<ul class="bullet-list">${bullets(r.metrics)}</ul>`)}
           ${rcSec(ri,'career','🛤️ Career Path',`<div class="cp-chips">${r.careerPath.map(cp=>`<span class="cp-chip">${cp}</span>`).join('')}</div>`)}
+          ${r.whatWeLookFor ? rcSec(ri,'look','🔍 What We Look For',`<p style="font-size:13px;color:var(--ey-mid);line-height:1.6">${r.whatWeLookFor}</p>`) : ''}
         </div>
       </div>`;
     });
@@ -792,6 +887,37 @@ function rcSec(ri,sk,label,content){
       <div class="rc-sec-inner">${content}</div>
     </div>
   </div>`;
+}
+
+// ─── Render KPIs ───────────────────────────────────────────────
+function renderKPIs(){
+  const el=document.getElementById('kpiContent');
+  let html='';
+
+  // PPEDD level
+  const pd=KPI_FRAMEWORK.ppedd;
+  html+=`<div class="kpi-level-label">📊 ${pd.label} — <span style="font-weight:400;text-transform:none;letter-spacing:0">${pd.subtitle}</span></div>`;
+  html+=`<div style="padding:0 18px 10px;font-size:12px;color:var(--ey-mid);line-height:1.55">${pd.intro}</div>`;
+  html+=`<div class="kpi-grid">`;
+  pd.kpis.forEach(k=>{
+    html+=`<div class="kpi-card" style="background:${k.color}0D;border:1px solid ${k.color}33">
+      <div class="kpi-card-accent" style="background:${k.color}"></div>
+      <div class="kpi-name" style="color:${k.color}">${k.name}</div>
+      <div class="kpi-desc">${k.desc}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Placeholder sections for upcoming levels
+  if(!KPI_FRAMEWORK.manager){
+    html+=`<hr class="kpi-divider">
+    <div class="kpi-coming-soon">📬 Manager KPIs — coming soon</div>`;
+  }
+  if(!KPI_FRAMEWORK.seniorManager){
+    html+=`<div class="kpi-coming-soon" style="padding-top:0">📬 Senior Manager KPIs — coming soon</div>`;
+  }
+
+  el.innerHTML=html;
 }
 
 // ─── Window resize: redraw connectors ──────────────────────────
