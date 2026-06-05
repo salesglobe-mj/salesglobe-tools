@@ -77,6 +77,24 @@
   .sp-rlbl  { font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--ey-mid); margin-bottom: 4px; }
   .sp-chip  { display: inline-block; background: #fff; border: 1px solid var(--ey-border); border-radius: 20px; padding: 2px 10px; font-size: 12px; margin: 2px 2px 0 0; }
 
+  /* ── Rank Expectations ── */
+  .re-rank-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--ey-border); overflow-x: auto; scrollbar-width: none; padding: 0 18px; }
+  .re-rank-tabs::-webkit-scrollbar { display: none; }
+  .re-rank-tab { padding: 9px 14px; font-size: 11px; font-weight: 700; color: var(--ey-mid); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all var(--t); }
+  .re-rank-tab:hover { color: var(--ey-dark); }
+  .re-rank-tab.active { color: var(--ey-dark); border-bottom-color: var(--ey-dark); }
+  .re-rank-content { padding: 12px 18px 16px; }
+  .re-track-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #1A6B7A18; color: #1A6B7A; border: 1px solid #1A6B7A33; margin-bottom: 8px; }
+  .re-intro { font-size: 12px; color: var(--ey-mid); line-height: 1.55; margin-bottom: 12px; }
+  .re-cat { border: 1px solid var(--ey-border); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .re-cat-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; cursor: pointer; font-size: 11px; font-weight: 700; color: var(--ey-mid); letter-spacing: .4px; text-transform: uppercase; transition: background var(--t); }
+  .re-cat-head:hover { background: var(--ey-light); }
+  .re-cat-chev { font-size: 10px; transition: transform var(--t); }
+  .re-cat-chev.open { transform: rotate(180deg); }
+  .re-cat-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+  .re-cat-body.open { max-height: 350px; overflow-y: auto; }
+  .re-cat-inner { padding: 8px 14px 12px; }
+
   /* ── KPI Framework ── */
   .kpi-level-label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--ey-mid); margin-bottom: 10px; padding: 14px 18px 0; }
   .kpi-coming-soon { padding: 10px 18px 14px; font-size: 12px; color: var(--ey-mid); font-style: italic; }
@@ -348,6 +366,21 @@
     </div>
   </div>
 
+  <!-- Rank Expectations -->
+  <div class="ib" id="rankExpIB" style="display:none">
+    <div class="ib-head" onclick="toggleIB('rankExp')">
+      <div class="ib-icon" style="background:#1A6B7A18;font-size:16px;">📈</div>
+      <div style="flex:1">
+        <div class="ib-title">Rank Expectations</div>
+        <div class="ib-sub">EY performance expectations by rank level — click to expand</div>
+      </div>
+      <div class="ib-chev" id="rankExpChev">▼</div>
+    </div>
+    <div class="ib-body" id="rankExpBody">
+      <div id="rankExpContent"></div>
+    </div>
+  </div>
+
   <!-- KPI Framework (Director+) -->
   <div class="ib" id="kpiIB" style="display:none">
     <div class="ib-head" onclick="toggleIB('kpi')">
@@ -399,6 +432,54 @@ const PC = {
 const pColor = p => PC[p] || '#555';
 const initials = n => (!n||n==='TBD') ? '?' : n.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 const bullets  = arr => arr.map(s=>`<li>${s}</li>`).join('');
+
+// ─── Rank Expectations ─────────────────────────────────────────
+const RANK_EXPECTATIONS = {
+  'Assistant Director': {
+    track: 'CBS',
+    intro: 'Demonstrates executive presence, confidence and credibility. Takes ownership of quality and risk at the team/project level.',
+    categories: [
+      { name: 'Technical Skills', items: ['Grasps technical issues quickly — acts, resolves, or escalates to leadership as necessary','Identifies and leverages leading practices, diverse perspectives and lessons learned','Tailors communication approach to respective audience when sharing technical experience'] },
+      { name: 'AI Fluency', items: ['Evaluates and guides where AI can improve complex work, prioritizing productivity, quality and decision-making','Leads AI-enabled improvements across projects, workflows, or services','Guides teams to apply current and emerging AI practices with emphasis on accuracy and quality','Advises colleagues and stakeholders on responsible AI adoption'] },
+      { name: 'Business Skills', items: ['Actively builds rapport, collaborates and shares information','Applies a deep understanding of client needs to identify critical outcomes and barriers to success','Demonstrates effective decision-making and executive presence when making recommendations','Educates colleagues and team members on how their work connects to firm priorities','Encourages innovative mindset — open to new ideas, promotes team members to think differently','Promotes operational excellence by challenging current practices and finding improvement opportunities','Provides quality deliverables for self and teams within agreed-upon timelines'] },
+      { name: 'Leadership Skills & Behaviors', items: ['Demonstrates executive presence: establishes credibility quickly, commands attention and respect','Creates an inclusive and flexible environment where people feel valued','Engages team to resolve business challenges and address root cause of problems','Resolves team conflicts and performance issues effectively and respectfully','Stays calm and level-headed under pressure and in the face of scrutiny and criticism','Actively supports change efforts by sharing benefits and reducing barriers to implementation'] },
+      { name: 'Quality & Risk Management', items: ['Adheres to budgets, objectives and deadlines to enhance productivity and value','Balances multiple priorities by considering urgency and impact on key relationships','Identifies and assesses risks and consults with leadership in a timely manner','Manages team or project, delegates work effectively, uses appropriate resources to manage costs','Models objectivity and integrity with self and teams to adhere to firm values and limit risk','Surfaces barriers to change and provides recommendations to overcome'] },
+    ]
+  },
+  'Associate Director': {
+    track: 'CBS',
+    intro: 'Consistently displays executive presence. Takes personal responsibility for difficult decisions. Cultivates a trusting, high-performing team environment.',
+    categories: [
+      { name: 'Technical Skills', items: ['Actively stays abreast of technical developments','Applies in-depth knowledge and experience to bring value by consulting and identifying issues','Creates and shares insights and leading practices with teammates and clients','Provides proper balance of technical experience and business acumen when communicating and making suggestions'] },
+      { name: 'AI Fluency', items: ['Evaluates and guides where AI can improve complex work, prioritizing productivity, quality and decision-making','Leads AI-enabled improvements across projects, workflows, or services','Guides teams to apply current and emerging AI practices with emphasis on accuracy and quality','Advises colleagues and stakeholders on responsible AI adoption'] },
+      { name: 'Business Skills', items: ['Actively builds rapport, collaborates and shares information','Builds and maintains relationships with key leadership, building business acumen and linking business needs','Defuses difficult conversations while maintaining confidence, transparency and trust','Proposes credible options, influences appropriately and reaches resolution with senior leaders','Challenges clients insightfully to improve process, approach or results','Uses in-depth knowledge of business/industry, market trends and legislation to identify key issues','Evaluates new ideas, technologies and products to expand EY capabilities','Promotes operational excellence by challenging practices and finding improvement opportunities'] },
+      { name: 'Leadership Skills & Behaviors', items: ['Consistently displays executive presence, confidence and credibility that enhances interactions','Takes personal responsibility for making, communicating and implementing difficult decisions','Creates an inclusive and flexible environment where team members can feel free to be themselves','Cultivates a trusting environment where team members can communicate openly and challenge constructively','Develops people by providing feedback, recognizing accomplishments, assigning challenging work','Connects and introduces colleagues to others to expand their network and promote teaming','Stays calm and level-headed under pressure and in the face of scrutiny and criticism'] },
+      { name: 'Quality & Risk Management', items: ['Delegates work to team effectively, using appropriate resources to increase strengths and decrease costs','Identifies and assesses risks when consulting with appropriate stakeholders in a timely manner','Identifies barriers to change when implementing initiatives and finds ways to reduce them','Resolves competing priorities and resource allocation issues across organizational boundaries','Sets overall budgets, objectives and deadlines on projects to expand productivity and value','Uses experience and strategic questioning to identify root causes and influence next steps'] },
+    ]
+  },
+  'Manager': {
+    track: 'Client Serving',
+    intro: 'Direct point of contact for client and team. Beginning to own and grow EY\'s relationship with the client. Develops and manages plans for project teams.',
+    categories: [
+      { name: 'Technical Skills', items: ['Leverages diverse ideas and perspectives to provide technical excellence in at least one EY service offering','Serves the needs of stakeholders by acting with a global mindset and creating consistency and technical excellence'] },
+      { name: 'AI Fluency', items: ['Evaluates and guides where AI can improve complex work, prioritizing productivity, quality and decision-making','Leads AI-enabled improvements across projects, workflows, or services, enabling others to use approved tools','Guides teams to apply current and emerging AI practices to improve work outputs and outcomes','Advises colleagues, other teams, and stakeholders on responsible AI adoption'] },
+      { name: 'Business Skills', items: ['Direct point of contact for client and team; speaks to clients regularly about future trends; beginning to own and grow the EY relationship','Maintains open and proactive communication, builds credibility through understanding client issues and offering innovative solutions','Integrates data and applies judgment in forming practical insights to enable decision-making by critical stakeholders','Shares technical, sector and market knowledge to inform client thinking','Delivers an exceptional service experience — develops an account management mindset, understands clients\' sectors and business agenda, anticipates their needs','Develops ideas to expand current offerings including other service lines; initiates client discussions','Enables the business development process by gathering appropriate resources, gaining access to key contacts and supervising proposal writing','Manages team and project resources and budgets effectively'] },
+      { name: 'Leadership Skills & Behaviors', items: ['Confidently and authentically presents complex messages using a variety of media that build excellent relationships based on trust','Demonstrates influencing skills that address varied interests and individual style, recognizing different sources of motivation','Creates a positive team environment, balancing individual initiative with team collaboration','Adopts appropriate coaching techniques to meet the various needs of team members','Assembles the right team with the right mix of skills and conditions to work together effectively','Provides constructive feedback tailored to each person\'s style and environment'] },
+      { name: 'Quality & Risk Management', items: ['Coaches team members in the best use of EY methodologies and tools','Demonstrates and promotes commitment to EY and professional standards','Lives the principles of the global Code of Conduct, maintaining independence and objectivity','Manages risk at the engagement level while still focusing on high-quality service'] },
+    ]
+  },
+  'Senior Manager': {
+    track: 'Client Serving',
+    intro: 'Builds and maintains appropriate client relationships. Demonstrates passion in promoting EY strategy, services and values. Drives EY imperatives of "investing to win" and "simplifying to lead."',
+    categories: [
+      { name: 'Technical Skills', items: ['Leverages diverse ideas and perspectives from across EY and provides relevant insight and industry knowledge','Identifies gaps in team\'s knowledge, initiates strategies to fill them, keeps teams abreast of new methodologies and technologies','Serves the needs of stakeholders by acting with a global mindset and creating consistency and technical excellence'] },
+      { name: 'AI Fluency', items: ['Evaluates and guides where AI can improve complex work, prioritizing productivity, quality and decision-making','Leads AI-enabled improvements across projects, workflows, or services, enabling others to use approved tools','Guides teams to apply current and emerging AI practices to improve work outputs and outcomes','Advises colleagues, other teams, and stakeholders on responsible AI adoption'] },
+      { name: 'Business Skills', items: ['Builds and maintains appropriate relationships at client; leverages relationships to effectively execute work','Builds credibility by knowing what\'s happening in clients\' businesses and with their competitors','Delivers an exceptional client experience — leverages account management framework, understands business agenda, anticipates needs and resolves critical client issues','Develops and promotes initiatives to drive EY imperatives (investing to win and simplifying to lead)','Accurately assesses benefits and chance of success from potential leads; brings skilled support and energy to pursuit strategy','Drives opportunities to expand TER and client services based on current offerings and client feedback','Takes the lead in forecasting budget issues and recommending appropriate responses'] },
+      { name: 'Leadership Skills & Behaviors', items: ['Builds team spirit that encourages collaboration and achievement of immediate and long-term goals','Communicates complex messages and implements difficult decisions while maintaining strong relationships','Uses influencing skills that address varied interests and individual style','Creates teams that reflect diverse skills and strengths; demonstrates awareness of group dynamics','Develops an inclusive culture in which timely, authentic feedback and coaching are provided to all','Effectively navigates ambiguous, complex relationships with a very good level of emotional intelligence'] },
+      { name: 'Quality & Risk Management', items: ['Communicates and monitors service quality in respect of specific client requirements; reviews project plans','Identifies process, structural and external issues when managing complex problems and finds ways to address them','Manages risk at the engagement/account level while still focusing on high-quality service','Takes responsibility for team understanding on risk, independence, objectivity and compliance'] },
+    ]
+  },
+};
 
 // ─── KPI Framework ─────────────────────────────────────────────
 const KPI_FRAMEWORK = {
@@ -495,7 +576,43 @@ const ROLES = {
     leaderDesc:'Responsible for all Alliances sales executives, building pipeline, and driving sales with EY\'s Alliance & Ecosystem partners.',
     roles:[
       {name:'Alliances Sales Sector Leader',rank:'Director',responsibilities:['Alignment and interlock with Alliance GTMLs, Sector Leaders and SSLs on strategy and execution','Lead team of Alliance Sales Executives toward sales & origination targets','Own/oversee critical relationships with Alliance partner stakeholders','Drive innovation in sales methodology and alliance sales best practices','Lead hiring, training, and development of Alliance sales executives','Oversee operational excellence: pipeline/CRM, event ROI, etc.'],metrics:['Alliance Sales Sector Team Origination and Sales','Personal Origination and Sales'],careerPath:['S&SP Leadership','Alliance leadership']},
-      {name:'Alliances Sales Executive',rank:'Asst & Assoc Director · Director* (3+ yr goal achievement; Min $35M Sales / $25M Origination)',rankNote:'*Director: aligned to priority Alliance and priority sector for that Alliance',responsibilities:['Source leads from Alliance partner channel, clients and EY account teams','Pipeline growth, sales origination & qualification, pursuit and win strategies','Build and optimize Alliance partner channel relationships for leads, endorsements and competitive intelligence','Bring market insight on competitive landscape and EY\'s market position','Sales presentations, deal coaching, pursuit strategy & negotiations'],metrics:['Origination','Personal Sales'],careerPath:['Sales Executive in another Pillar','Account Executive','Account Leader','Other Alliance leadership']},
+      {name:'Alliances Sales Executive',rank:'Assistant Director · Associate Director · Director* (3+ yr goal achievement; Min $35M Sales / $25M Origination)',rankNote:'*Director: aligned to priority Alliance and priority sector for that Alliance',
+       opportunity:'A true sales hunter role — focused on originating net-new opportunities, building pipeline, and closing revenue through deep partnership with alliance partners and direct engagement with sector clients. A market-facing, quota-carrying executive seller with deep expertise in the alliance platform/product portfolio and strong depth across sector sub-segments. Proactively creates demand, not responds to it — identifying whitespace, shaping transformative conversations, and positioning alliance-powered EY solutions that address the most complex business challenges.',
+       responsibilities:[
+        'Sales Origination: Relentlessly originate net-new pipeline by identifying unmet needs, emerging priorities, and transformation opportunities across three channels: direct client origination, alliance field-led co-sell motions, and EY account team-led pursuits',
+        'Alliance Leadership: Act as a trusted partner to alliance field teams, evangelizing for EY by building credibility and mindshare across account executives, solution architects and sales leadership. Shape joint go-to-market motions and influence alliance investment toward EY-led pursuits',
+        'Sector Impact: Demonstrate deep understanding of sector organizations\' most pressing issues. Translate alliance capabilities into outcomes that resonate with sector executives. Build executive relationships to position EY as a strategic transformation partner',
+        'AI-Enabled Selling: Infuse AI into the full sales lifecycle — account and opportunity analytics, intelligent prospecting, pattern recognition across pipeline and buying signals, AI-supported proposal shaping and pursuit orchestration. Champion AI-enabled EY and alliance solutions with credibility, demonstrating both technical fluency and business impact',
+        'Market Leadership: Orchestrate cross-service line and cross-functional teams to bring the best of EY to pursuit opportunities. Coach and influence account teams and peers through active leadership in the market',
+       ],
+       skills:[
+        'Hunter mindset with a strong bias for action, curiosity, and persistence',
+        'Exceptional executive presence with the ability to influence senior client, EY, and alliance stakeholders',
+        'Proven ability to navigate and succeed in a highly matrixed, alliance-driven environment',
+        'Consultative selling style — trusted advisor, not transactional seller',
+        'Strategic thinker with the ability to connect technology to business outcomes',
+        'Comfortable leveraging data and AI insights to guide decisions and storytelling',
+       ],
+       mustHave:[
+        '10+ years of quota-carrying sales experience in professional services, technology, and/or enterprise solutions',
+        'Demonstrated success as a net-new business hunter — not solely an account or alliance manager',
+        'Direct experience and success selling to sector clients with deep expertise in key sector issues and opportunities',
+        'Strong alliance ecosystem experience including co-sell and channel-led motions',
+        'Deep knowledge of the alliance platform and broader partner ecosystem',
+        'Prior experience selling at a Big Four firm or large global systems integrator',
+        'Exceptional client relationship management and executive communication skills',
+        'Bachelor\'s degree (or equivalent)',
+       ],
+       ideallyHave:[
+        'Technical background or delivery/program leadership experience',
+        'Experience selling large, complex, multi-stakeholder transformation programs',
+        'Strong coaching and mentoring capability',
+        'Proven team-selling experience across alliances and solution teams',
+        'Willingness to travel up to 50%',
+       ],
+       whatWeLookFor:'Successful Alliance Sales Executives at EY are growth creators. You proactively shape demand, pursuits and win strategies, bringing differentiated points of view to help clients re-imagine what\'s possible through technology — particularly AI-powered transformation. You are digitally fluent, AI-enabled, and deeply connected across your clients\' ecosystems.',
+       metrics:['Origination','Personal Sales'],
+       careerPath:['Sales Executive in another Pillar','Account Executive','Account Leader','Other Alliance leadership']},
     ]
   },
   'Managed Services Sales':{
@@ -621,6 +738,7 @@ function toggleIB(k){
   if(!body) return;
   openIBs.has(k) ? (openIBs.delete(k), body.classList.remove('open'), chev&&chev.classList.remove('open'))
                  : (openIBs.add(k),    body.classList.add('open'),    chev&&chev.classList.add('open'));
+  if(k==='rankExp' && openIBs.has('rankExp')) renderRankExp();
 }
 
 function switchView(v){
@@ -760,6 +878,17 @@ function render(){
   const cIB=document.getElementById('careerIB');
   cIB.style.display = n.pillar==='Top' ? '' : 'none';
 
+  // Rank Expectations — show at any pillar level
+  const reIB=document.getElementById('rankExpIB');
+  if(n.pillar && n.pillar!=='Top'){
+    reIB.style.display='';
+    document.getElementById('rankExpBody').classList.toggle('open',openIBs.has('rankExp'));
+    document.getElementById('rankExpChev').classList.toggle('open',openIBs.has('rankExp'));
+    if(openIBs.has('rankExp')) renderRankExp();
+  } else {
+    reIB.style.display='none';
+  }
+
   // KPI Framework — show at any pillar level (Director+ roles present)
   const kpiIB=document.getElementById('kpiIB');
   if(n.pillar && n.pillar!=='Top'){
@@ -887,6 +1016,54 @@ function rcSec(ri,sk,label,content){
       <div class="rc-sec-inner">${content}</div>
     </div>
   </div>`;
+}
+
+// ─── Render Rank Expectations ──────────────────────────────────
+let activeRankTab = 'Assistant Director';
+function renderRankExp(){
+  const el=document.getElementById('rankExpContent');
+  const ranks=Object.keys(RANK_EXPECTATIONS);
+
+  // Tab bar
+  let html=`<div class="re-rank-tabs">`;
+  ranks.forEach(r=>{
+    html+=`<div class="re-rank-tab${r===activeRankTab?' active':''}" onclick="setRankTab('${r}')">${r}</div>`;
+  });
+  html+=`</div>`;
+
+  // Content for active rank
+  const rd=RANK_EXPECTATIONS[activeRankTab];
+  html+=`<div class="re-rank-content">`;
+  html+=`<span class="re-track-badge">${rd.track}</span>`;
+  html+=`<div class="re-intro">${rd.intro}</div>`;
+  rd.categories.forEach((cat,ci)=>{
+    const ck=activeRankTab+'_'+ci;
+    const isOpen=!!rOpenSecs['re_'+ck];
+    html+=`<div class="re-cat">
+      <div class="re-cat-head" onclick="toggleReCat('${ck}')">
+        <span>${cat.name}</span>
+        <span class="re-cat-chev${isOpen?' open':''}" id="rech_${ck}">▼</span>
+      </div>
+      <div class="re-cat-body${isOpen?' open':''}" id="recb_${ck}">
+        <div class="re-cat-inner"><ul class="bullet-list">${cat.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+function setRankTab(rank){
+  activeRankTab=rank;
+  renderRankExp();
+}
+
+function toggleReCat(ck){
+  const body=document.getElementById('recb_'+ck), chev=document.getElementById('rech_'+ck);
+  if(!body) return;
+  const key='re_'+ck;
+  if(rOpenSecs[key]){ delete rOpenSecs[key]; body.classList.remove('open'); chev&&chev.classList.remove('open'); }
+  else { rOpenSecs[key]=true; body.classList.add('open'); chev&&chev.classList.add('open'); }
 }
 
 // ─── Render KPIs ───────────────────────────────────────────────
