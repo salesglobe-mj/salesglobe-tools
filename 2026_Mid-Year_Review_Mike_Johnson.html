@@ -1,0 +1,808 @@
+<meta charset="utf-8">
+<title>Mike Johnson — 2026 Mid-Year Review</title>
+<style>
+  :root {
+    /* Fixed brand marks — do not adapt to theme, mirrors the SalesGlobe
+       template's intro-slide red panel, which is never restyled. */
+    --brand-red: #E62B1E;
+    --brand-red-dark: #8D0801;
+
+    /* Fixed status badges — always opaque, legible on either theme. */
+    --stat-achieved-bg: #E62B1E;
+    --stat-achieved-fg: #ffffff;
+    --stat-early-bg: #4C9A9C;
+    --stat-early-fg: #ffffff;
+    --stat-progress-bg: #F4D58D;
+    --stat-progress-fg: #3d2c0c;
+    --stat-progress-dot: #c9992f;
+    --stat-track-bg: #205D92;
+    --stat-track-fg: #ffffff;
+    --stat-gap-bg: #f7dcd8;
+    --stat-gap-fg: #8D0801;
+
+    --font: Calibri, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+    /* Theme-adaptive surface tokens (light default) */
+    --paper: #ffffff;
+    --paper-raised: #faf8f7;
+    --paper-sunken: #f1eeec;
+    --ink: #000000;
+    --ink-soft: #857874;
+    --ink-faint: #a89e9a;
+    --line: #e6e0dd;
+    --line-strong: #cfc6c1;
+    --accent: #E62B1E;
+    --accent-strong: #8D0801;
+    --accent-soft: rgba(230, 43, 30, 0.10);
+    --accent-soft-2: rgba(230, 43, 30, 0.05);
+    --shadow: 0 1px 2px rgba(20, 16, 14, 0.05), 0 8px 20px -10px rgba(20, 16, 14, 0.16);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16213F;
+      --paper-raised: #1d2c4e;
+      --paper-sunken: #121b34;
+      --ink: #ffffff;
+      --ink-soft: #c9c0bc;
+      --ink-faint: #8f8580;
+      --line: #2b3a5e;
+      --line-strong: #3c4f78;
+      --accent: #ff5347;
+      --accent-strong: #ffab9f;
+      --accent-soft: rgba(255, 83, 71, 0.16);
+      --accent-soft-2: rgba(255, 83, 71, 0.08);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #16213F;
+    --paper-raised: #1d2c4e;
+    --paper-sunken: #121b34;
+    --ink: #ffffff;
+    --ink-soft: #c9c0bc;
+    --ink-faint: #8f8580;
+    --line: #2b3a5e;
+    --line-strong: #3c4f78;
+    --accent: #ff5347;
+    --accent-strong: #ffab9f;
+    --accent-soft: rgba(255, 83, 71, 0.16);
+    --accent-soft-2: rgba(255, 83, 71, 0.08);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 28px -14px rgba(0, 0, 0, 0.6);
+  }
+
+  :root[data-theme="light"] {
+    --paper: #ffffff;
+    --paper-raised: #faf8f7;
+    --paper-sunken: #f1eeec;
+    --ink: #000000;
+    --ink-soft: #857874;
+    --ink-faint: #a89e9a;
+    --line: #e6e0dd;
+    --line-strong: #cfc6c1;
+    --accent: #E62B1E;
+    --accent-strong: #8D0801;
+    --accent-soft: rgba(230, 43, 30, 0.10);
+    --accent-soft-2: rgba(230, 43, 30, 0.05);
+    --shadow: 0 1px 2px rgba(20, 16, 14, 0.05), 0 8px 20px -10px rgba(20, 16, 14, 0.16);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); }
+
+  a { color: inherit; }
+
+  button { font-family: inherit; }
+
+  h1, h2, h3 { font-family: var(--font); font-weight: 700; text-wrap: balance; margin: 0; }
+
+  .page { max-width: 100%; overflow-x: hidden; }
+
+  /* ---------- Hero — fixed SalesGlobe red panel, mirrors the intro-slide
+     layout; text is always white regardless of light/dark theme. ---------- */
+  .hero {
+    padding: 4.5rem 1.5rem 3.2rem;
+    background: var(--brand-red);
+    border-bottom: 4px solid var(--brand-red-dark);
+  }
+  .hero-inner { max-width: 780px; margin: 0 auto; }
+  .eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    opacity: 0.85;
+    margin: 0 0 0.9rem;
+  }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 3.5rem); font-weight: 700; letter-spacing: -0.01em; color: #ffffff; }
+  .role-path {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 1.1rem 0 1.3rem;
+    flex-wrap: wrap;
+  }
+  .role {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.32rem 0.8rem;
+    border-radius: 100px;
+    border: 1.5px solid rgba(255, 255, 255, 0.55);
+    color: #ffffff;
+  }
+  .role.target {
+    color: var(--brand-red);
+    border-color: #ffffff;
+    background: #ffffff;
+    font-weight: 700;
+  }
+  .role-arrow { color: rgba(255, 255, 255, 0.7); font-size: 1rem; }
+  .objective {
+    font-size: 1.08rem;
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 58ch;
+    margin: 0 0 2.1rem;
+  }
+
+  .quarter-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+  }
+  .qchip {
+    text-align: left;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    padding: 0.8rem 0.9rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .qchip:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.35); }
+  .qchip:focus-visible { outline: 2px solid var(--brand-red-dark); outline-offset: 2px; }
+  .qchip .qlabel {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #857874;
+    margin-bottom: 0.45rem;
+  }
+  .qchip .qstatus { font-size: 1rem; font-weight: 700; }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 0.4rem; position: relative; top: -1px; }
+  .st-achieved .status-dot { background: var(--stat-achieved-bg); }
+  .st-progress .status-dot { background: var(--stat-progress-dot); }
+  .st-track .status-dot { background: var(--stat-track-bg); }
+  .st-achieved .qstatus { color: var(--stat-achieved-bg); }
+  .st-progress .qstatus { color: var(--stat-progress-fg); }
+  .st-track .qstatus { color: var(--stat-track-bg); }
+
+  /* ---------- Subnav ---------- */
+  .subnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .subnav-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1.6rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+  }
+  .subnav a {
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--ink-faint);
+    padding: 0.9rem 0.05rem 0.75rem;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+  .subnav a:hover { color: var(--ink); }
+  .subnav a.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* ---------- Sections ---------- */
+  main { max-width: 780px; margin: 0 auto; padding: 0 1.5rem; }
+  .section { padding: 3.6rem 0; scroll-margin-top: 3.2rem; border-bottom: 1px solid var(--line); }
+  .section:last-of-type { border-bottom: none; }
+  .section-title { font-size: clamp(1.5rem, 3vw, 1.9rem); font-weight: 700; color: var(--accent); }
+  .section-sub { color: var(--ink-soft); margin: 0.6rem 0 2rem; max-width: 62ch; font-size: 1rem; }
+
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Foundation list ---------- */
+  .foundation-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+  .foundation-list li {
+    display: flex;
+    gap: 0.85rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 0.98rem;
+  }
+  .foundation-list li:last-child { border-bottom: none; }
+  .fi-mark {
+    flex: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem;
+    margin-top: 0.15rem;
+  }
+
+  /* ---------- Accomplishments ---------- */
+  .accomplishment-grid { display: grid; gap: 1rem; }
+  .acc-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem 1.6rem;
+    box-shadow: var(--shadow);
+  }
+  .acc-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.9rem; }
+  .acc-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  .acc-card li { font-size: 0.95rem; color: var(--ink); padding-left: 1.05rem; position: relative; }
+  .acc-card li::before { content: "–"; position: absolute; left: 0; color: var(--ink-faint); }
+  .acc-card li strong { color: var(--ink); font-weight: 700; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.16rem 0.55rem;
+    border-radius: 100px;
+    margin-top: 0.4rem;
+  }
+  .tag-achieved { background: var(--stat-achieved-bg); color: var(--stat-achieved-fg); }
+  .tag-early { background: var(--stat-early-bg); color: var(--stat-early-fg); }
+  .tag-progress { background: var(--stat-progress-bg); color: var(--stat-progress-fg); }
+
+  /* ---------- Capabilities ---------- */
+  .capability-grid { display: flex; flex-direction: column; gap: 0.7rem; }
+  .cap-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .cap-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.05rem 1.3rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ink);
+  }
+  .cap-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .cap-icon {
+    flex: none;
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: var(--paper-sunken);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-strong);
+  }
+  .cap-icon svg { width: 17px; height: 17px; }
+  .cap-name { flex: 1; font-weight: 700; font-size: 0.98rem; }
+  .cap-chip {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.22rem 0.6rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .chip-strong { background: var(--stat-achieved-bg); color: var(--stat-achieved-fg); }
+  .chip-early { background: var(--stat-early-bg); color: var(--stat-early-fg); }
+  .chip-gap { background: var(--stat-gap-bg); color: var(--stat-gap-fg); border: 1px dashed var(--stat-gap-fg); }
+  .cap-caret { flex: none; color: var(--ink-faint); transition: transform 0.25s ease; font-size: 0.75rem; }
+  .cap-card[data-open="true"] .cap-caret { transform: rotate(180deg); }
+  .cap-body { display: none; }
+  .cap-card[data-open="true"] .cap-body { display: block; }
+  .cap-body-inner {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+  .cap-body-inner.shown { opacity: 1; transform: translateY(0); }
+  .cap-desc {
+    padding: 0 1.3rem 0.2rem;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .cap-evidence { list-style: none; margin: 0; padding: 0.9rem 1.3rem 1.3rem; display: flex; flex-direction: column; gap: 0.6rem; border-top: 1px solid var(--line); margin-top: 0.9rem; }
+  .cap-evidence li { font-size: 0.92rem; color: var(--ink); padding-left: 1.05rem; position: relative; }
+  .cap-evidence li::before { content: "→"; position: absolute; left: 0; color: var(--accent); }
+
+  /* ---------- Timeline ---------- */
+  .timeline { display: flex; flex-direction: column; gap: 0.65rem; }
+  .tnode { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .tnode-head {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.3rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ink);
+  }
+  .tnode-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .tq {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tnode[data-status="progress"] .tq { color: var(--stat-progress-fg); background: color-mix(in srgb, var(--stat-progress-bg) 55%, var(--paper)); }
+  .tnode[data-status="track"] .tq { color: var(--stat-track-bg); background: color-mix(in srgb, var(--stat-track-bg) 14%, var(--paper)); }
+  .tname { font-weight: 700; font-size: 0.98rem; }
+  .tname span { display: block; font-weight: 400; color: var(--ink-faint); font-size: 0.82rem; margin-top: 0.1rem; }
+  .tstatus-chip {
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.22rem 0.6rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+  .tnode[data-status="achieved"] .tstatus-chip { background: var(--stat-achieved-bg); color: var(--stat-achieved-fg); }
+  .tnode[data-status="progress"] .tstatus-chip { background: var(--stat-progress-bg); color: var(--stat-progress-fg); }
+  .tnode[data-status="track"] .tstatus-chip { background: var(--stat-track-bg); color: var(--stat-track-fg); }
+  .tcaret { color: var(--ink-faint); font-size: 0.75rem; transition: transform 0.25s ease; }
+  .tnode[data-open="true"] .tcaret { transform: rotate(180deg); }
+  .tnode-body { display: none; }
+  .tnode[data-open="true"] .tnode-body { display: block; }
+  .tnode-body-inner {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+  .tnode-body-inner.shown { opacity: 1; transform: translateY(0); }
+  .tnode-detail { padding: 0 1.3rem 1.3rem; border-top: 1px solid var(--line); margin-top: -0.1rem; padding-top: 0.9rem; }
+  .tnode-detail p { margin: 0 0 0.6rem; font-size: 0.93rem; color: var(--ink-soft); }
+  .tnode-detail .tnote { font-size: 0.87rem; color: var(--ink); font-weight: 600; background: var(--paper-sunken); padding: 0.6rem 0.8rem; border-radius: 8px; }
+
+  /* ---------- Priorities ---------- */
+  .priority-list { display: flex; flex-direction: column; gap: 0.65rem; }
+  .p-card {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.1rem 1.3rem;
+  }
+  .p-check {
+    flex: none;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid var(--line-strong);
+    margin-top: 0.15rem;
+  }
+  .p-text { flex: 1; }
+  .p-text p { margin: 0; font-size: 0.97rem; }
+  .p-text .ptag {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    text-align: center;
+    padding: 2.6rem 1.5rem 3rem;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  @media (min-width: 640px) {
+    .accomplishment-grid { grid-template-columns: repeat(3, 1fr); }
+    .acc-card:nth-child(3) { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 560px) {
+    .quarter-strip { grid-template-columns: repeat(2, 1fr); }
+    .tnode-head { grid-template-columns: auto 1fr; row-gap: 0.5rem; }
+    .tstatus-chip { grid-column: 2; justify-self: start; }
+    .tcaret { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .qchip, .cap-caret, .tcaret, .cap-body-inner, .tnode-body-inner { transition: none; }
+  }
+</style>
+
+<div class="page">
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">Focused Development Plan · Updated July 2026</p>
+      <h1>Mike Johnson</h1>
+      <div class="role-path">
+        <span class="role current">Sr. Consultant</span>
+        <span class="role-arrow">→</span>
+        <span class="role target">Manager</span>
+      </div>
+      <p class="objective">Promotion objective: demonstrate consistent Manager-level performance by year-end 2026. This walkthrough tracks progress against the 2026 plan at the mid-year mark.</p>
+
+      <div class="quarter-strip">
+        <button class="qchip st-achieved" data-jump="q1">
+          <span class="qlabel">Q1 · Visibility & Alignment</span>
+          <span class="qstatus"><span class="status-dot"></span>Largely achieved</span>
+        </button>
+        <button class="qchip st-achieved" data-jump="q2">
+          <span class="qlabel">Q2 · Ownership & Client Leadership</span>
+          <span class="qstatus"><span class="status-dot"></span>Achieved</span>
+        </button>
+        <button class="qchip st-progress" data-jump="q3">
+          <span class="qlabel">Q3 · Scale & Commercial Impact</span>
+          <span class="qstatus"><span class="status-dot"></span>In progress</span>
+        </button>
+        <button class="qchip st-track" data-jump="q4">
+          <span class="qlabel">Q4 · Promotion Readiness</span>
+          <span class="qstatus"><span class="status-dot"></span>On track</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="subnav" id="subnav">
+    <div class="subnav-inner">
+      <a href="#foundation">Foundation</a>
+      <a href="#accomplishments">Mid-Year Wins</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#goals">Quarterly Goals</a>
+      <a href="#priorities">H2 & Beyond</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="foundation" class="section">
+      <h2 class="section-title reveal">Manager-Ready Foundation</h2>
+      <p class="section-sub reveal">Demonstrated performance in 2025 that this plan builds on.</p>
+      <ul class="foundation-list reveal">
+        <li><span class="fi-mark">✓</span>Led a full workstream from discovery through implementation, demonstrating end-to-end ownership</li>
+        <li><span class="fi-mark">✓</span>Independently led client interviews, executive readouts, and working sessions</li>
+        <li><span class="fi-mark">✓</span>Built strong, trusted relationships with client champions and key stakeholders</li>
+        <li><span class="fi-mark">✓</span>Leveraged AI tools to improve productivity, analysis efficiency, and delivery quality</li>
+        <li><span class="fi-mark">✓</span>Contributed to thought leadership supporting firm brand and market credibility</li>
+      </ul>
+    </section>
+
+    <section id="accomplishments" class="section">
+      <h2 class="section-title reveal">2026 Mid-Year Accomplishments</h2>
+      <p class="section-sub reveal">January – June 2026. Highlights map directly to the Q1–Q2 goals and, in several cases, pull Q3–Q4 goals forward ahead of schedule.</p>
+      <div class="accomplishment-grid">
+        <article class="acc-card reveal">
+          <h3>Engagement Delivery & Client Leadership</h3>
+          <ul>
+            <li><strong>Prysmian:</strong> Worked alongside the client team as a core member of the engagement</li>
+            <li><strong>Prysmian:</strong> Led multiple client interviews and drove creation of key deliverables in the absence of the lead director consultant, stepping up to fill an engagement-leadership gap<br>
+              <span class="tag tag-achieved">Q2 goal · achieved</span>
+            </li>
+            <li><strong>EY Sales Transformation Office:</strong> Continued to deliver consistently high-quality work on a flagship, long-running client relationship</li>
+            <li>Currently serving on two concurrent engagements: First Command and the EY Sales Certification project<br>
+              <span class="tag tag-progress">Q3 goal · ahead of schedule</span>
+            </li>
+          </ul>
+        </article>
+        <article class="acc-card reveal">
+          <h3>Thought Leadership, IP & Brand</h3>
+          <ul>
+            <li>Created multiple thought pieces and articles as SalesGlobe IP, published on LinkedIn</li>
+            <li>Posted thought-leadership content on LinkedIn for two consecutive months, building consistent personal and firm brand visibility<br>
+              <span class="tag tag-early">Q3–Q4 goal · achieved early</span>
+            </li>
+          </ul>
+        </article>
+        <article class="acc-card reveal">
+          <h3>Carried Forward from 2025 — Still Demonstrated in 2026</h3>
+          <ul>
+            <li>Independently leading client interviews, readouts, and working sessions</li>
+            <li>Trusted relationships with client champions and key stakeholders across active engagements</li>
+            <li>Ongoing use of AI tools to improve productivity, analysis efficiency, and delivery quality</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="capabilities" class="section">
+      <h2 class="section-title reveal">Manager-Level Capabilities</h2>
+      <p class="section-sub reveal">Transition from successful workstream leadership to consistent engagement-level ownership, expanded client leadership, team direction, and commercial impact. Click a capability to see the evidence behind it.</p>
+
+      <div class="capability-grid">
+        <div class="cap-card reveal" data-open="false">
+          <button class="cap-head">
+            <span class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></span>
+            <span class="cap-name">Engagement & Workstream Leadership</span>
+            <span class="cap-chip chip-strong">Strong evidence</span>
+            <span class="cap-caret">▾</span>
+          </button>
+          <div class="cap-body"><div class="cap-body-inner">
+            <p class="cap-desc">Own multiple workstreams across discovery, analysis, design, and implementation.</p>
+            <ul class="cap-evidence">
+              <li>Led a full workstream from discovery through implementation in 2025 — end-to-end ownership</li>
+              <li>Prysmian: stepped up to fill an engagement-leadership gap, driving deliverables independently</li>
+              <li>Now managing two concurrent engagements — First Command and EY Sales Certification — ahead of the Q3 goal</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="cap-card reveal" data-open="false">
+          <button class="cap-head">
+            <span class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></span>
+            <span class="cap-name">Client Leadership & Executive Presence</span>
+            <span class="cap-chip chip-strong">Strong evidence</span>
+            <span class="cap-caret">▾</span>
+          </button>
+          <div class="cap-body"><div class="cap-body-inner">
+            <p class="cap-desc">Serve as day-to-day client lead and deliver executive readouts.</p>
+            <ul class="cap-evidence">
+              <li>Independently leading client interviews, executive readouts, and working sessions since 2025</li>
+              <li>Prysmian: core engagement member, leading client interviews directly with the client team</li>
+              <li>EY – Sales Transformation Office: sustained high-quality delivery on a flagship, long-running relationship</li>
+              <li>Remaining: formalize a day-to-day client-lead designation on an active engagement — H2 focus</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="cap-card reveal" data-open="false">
+          <button class="cap-head">
+            <span class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="2.6"/><circle cx="17" cy="9" r="2.2"/><path d="M3.5 19c0-3.3 2.3-5 4.5-5s4.5 1.7 4.5 5M13.5 19c0-2.6 1.7-4.3 3.5-4.3s3.5 1.7 3.5 4.3"/></svg></span>
+            <span class="cap-name">Team Direction & Quality Control</span>
+            <span class="cap-chip chip-gap">Gap · H2 focus</span>
+            <span class="cap-caret">▾</span>
+          </button>
+          <div class="cap-body"><div class="cap-body-inner">
+            <p class="cap-desc">Assign work, review deliverables, and coach junior team members.</p>
+            <ul class="cap-evidence">
+              <li>No formal mentorship or deliverable-review responsibility demonstrated yet in 2026</li>
+              <li>H2 priority: take on formal mentorship/review responsibility for a junior team member</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="cap-card reveal" data-open="false">
+          <button class="cap-head">
+            <span class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h6v6"/></svg></span>
+            <span class="cap-name">Commercial & Firm Growth</span>
+            <span class="cap-chip chip-gap">Gap · H2 focus</span>
+            <span class="cap-caret">▾</span>
+          </button>
+          <div class="cap-body"><div class="cap-body-inner">
+            <p class="cap-desc">Support proposals, identify engagement extensions, and demonstrate P&L awareness.</p>
+            <ul class="cap-evidence">
+              <li>Proposal/scope-extension support was a Q2 goal not yet completed</li>
+              <li>H2 priority: support a proposal or scope-extension effort to demonstrate commercial impact</li>
+            </ul>
+          </div></div>
+        </div>
+
+        <div class="cap-card reveal" data-open="false">
+          <button class="cap-head">
+            <span class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.3l-5.2 2.9 1-5.9-4.3-4.1 5.9-.8z"/></svg></span>
+            <span class="cap-name">Technical, AI & Brand Leadership</span>
+            <span class="cap-chip chip-early">Achieved early</span>
+            <span class="cap-caret">▾</span>
+          </button>
+          <div class="cap-body"><div class="cap-body-inner">
+            <p class="cap-desc">Scale AI usage, deepen domain expertise, and expand internal/external thought leadership.</p>
+            <ul class="cap-evidence">
+              <li>Ongoing use of AI tools to improve productivity, analysis efficiency, and delivery quality</li>
+              <li>Created multiple thought pieces and articles as SalesGlobe IP, published on LinkedIn</li>
+              <li>Posted thought-leadership content for two consecutive months — Q3–Q4 goal achieved early</li>
+            </ul>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="goals" class="section">
+      <h2 class="section-title reveal">2026 Quarterly Goals</h2>
+      <p class="section-sub reveal">At-a-glance progress against each quarter's plan. Click a quarter to expand it.</p>
+
+      <div class="timeline">
+        <div class="tnode reveal" id="q1" data-status="achieved" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">Q1</span>
+            <span class="tname">Visibility & Alignment<span>Align with leadership on promotion expectations</span></span>
+            <span class="tstatus-chip">Largely achieved</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>Align with leadership on promotion expectations; be formally named workstream or module lead; lead client sessions and begin acting as primary reviewer for junior work.</p>
+              <p class="tnote">Status: largely achieved — Prysmian interviews and deliverable leadership.</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" id="q2" data-status="achieved" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">Q2</span>
+            <span class="tname">Ownership & Client Leadership<span>Own workstreams end-to-end; lead client meetings independently</span></span>
+            <span class="tstatus-chip">Achieved</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>Own workstreams end-to-end; lead client meetings independently; deliver executive readouts; support a proposal or scope extension.</p>
+              <p class="tnote">Status: achieved on delivery and client leadership; proposal support remains an H2 focus.</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" id="q3" data-status="progress" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">Q3</span>
+            <span class="tname">Scale & Commercial Impact<span>Manage multiple concurrent workstreams; mentor a junior team member</span></span>
+            <span class="tstatus-chip">In progress</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>Manage multiple concurrent workstreams; act as day-to-day client lead; mentor a junior team member; contribute to internal IP.</p>
+              <p class="tnote">Status: underway — First Command + EY Sales Certification concurrently; SalesGlobe IP published.</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" id="q4" data-status="track" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">Q4</span>
+            <span class="tname">Promotion Readiness<span>Formally request promotion consideration</span></span>
+            <span class="tstatus-chip">On track</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>Demonstrate consistent Manager-level performance across delivery, client leadership, and commercial awareness; publish thought leadership; formally request promotion consideration.</p>
+              <p class="tnote">Status: on track — thought-leadership goal already met.</p>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="priorities" class="section">
+      <h2 class="section-title reveal">H2 2026 & Beyond Priorities</h2>
+      <p class="section-sub reveal">Closing the remaining gaps — some of this work may extend into 2027.</p>
+
+      <div class="priority-list">
+        <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Support a proposal or scope-extension effort to demonstrate commercial impact</p><span class="ptag">Commercial & Firm Growth</span></div></div>
+        <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Take on formal mentorship/review responsibility for a junior team member</p><span class="ptag">Team Direction & Quality Control</span></div></div>
+        <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Secure formal day-to-day client-lead designation on an active engagement</p><span class="ptag">Client Leadership & Executive Presence</span></div></div>
+        <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Sustain LinkedIn thought-leadership cadence through year-end</p><span class="ptag">Technical, AI & Brand Leadership</span></div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Focused Development Plan · Sr. Consultant → Manager · © 2026 SalesGlobe</footer>
+</div>
+
+<script>
+  (function () {
+    // Scroll reveal
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in-view'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+    // Safety net: guarantee content isn't left invisible if IntersectionObserver
+    // never fires for a given element (e.g. an embedding context that throttles it).
+    setTimeout(function () {
+      document.querySelectorAll('.reveal:not(.in-view)').forEach(function (el) { el.classList.add('in-view'); });
+    }, 2500);
+
+    // Subnav active link
+    var links = Array.prototype.slice.call(document.querySelectorAll('.subnav a'));
+    var sections = links.map(function (l) { return document.querySelector(l.getAttribute('href')); });
+    var navIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var idx = sections.indexOf(entry.target);
+        if (idx === -1) return;
+        if (entry.isIntersecting) {
+          links.forEach(function (l) { l.classList.remove('active'); });
+          links[idx].classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sections.forEach(function (s) { if (s) navIo.observe(s); });
+
+    // Accordions (capability cards + timeline nodes) — display:none/block
+    // gated by data-open, with an opacity/transform fade on the inner
+    // wrapper. Avoids animating height/max-height directly: this browser's
+    // engine fails to recompute an element's box size when it transitions
+    // from a small fixed value to a new fixed value (verified: an element
+    // pinned at max-height:1px never grows even after max-height is set to
+    // 400px, while switching to height:auto recomputes correctly) — so any
+    // 0->contentHeight accordion animation is unreliable here.
+    function openAccordion(card, inner) {
+      card.setAttribute('data-open', 'true');
+      // A tick between display:none->block and the opacity/transform change is
+      // required for the transition to actually play (rather than jump straight
+      // to the end state). setTimeout is used instead of requestAnimationFrame
+      // since rAF does not reliably fire in every embedding context.
+      setTimeout(function () { inner.classList.add('shown'); }, 20);
+    }
+    function closeAccordion(card, inner) {
+      inner.classList.remove('shown');
+      var delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 220;
+      setTimeout(function () { card.setAttribute('data-open', 'false'); }, delay);
+    }
+    function wireAccordion(selector, headSelector, innerSelector) {
+      document.querySelectorAll(selector).forEach(function (card) {
+        var head = card.querySelector(headSelector);
+        var inner = card.querySelector(innerSelector);
+        head.addEventListener('click', function () {
+          var isOpen = card.getAttribute('data-open') === 'true';
+          if (isOpen) { closeAccordion(card, inner); } else { openAccordion(card, inner); }
+        });
+      });
+    }
+    wireAccordion('.cap-card', '.cap-head', '.cap-body-inner');
+    wireAccordion('.tnode', '.tnode-head', '.tnode-body-inner');
+
+    // Hero quarter chips: scroll to goal section and open it
+    document.querySelectorAll('.qchip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var target = document.getElementById(chip.getAttribute('data-jump'));
+        if (!target) return;
+        if (target.getAttribute('data-open') !== 'true') {
+          openAccordion(target, target.querySelector('.tnode-body-inner'));
+        }
+        target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+      });
+    });
+
+    // Smooth anchor scroll for subnav
+    links.forEach(function (l) {
+      l.addEventListener('click', function (ev) {
+        var target = document.querySelector(l.getAttribute('href'));
+        if (!target) return;
+        ev.preventDefault();
+        target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      });
+    });
+  })();
+</script>
