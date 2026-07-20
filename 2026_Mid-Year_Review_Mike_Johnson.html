@@ -279,6 +279,31 @@
   .tag-early { background: var(--stat-early-bg); color: var(--stat-early-fg); }
   .tag-progress { background: var(--stat-progress-bg); color: var(--stat-progress-fg); }
 
+  /* ---------- Card footnote / jump link ---------- */
+  .card-footnote { margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px dashed var(--line); font-size: 0.85rem; color: var(--ink-soft); }
+  .card-footnote strong { color: var(--ink); }
+  .jump-link { color: var(--accent); font-weight: 700; text-decoration: none; }
+  .jump-link:hover { text-decoration: underline; }
+
+  /* ---------- LinkedIn reach: KPI row + chart ---------- */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 2rem; }
+  .kpi { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 0.6rem; text-align: center; box-shadow: var(--shadow); }
+  .kpi-num { font-size: 1.7rem; font-weight: 700; color: var(--accent); display: block; font-variant-numeric: tabular-nums; }
+  .kpi-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-faint); }
+  .linkedin-chart { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 14px; padding: 1.4rem 1.2rem 1rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+  .impressions-svg { width: 100%; height: auto; display: block; }
+  .ibar-rect { fill: var(--stat-early-bg); }
+  .ibar-val { font-family: var(--font); font-size: 11px; font-weight: 700; fill: var(--ink); }
+  .ibar-date { font-family: var(--font); font-size: 9.5px; font-weight: 600; fill: var(--ink-faint); }
+  .post-link { color: var(--accent); font-weight: 700; text-decoration: none; font-size: 0.88rem; }
+  .post-link:hover { text-decoration: underline; }
+  .tnode[data-status="reach"] .tq { color: var(--stat-early-bg); background: color-mix(in srgb, var(--stat-early-bg) 16%, var(--paper)); font-size: 0.72rem; }
+  .tnode[data-status="reach"] .tstatus-chip { background: var(--stat-early-bg); color: var(--stat-early-fg); }
+
+  @media (max-width: 560px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
   /* ---------- Capabilities ---------- */
   .capability-grid { display: flex; flex-direction: column; gap: 0.7rem; }
   .cap-card {
@@ -489,6 +514,7 @@
     <div class="subnav-inner">
       <a href="#foundation">Foundation</a>
       <a href="#accomplishments">Mid-Year Wins</a>
+      <a href="#linkedin">LinkedIn Reach</a>
       <a href="#capabilities">Capabilities</a>
       <a href="#goals">Quarterly Goals</a>
       <a href="#priorities">H2 & Beyond</a>
@@ -533,6 +559,7 @@
               <span class="tag tag-early">Q3–Q4 goal · achieved early</span>
             </li>
           </ul>
+          <p class="card-footnote"><strong>2,881 impressions</strong> and <strong>1,796 members reached</strong> across 6 LinkedIn posts since March 2026 — <a href="#linkedin" class="jump-link">full breakdown ↓</a></p>
         </article>
         <article class="acc-card reveal">
           <h3>Carried Forward from 2025 — Still Demonstrated in 2026</h3>
@@ -542,6 +569,143 @@
             <li>Ongoing use of AI tools to improve productivity, analysis efficiency, and delivery quality</li>
           </ul>
         </article>
+      </div>
+    </section>
+
+    <section id="linkedin" class="section">
+      <h2 class="section-title reveal">Thought Leadership Reach</h2>
+      <p class="section-sub reveal">Six LinkedIn posts published March–June 2026. Click a post to see the full engagement and audience breakdown.</p>
+
+      <div class="kpi-row reveal">
+        <div class="kpi"><span class="kpi-num">2,881</span><span class="kpi-label">Impressions</span></div>
+        <div class="kpi"><span class="kpi-num">1,796</span><span class="kpi-label">Members reached</span></div>
+        <div class="kpi"><span class="kpi-num">71</span><span class="kpi-label">Engagements</span></div>
+        <div class="kpi"><span class="kpi-num">6</span><span class="kpi-label">Posts</span></div>
+      </div>
+
+      <div class="linkedin-chart reveal">
+        <svg class="impressions-svg" viewBox="0 0 624 110" role="img" aria-label="Impressions per post: 1,048 on March 25, 639 on April 1, 145 on April 29, 204 on May 13, 226 on May 20, 619 on June 4">
+          <rect class="ibar-rect" x="32" y="16" width="40" height="70" rx="4"></rect>
+          <text class="ibar-val" x="52" y="10" text-anchor="middle">1,048</text>
+          <text class="ibar-date" x="52" y="100" text-anchor="middle">3/25</text>
+
+          <rect class="ibar-rect" x="136" y="43" width="40" height="43" rx="4"></rect>
+          <text class="ibar-val" x="156" y="37" text-anchor="middle">639</text>
+          <text class="ibar-date" x="156" y="100" text-anchor="middle">4/1</text>
+
+          <rect class="ibar-rect" x="240" y="76" width="40" height="10" rx="4"></rect>
+          <text class="ibar-val" x="260" y="70" text-anchor="middle">145</text>
+          <text class="ibar-date" x="260" y="100" text-anchor="middle">4/29</text>
+
+          <rect class="ibar-rect" x="344" y="72" width="40" height="14" rx="4"></rect>
+          <text class="ibar-val" x="364" y="66" text-anchor="middle">204</text>
+          <text class="ibar-date" x="364" y="100" text-anchor="middle">5/13</text>
+
+          <rect class="ibar-rect" x="448" y="71" width="40" height="15" rx="4"></rect>
+          <text class="ibar-val" x="468" y="65" text-anchor="middle">226</text>
+          <text class="ibar-date" x="468" y="100" text-anchor="middle">5/20</text>
+
+          <rect class="ibar-rect" x="552" y="45" width="40" height="41" rx="4"></rect>
+          <text class="ibar-val" x="572" y="39" text-anchor="middle">619</text>
+          <text class="ibar-date" x="572" y="100" text-anchor="middle">6/4</text>
+        </svg>
+      </div>
+
+      <div class="timeline">
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">3/25</span>
+            <span class="tname">Sales Compensation, Sales Ops & Revenue Growth<span>1,048 impressions · 616 reached</span></span>
+            <span class="tstatus-chip">1,048 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>25 social engagements — 21 reactions, 2 comments, 2 reposts. 20 article views, 5 profile visits, 1 new follower.</p>
+              <p class="tnote">Top audience: 47% Atlanta Metro · 40% Senior-level</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_salescompensation-salesops-revenuegrowth-ugcPost-7442580723972235264-0LEv" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">4/1</span>
+            <span class="tname">Sales Compensation, RevOps & Sales Strategy<span>639 impressions · 382 reached</span></span>
+            <span class="tstatus-chip">639 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>18 social engagements — 12 reactions, 6 comments. 18 article views, 4 profile visits, 1 new follower.</p>
+              <p class="tnote">Top audience: 40% at companies with 11–50 employees</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_salescompensation-revenueoperations-salesstrategy-ugcPost-7445120550902972417-5MG_" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">4/29</span>
+            <span class="tname">Sales AI & Revenue Operations<span>145 impressions · 96 reached</span></span>
+            <span class="tstatus-chip">145 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>5 social engagements, all reactions.</p>
+              <p class="tnote">Top audience: Senior (26%) and Entry-level (22%), concentrated in Atlanta and Chicago</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_sales-ai-revenueoperations-ugcPost-7455279310338404352-x05D" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">5/13</span>
+            <span class="tname">Sales Operations & Revenue Operations<span>204 impressions · 119 reached</span></span>
+            <span class="tstatus-chip">204 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>8 social engagements, all reactions. 3 profile visits.</p>
+              <p class="tnote">Top audience: 24% Atlanta Metro · Senior-level was the largest segment (24%)</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_salesoperations-revenueoperations-salesops-share-7460315873791135744-9kGc" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">5/20</span>
+            <span class="tname">Sales Operations & Revenue Operations<span>226 impressions · 144 reached</span></span>
+            <span class="tstatus-chip">226 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>5 social engagements — 4 reactions, 1 comment.</p>
+              <p class="tnote">Top audience: 34% Senior-level, with Directors, Managers, and CXOs among viewers</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_salesoperations-revenueoperations-salesops-share-7463002971421974528-E3HB" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tnode reveal" data-status="reach" data-open="false">
+          <button class="tnode-head">
+            <span class="tq">6/4</span>
+            <span class="tname">The Next Major Productivity Breakthrough<span>619 impressions · 439 reached</span></span>
+            <span class="tstatus-chip">619 impr.</span>
+            <span class="tcaret">▾</span>
+          </button>
+          <div class="tnode-body"><div class="tnode-body-inner">
+            <div class="tnode-detail">
+              <p>10 social engagements, all reactions. 13 article views, 5 profile visits, 1 new follower.</p>
+              <p><a class="post-link" href="https://www.linkedin.com/posts/mike-j-revops_the-next-major-productivity-breakthrough-ugcPost-7468356751143391232-lyc0" target="_blank" rel="noopener noreferrer">View post on LinkedIn ↗</a></p>
+            </div>
+          </div></div>
+        </div>
       </div>
     </section>
 
@@ -712,6 +876,7 @@
         <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Take on formal mentorship/review responsibility for a junior team member</p><span class="ptag">Team Direction & Quality Control</span></div></div>
         <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Secure formal day-to-day client-lead designation on an active engagement</p><span class="ptag">Client Leadership & Executive Presence</span></div></div>
         <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Sustain LinkedIn thought-leadership cadence through year-end</p><span class="ptag">Technical, AI & Brand Leadership</span></div></div>
+        <div class="p-card reveal"><span class="p-check"></span><div class="p-text"><p>Help define how consultants integrate AI into daily workflows, building on hands-on AI fluency already driving efficiency in my own delivery</p><span class="ptag">Technical, AI & Brand Leadership</span></div></div>
       </div>
     </section>
   </main>
@@ -795,8 +960,8 @@
       });
     });
 
-    // Smooth anchor scroll for subnav
-    links.forEach(function (l) {
+    // Smooth anchor scroll for subnav and in-content jump links
+    document.querySelectorAll('.subnav a, .jump-link').forEach(function (l) {
       l.addEventListener('click', function (ev) {
         var target = document.querySelector(l.getAttribute('href'));
         if (!target) return;
