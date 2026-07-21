@@ -79,7 +79,18 @@
   .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
   .role-card { background: #fff; border-radius: 8px; padding: 18px; border: 1px solid var(--ey-border); cursor: pointer; transition: all 0.18s; }
   .role-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: var(--ey-yellow); }
-  .role-card .pillar-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #fff; background: var(--ey-dark); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
+  .role-card .pillar-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #fff; background: var(--ey-dark); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px; }
+  .role-card .subteam-tag { font-size: 10px; font-weight: 600; color: var(--ey-gray); background: var(--ey-light); border: 1px solid var(--ey-border); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 10px; margin-left: 4px; }
+  .status-badge { display: inline-block; font-size: 10px; font-weight: 700; color: #8a6d00; background: rgba(255,230,0,0.18); border: 1px solid rgba(255,230,0,0.5); padding: 3px 9px; border-radius: 10px; margin-top: 8px; }
+  .notice-banner { display: flex; gap: 12px; align-items: flex-start; background: #FFF8E1; border: 1px solid #F0C000; border-left: 4px solid #F0C000; border-radius: 8px; padding: 14px 18px; margin-bottom: 22px; }
+  .notice-banner .notice-icon { font-size: 18px; line-height: 1.4; flex-shrink: 0; }
+  .notice-banner .notice-text { font-size: 12.5px; color: #6b5500; line-height: 1.5; }
+  .notice-banner .notice-text strong { color: #5a4700; }
+  .seg-notinscope { background: #f2f2f5; color: #bbb; text-decoration: line-through; }
+  .rel-item { padding: 9px 0; border-bottom: 1px solid #f0f0f0; }
+  .rel-item:last-child { border-bottom: none; }
+  .rel-item strong { font-size: 12px; color: var(--ey-dark); display: block; margin-bottom: 2px; }
+  .rel-item p { font-size: 11px; color: #666; line-height: 1.45; }
   .role-card h3 { font-size: 15px; font-weight: 700; color: var(--ey-dark); margin-bottom: 4px; }
   .role-card .level { font-size: 12px; color: var(--ey-gray); margin-bottom: 10px; }
   .role-card .focus-snippet { font-size: 12px; color: #555; line-height: 1.45; }
@@ -263,7 +274,7 @@
     <!-- OVERVIEW -->
     <div id="section-overview" class="section active">
       <div class="section-title">US Sales Proficiency Pathway Framework</div>
-      <div class="section-sub">A role-calibrated competency model defining required skills and behaviors by role · 13 roles · 6 pillars · 7 competencies · 30 skills</div>
+      <div class="section-sub">A role-calibrated competency model defining required skills and behaviors by role · 17 roles · 6 pillars · 7 competencies · 30 skills</div>
       <div class="agenda-grid">
         <div class="agenda-tile" onclick="showSection('exec')">
           <div class="agenda-num">1</div>
@@ -273,7 +284,7 @@
         <div class="agenda-tile" onclick="showSection('roles')">
           <div class="agenda-num">2</div>
           <h3>The Role Landscape</h3>
-          <p>Who this is designed for — 13 roles across 6 pillars with full job profiles</p>
+          <p>Who this is designed for — 17 roles across 6 pillars with full job profiles</p>
         </div>
         <div class="agenda-tile" onclick="showSection('competency')">
           <div class="agenda-num">3</div>
@@ -310,7 +321,7 @@
         <div class="card card-yellow">
           <h3>The Roles</h3>
           <h2>Who This Is For</h2>
-          <p>Account Managers, Account Executives, Sales Executives across all pillars. Long-term vision: Senior Managers, Directors, Partners globally.</p>
+          <p>17 sales roles across 6 pillars — Sales Activation (Account Management, ARC, Growth Driver Activation), Core Growth, Industries &amp; Accounts, Alliances, Managed Services, and Services &amp; Solutions.</p>
         </div>
       </div>
     </div>
@@ -437,7 +448,7 @@
     <!-- ROLE LANDSCAPE -->
     <div id="section-roles" class="section">
       <div class="section-title">The Role Landscape</div>
-      <div class="section-sub">13 roles across 6 pillars — click any role card to view the full job profile</div>
+      <div class="section-sub">17 roles across 6 pillars — click any role card to view the full job profile. Some roles are shared across pillars and appear under each.</div>
       <div class="pillar-tabs">
         <div class="pillar-tab active" onclick="filterPillar('all',this)">All Pillars</div>
         <div class="pillar-tab" onclick="filterPillar('Sales Activation',this)">Sales Activation</div>
@@ -465,6 +476,10 @@
     <div id="section-matrix" class="section">
       <div class="section-title">Sales Proficiency Milestones by Role</div>
       <div class="section-sub">Expected proficiency by role across 24 skills and 7 competency areas. Blank cells are intentional — not every skill applies to every role.</div>
+      <div class="notice-banner">
+        <div class="notice-icon">⚠️</div>
+        <div class="notice-text"><strong>Illustrative — not approved content.</strong> The proficiency levels shown in the grid below are illustrative placeholders to demonstrate the concept. They have not been reviewed or approved by EY and should not be treated as the confirmed standard. The level definitions (Foundation, Practice, Gold Standard) and role/skill structure are accurate; the individual cell placements are pending validation.</div>
+      </div>
       <div class="levels-grid" style="margin-bottom:24px">
         <div class="level-card">
           <div class="level-icon">▬</div>
@@ -505,6 +520,7 @@
         <div class="tab active" onclick="switchTab(this,'learning')">Program Inventory</div>
         <div class="tab" onclick="switchTab(this,'learning')">Curriculum Coverage</div>
         <div class="tab" onclick="switchTab(this,'learning')">Curriculum vs. Capability</div>
+        <div class="tab" onclick="switchTab(this,'learning')">Ways of Learning</div>
       </div>
       <div class="tab-content active">
         <table class="program-table">
@@ -565,6 +581,58 @@
           <div class="card card-yellow"><h3>Cohort Accountability</h3><p>Peers and managers see the same evidence. Learning is social and observed, not private and self-reported.</p></div>
           <div class="card card-yellow"><h3>Coach-Certified Standing</h3><p>A named coach reviews work products and certifies readiness. Advancement requires human judgment, not a quiz score.</p></div>
         </div>
+      </div>
+      <div class="tab-content">
+        <p style="font-size:13px;color:#666;margin-bottom:18px">Every competency is learned in three modes. Sellers move from knowing, to showing, to doing — with spaced repetition fighting the forgetting curve and a named coach certifying real-world application.</p>
+        <div class="card-grid card-grid-3" style="margin-bottom:24px">
+          <div class="card" style="border-top:3px solid #6BBF6B">
+            <h3>Know It · Enabled</h3>
+            <p style="font-size:11px;font-weight:700;color:var(--foundation);margin-bottom:10px">FOUNDATION LEVEL ONLY</p>
+            <ul class="bullet-list">
+              <li>Microlearning modules</li>
+              <li>Scenario questions</li>
+              <li>Tool walkthroughs</li>
+              <li>Paired with spaced repetition to fight the forgetting curve</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top:3px solid #4A90D9">
+            <h3>Show It · Applied</h3>
+            <p style="font-size:11px;font-weight:700;color:var(--practice);margin-bottom:10px">PRIMARY AT FOUNDATION &amp; PRACTICE</p>
+            <ul class="bullet-list">
+              <li>Work products and simulations</li>
+              <li>Account plans</li>
+              <li>Win strategies</li>
+              <li>Pricing cases</li>
+              <li>Role plays</li>
+              <li>Solution talk-tracks</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top:3px solid #C9A227">
+            <h3>Do It · Performance</h3>
+            <p style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:10px">SPINE AT PRACTICE &amp; GOLD STANDARD</p>
+            <ul class="bullet-list">
+              <li>Field evidence on live accounts and pursuits</li>
+              <li>CRM rigor</li>
+              <li>Deals run</li>
+              <li>ASQ scores</li>
+              <li>Account growth</li>
+              <li>Reviewed by a named coach</li>
+            </ul>
+          </div>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;margin-bottom:14px;color:var(--ey-dark)">Know / Show / Do by Competency</h3>
+        <table class="program-table">
+          <thead><tr><th>Competency</th><th>Know</th><th>Show</th><th>Do</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Opportunity Creation</strong></td><td>GSPP concepts, qualification criteria</td><td>Deal qualification exercise, pipeline scenarios</td><td>Live pursuits, pipeline and opportunity reviews</td></tr>
+            <tr><td><strong>Opportunity Development</strong></td><td>Pricing frameworks, CVS methodology</td><td>Win strategy, pricing case, orals simulation</td><td>Hands-on deal execution, pursuit debriefs</td></tr>
+            <tr><td><strong>Account Management</strong></td><td>AMF framework, relationship mapping</td><td>Account plan, client agenda simulation</td><td>Live account reviews, ASQ scores, client meetings</td></tr>
+            <tr><td><strong>Sales Intelligence</strong></td><td>Tool walkthroughs: Growth IQ, CRM, Account IQ</td><td>Tool application scenarios, CRM data exercises</td><td>CRM hygiene metrics, tool adoption tracking</td></tr>
+            <tr><td><strong>Leadership &amp; Coaching</strong></td><td>Coaching frameworks, feedback models</td><td>Coaching simulation, debrief facilitation</td><td>Team performance evidence</td></tr>
+            <tr><td><strong>The EY Way</strong></td><td>GTM model, AMF, GSPP, common language</td><td>Applied in account and pursuit planning</td><td>Embedded across all live client work</td></tr>
+            <tr><td><strong>Personal Brand &amp; Presence</strong></td><td>Industry landscape, thought leadership concepts</td><td>Presenting, internal visibility exercises</td><td>Client presence, industry participation, referrals</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -644,6 +712,434 @@ const PILLARS = {
 };
 
 const ROLES = [
+  {
+    id: 'sa-leader', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Leadership', title: 'Leader', level: 'Director | 15+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads the full Sales Activation team across Account Management, ARC, and Growth Driver Activation sub-teams; drives client-centric activity and strategic resource deployment across accounts, sectors, and growth drivers.',
+    responsibilities: [
+      { title: 'Sales Activation Leadership', desc: 'Responsible for advancing the focus of the Sales Activation team on client-centric and client-facing activity. Leads the full team across Account Management, ARC, and Growth Driver Activation sub-teams.' },
+      { title: 'Strategic Resource Deployment', desc: 'Leads the deployment of Sales Activation resources where they can drive greatest impact in accounts, sectors, and growth drivers. Manages intake and prioritization across all three sub-pillars.' },
+      { title: 'Team Hiring, Development & Performance', desc: 'Leads recruiting, hiring, and development of Lead Account Managers, ARC Leaders, and GDA Leaders. Sets performance standards and team culture.' },
+      { title: 'Account Management Framework Oversight', desc: 'Champions adoption and excellence of the AMF across all account types. Ensures AMF discipline is embedded across the SA team.' },
+      { title: 'Cross-Pillar Collaboration', desc: 'Partners with Core Growth / I&A and Alliances / S&S / MS pillars to deploy SA resources in support of shared account strategies and growth priorities.' },
+      { title: 'Program Innovation', desc: 'Drives innovation in Sales Activation programs, coaching methodologies, and growth driver activation approaches. Continuously evolves the SA operating model.' },
+      { title: 'Performance Management', desc: 'Sets team targets, monitors KPIs, and conducts regular performance reviews. Provides coaching and escalates performance issues for sub-team leaders.' }
+    ],
+    kpis: ['AMF adoption and quality across the portfolio', 'Account Sprints delivered and impact measured', 'Sub-team performance against individual targets', 'Headcount and team development'],
+    keyFacts: { reportsto: 'S&SP Americas Leadership', tools: 'Dynamics CRM, Growth IQ, MGOS, Roleplay.ai, Account IQ', advancement: 'SA Leader → S&SP Americas Leadership', load: 'Oversight across all account tiers; portfolio-wide SA deployment' },
+    outcomes: ['SA sub-teams performing at target', 'AMF consistently applied across the account portfolio', 'SA resources deployed to highest-impact opportunities'],
+    relationships: [
+      { name: 'S&SP Americas Leadership', desc: 'Receives strategic direction; represents SA team performance and resource needs to Americas leadership' },
+      { name: 'Lead AMs / ARC Leader / GDA Leader', desc: 'Direct management of sub-team leaders; coaches and holds accountable the next level of SA leadership' },
+      { name: 'Core Growth / I&A & Alliances Leaders', desc: 'Cross-pillar collaboration; deploys SA resources in alignment with account and sales strategies' },
+      { name: 'GCSPs / Coordinating Partners', desc: 'Senior collaboration on where SA resources can add most value across all account tiers' },
+      { name: 'EY L&D / Program Leadership', desc: 'Partners on SA program design, AMF updates, and advancement certification processes' }
+    ],
+    competencies: ['Sales Activation program leadership and resource deployment', 'AMF methodology and account management excellence', 'Cross-pillar collaboration and coordination', 'Team leadership and talent development']
+  },
+  {
+    id: 'lead-am', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Management', title: 'Lead Account Manager', level: 'Associate Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'no', Core: 'no' },
+    focus: 'Leads a team of sector account managers as counselor and performance manager, while serving as Senior Account Manager on a priority account; drives AMF execution and account management excellence across the sector.',
+    responsibilities: [
+      { title: 'Team Leadership & Counseling', desc: 'Leads team of sector account managers, serving as counselor and owning performance management. Provides coaching, development guidance, and career support.' },
+      { title: 'Senior Account Manager on Priority Account', desc: 'Serves as the Senior Account Manager on a priority account alongside team leadership responsibilities. Demonstrates AM best practices in action.' },
+      { title: 'Recruiting, Hiring & Development', desc: 'Leads recruiting, hiring, deployment, training, and development of Account Managers within the sector. Ensures team is staffed and fully ramped.' },
+      { title: 'AMF Execution & Account Strategy', desc: 'Ensures AMF is consistently applied across all team accounts. Collaborates on account strategy with GCSPs and SEs; drives execution of account plans.' },
+      { title: 'Change Management & Community Leadership', desc: 'Leads the Sales Activation community within the sector. Owns change management and fosters collaboration with GCSPs and Sector leadership. Owns and drives AM-focused projects and initiatives.' },
+      { title: 'Influence & Performance Standards', desc: 'Influences account team leaders and senior stakeholders. Raises the bar on account management excellence and drives sales activation standards across the sector.' },
+      { title: 'Cross-SL Integration', desc: 'Facilitates cross-service-line planning and integration on team accounts. Connects account teams to the right SL resources for pursuit support and growth execution.' }
+    ],
+    kpis: ['AM team AMF adoption and account cadence rates', 'Team account advancement and pipeline metrics', 'Personal AM performance on priority account', 'Community engagement and team development'],
+    keyFacts: { reportsto: 'Sales Activation Leader', tools: 'Growth IQ, Account IQ, Dynamics CRM, MGOS, Roleplay.ai', advancement: 'Lead AM (AD) → Sales Activation Leadership or Sales Executive', load: '1 priority account (Sr. AM) + team portfolio across sector' },
+    outcomes: ['AM team performing consistently against AMF standards', 'Priority account activated and growing', 'AM community thriving with best practices shared'],
+    relationships: [
+      { name: 'Account Managers (direct reports)', desc: 'Primary people leadership; coaching, development, and performance management of AM team' },
+      { name: 'Sales Activation Leader', desc: 'Reports to; receives strategic direction and resource support for sector AM deployment' },
+      { name: 'GCSPs / Coordinating Partners', desc: 'Aligns AM team activity with account strategy; ensures AM execution supports account growth priorities' },
+      { name: 'ARC Strategists', desc: 'Coordinates with ARC on Sprint facilitation and coaching support for AM team accounts' },
+      { name: 'Sales Executives', desc: 'AM team supports SE-led pursuits with account intelligence; align on shared accounts for integrated activation' }
+    ],
+    competencies: ['Account team leadership and people management', 'AMF methodology and account activation excellence', 'Sector community leadership and knowledge sharing', 'Cross-SL integration and stakeholder influence']
+  },
+  {
+    id: 'senior-am', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Management', title: 'Senior Account Manager', level: 'Associate Director | 10–12 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'secondary', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads AMF planning and execution on 1–2 Premier, Strategic, or Focus accounts; owns ASQ, senior client relationships, and account strategy while mentoring Account Managers across the sector.',
+    responsibilities: [
+      { title: 'AMF Planning & Execution', desc: 'Leads account management cadence on 1–2 assigned Premier, Strategic, or Focus accounts. Primary owner of all AMF activities including planning, execution, and annual review.' },
+      { title: 'ASQ Ownership & Facilitation', desc: 'Develops and leads the Account Strategic Questionnaire (ASQ). Captures findings, drives action items, and ensures year-end follow-through with the client team.' },
+      { title: 'Account Strategy Development', desc: 'Co-develops account plan with GCSP and SE. Identifies whitespace and maintains account plan cadence; drives coordinated execution across the account team.' },
+      { title: 'Cross-SL Coordination', desc: 'Integrates across service lines and geographies. Manages internal team coordination; serves as account knowledge hub connecting teams across the portfolio.' },
+      { title: 'Senior Client Relationship Management', desc: 'Owns stakeholder mapping and senior relationship health monitoring. Owns targeted client relationships (Procurement, DEI, etc.) and teams with account leaders to advance and expand client relationships.' },
+      { title: 'Pipeline & CRM Discipline', desc: 'Maintains accurate pipeline in Dynamics CRM. Supports SE-led pursuits with account intelligence and timely, accurate pipeline contributions.' },
+      { title: 'Mentoring & Team Influence', desc: 'Mentors Account Managers within the sector. Proactively drives team collaboration and shares best practices. Operates with agility and strong problem-solving skills.' }
+    ],
+    kpis: ['AMF cadence completion rate across assigned accounts', 'ASQ completion and follow-through rate', 'Account plan quality and execution consistency', 'CRM pipeline accuracy'],
+    keyFacts: { reportsto: 'Lead Account Manager, AD / Sales Activation Leader', tools: 'Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, Roleplay.ai', advancement: 'Senior AM → Lead AM (AD) → SA Leadership; or → ARC/GDA Strategist', load: '1–2 assigned accounts (Premier, Strategic, or Focus)' },
+    outcomes: ['AMF cadence running consistently on assigned accounts', 'ASQ completed with documented year-end follow-through', 'Account plan co-developed and updated regularly'],
+    relationships: [
+      { name: 'GCSP / Coordinating Partner', desc: 'Sets strategy; Senior AM executes. Primary direction-setter and operational engine for account activation' },
+      { name: 'Sales Executive', desc: 'SE drives origination; Senior AM activates the account plan and provides intelligence for SE-led pursuits' },
+      { name: 'Account Manager', desc: 'Senior AM mentors and shares best practices across the Sales Activation ecosystem' },
+      { name: 'ARC Strategist', desc: 'ARC provides AMF coaching and facilitates Account Sprints; Senior AM is a key collaborator and beneficiary' },
+      { name: 'Client Stakeholders (Dir/VP)', desc: 'Senior AM owns day-to-day relationship management; builds trust and expands reach across the client organization' }
+    ],
+    competencies: ['AMF execution and account activation', 'ASQ ownership and facilitation', 'Senior client relationship management', 'Cross-SL coordination and team collaboration']
+  },
+  {
+    id: 'account-manager', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Management', title: 'Account Manager', level: 'Assistant Director | 7–10 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads AMF planning and execution on 1–2 assigned accounts; owns ASQ, client relationships at Director/VP level, pipeline discipline, and account strategy in partnership with GCSP and SE.',
+    responsibilities: [
+      { title: 'AMF Planning & Execution', desc: 'Leads account management cadence on 1–2 assigned accounts. Primary owner of all AMF activities including planning, execution, and annual review.' },
+      { title: 'ASQ Ownership', desc: 'Develops the ASQ plan, leads client interviews, captures findings, drives action items, and ensures year-end follow-through on all commitments.' },
+      { title: 'Account Strategy', desc: 'Co-develops account plan with GCSP and SE. Identifies whitespace and maintains account plan cadence; ensures coordinated execution across the account team.' },
+      { title: 'Cross-SL Coordination', desc: 'Integrates across service lines and geographies. Manages internal team; serves as account knowledge hub connecting teams to growth resources and EY capabilities.' },
+      { title: 'Client Relationship Management', desc: 'Owns stakeholder mapping and relationship health monitoring. Expands relationships across the account organization over time; builds trust at Director/VP level.' },
+      { title: 'Pipeline & CRM Discipline', desc: 'Maintains accurate pipeline in Dynamics CRM. Supports SE-led pursuits with account intelligence and timely, accurate pipeline data.' },
+      { title: 'Tool Proficiency', desc: 'Proficient in Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, and Roleplay.ai to drive account effectiveness and sales activation.' }
+    ],
+    kpis: ['AMF cadence completion rate across assigned accounts', 'ASQ completion and follow-through rate', 'CRM pipeline accuracy and timeliness', 'Account plan quality and execution'],
+    keyFacts: { reportsto: 'GCSP / Coordinating Partner', tools: 'Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, Roleplay.ai', advancement: 'Account Manager → Senior AM → Lead AM (AD) → ARC or GDA Strategist', load: '1–2 assigned accounts (Global 360 or Focus Core)' },
+    outcomes: ['AMF cadence running consistently on all assigned accounts', 'ASQ completed with documented year-end follow-through', 'Account plan co-developed and updated regularly', 'CRM pipeline accurate, current, and complete'],
+    relationships: [
+      { name: 'GCSP / Coordinating Partner', desc: 'Sets strategy; AM executes. Primary direction-setter; AM is the operational engine that activates the GCSP\'s account vision' },
+      { name: 'Sales Executive', desc: 'AM supports SE-led pursuits with account intelligence; SE owns origination while AM manages the account activation framework' },
+      { name: 'ARC Strategist', desc: 'ARC provides AMF coaching and facilitates Account Sprints; AM is the primary beneficiary of ARC coaching and program evaluation' },
+      { name: 'Cross-SL Service Line Leads', desc: 'AM coordinates across service lines, facilitates introductions, and manages internal team integration on the account' },
+      { name: 'Client Stakeholders (Dir/VP)', desc: 'AM owns day-to-day relationship management; builds trust and expands reach across the client organization' }
+    ],
+    competencies: ['AMF execution and account activation', 'ASQ ownership and facilitation', 'Stakeholder management and relationship expansion', 'CRM and pipeline discipline']
+  },
+  {
+    id: 'arc-leader', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Resource Center (ARC)', title: 'Account Resource Center Leader', level: 'Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads the ARC team and sets its strategic direction, delivering a scalable, cost-effective AMF model that brings standardized, proven tools to all accounts with emphasis on Top-end Core and High Potential Core.',
+    responsibilities: [
+      { title: 'Team Leadership & Development', desc: 'Team leader accountable for growth, development, and performance of the ARC team. Sets strategic direction, coaches team members, and builds a high-performing ARC.' },
+      { title: 'ARC Strategic Direction', desc: 'Sets and implements the strategic direction of the Account Resource Center. Ensures ARC delivers a scalable, cost-effective, and high-value model — bringing standardized, proven AMF tools to all accounts with emphasis on Top-end Core and High Potential Core accounts.' },
+      { title: 'AMF Methodology Expertise', desc: 'Demonstrates deep AMF methodology expertise. Champions AMF adoption and innovation across the team. Recognized as a firm leader in account management excellence.' },
+      { title: 'Executive Relationship Building', desc: 'Develops strong rapport with Executive Leaders across S&SP and account teams. Ensures ARC resources are deployed where they can drive greatest impact.' },
+      { title: 'Accurate Account Needs Assessment', desc: 'Maintains the ability to accurately assess account needs and opportunities. Deploys the right ARC resources to match account team requirements and readiness.' },
+      { title: 'Program & Certification Oversight', desc: 'Oversees the ARC team\'s role in the Proficiency Pathway and advancement certification programs. Ensures program quality and consistency across all evaluations.' },
+      { title: 'Cross-Functional Collaboration', desc: 'Partners with SA Leader, GDA Leader, and Lead AMs to ensure coordinated deployment of Sales Activation resources across the account portfolio.' }
+    ],
+    kpis: ['ARC team AMF delivery quality and consistency', 'Account Sprint volume and impact metrics', 'Team development and advancement rates', 'Executive leader satisfaction with ARC deployment'],
+    keyFacts: { reportsto: 'Sales Activation Leader', tools: 'Growth IQ, Account IQ, MGOS, Dynamics CRM, Roleplay.ai', advancement: 'ARC Leader → Sales Activation Leadership or Sales Executive', load: 'Portfolio-wide; oversees all ARC engagements across account tiers' },
+    outcomes: ['ARC team performing consistently against delivery standards', 'AMF expertise recognized across the firm', 'ARC resources deployed to highest-impact accounts'],
+    relationships: [
+      { name: 'Sr. ARC Strategists / ARC Strategists', desc: 'Primary people leadership; coaching, development, and performance management of ARC team' },
+      { name: 'Sales Activation Leader', desc: 'Reports to; receives strategic direction and supports SA-wide resource deployment strategy' },
+      { name: 'GCSPs / Executive Leaders', desc: 'Senior-level relationships to understand account needs and ensure effective ARC resource deployment' },
+      { name: 'Lead Account Managers', desc: 'Coordinates with Lead AMs to align ARC Sprint facilitation and coaching with AM account plans' },
+      { name: 'EY L&D / Program Leadership', desc: 'Partners on AMF methodology updates, Proficiency Pathway program design, and certification standards' }
+    ],
+    competencies: ['Account Resource Center team leadership', 'AMF methodology mastery and program oversight', 'Strategic deployment of ARC resources', 'Executive relationship building and influence']
+  },
+  {
+    id: 'senior-arc', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Resource Center (ARC)', title: 'Senior Account Resource Center Strategist', level: 'Associate Director | 10–12 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'secondary', Focus: 'primary', Core: 'no' },
+    focus: 'Executes AMF-based consultations and facilitates Account Sprints on complex, high-priority accounts; mentors ARC Strategists and AMs and evaluates advancement submissions.',
+    responsibilities: [
+      { title: 'AMF-Based Account Consultations', desc: 'Executes AMF-based consultations and account acceleration sessions. Builds a strong AMF foundation on assigned accounts and drives consistent methodology adoption.' },
+      { title: 'Account-Specific Growth Strategy', desc: 'Develops account-specific growth strategies and executes plans with account leaders on complex, multi-stakeholder accounts.' },
+      { title: 'Account Sprint Facilitation', desc: 'Designs and facilitates Account Sprints on complex, high-priority accounts. Recognized as the go-to ARC resource for Sprint delivery in complex environments.' },
+      { title: 'AMF Mentoring & Capability Building', desc: 'AMF methodology expert and key leader for account activation. Mentors ARC Strategists and Account Managers; proactively drives team collaboration.' },
+      { title: 'Executive Stakeholder Influence', desc: 'Operates at the executive level; influences GCSPs and senior account team leaders to adopt AMF practices and apply them with rigor.' },
+      { title: 'Internal Brand & Knowledge Building', desc: 'Proactively shares best practices, creates AMF knowledge assets, and contributes to the ongoing development of the ARC resource library.' },
+      { title: 'Program Evaluation', desc: 'Evaluates Account Manager and Sales Executive advancement submissions. Applies objective criteria consistently and provides constructive feedback.' }
+    ],
+    kpis: ['AMF consultation and Sprint delivery quality', 'Account growth metrics on engaged accounts', 'Advancement evaluation quality and consistency', 'Team mentoring and collaboration impact'],
+    keyFacts: { reportsto: 'Account Resource Center Leader', tools: 'Growth IQ, Account IQ, MGOS, Dynamics CRM, Roleplay.ai', advancement: 'Senior ARC Strategist → ARC Leader or Senior Account Manager', load: 'Portfolio of complex/priority accounts; no fixed assignment' },
+    outcomes: ['AMF consultations and Sprints delivered with quality', 'Account growth supported across engaged accounts', 'ARC Strategists mentored and developed'],
+    relationships: [
+      { name: 'Account Managers', desc: 'Primary coaching and facilitation relationship; delivers AMF Sprints and complex consultations to AMs' },
+      { name: 'GCSPs / Coord. Partners', desc: 'Program sponsors and strategic account leads; collaborates to develop account strategy' },
+      { name: 'ARC Strategists', desc: 'Mentoring relationship; guides and develops ARC Strategists on methodology and execution' },
+      { name: 'ARC Leader', desc: 'Direct people leader; provides strategic direction and deployment guidance' },
+      { name: 'Sales Executives', desc: 'Coordination on shared accounts; supports activation that enables SE-led origination' }
+    ],
+    competencies: ['AMF methodology mastery on complex accounts', 'Account Sprint facilitation and consultation delivery', 'Executive stakeholder influence', 'Mentoring, coaching, and capability development']
+  },
+  {
+    id: 'arc-strategist', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Account Resource Center (ARC)', title: 'Account Resource Center Strategist', level: 'Assistant Director | 7–10 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'secondary', Focus: 'primary', Core: 'no' },
+    focus: 'Delivers AMF-based consultations and Account Sprints broadly across the portfolio; coaches Account Managers, navigates MGOS, and serves as program evaluator.',
+    responsibilities: [
+      { title: 'AMF Consultations', desc: 'Delivers AMF-based consultations across many accounts. Not assigned to 1–2 accounts — works broadly across the full portfolio to build AMF foundations and drive adoption.' },
+      { title: 'Account Sprint Facilitation', desc: 'Designs and facilitates Account Sprints. Core competency: driving account teams through structured, time-bound growth planning to advance account strategy.' },
+      { title: 'Internal Sales Coaching', desc: 'Coaches Account Managers on AMF application, account cadence, and account management discipline. Primary coaching relationship is with AMs across the portfolio.' },
+      { title: 'MGOS Navigation', desc: 'Navigates the Markets Growth Operating System. Connects account teams to the right firm resources and enablement functions to activate account plans.' },
+      { title: 'Program Evaluation', desc: 'Assesses AM and SE advancement gate submissions. Serves as program evaluator and coach. Ensures objective and consistent evaluation standards are applied.' },
+      { title: 'AMF Process Expertise', desc: 'Deep AMF methodology knowledge. Recognized as firm expert consulted by teams on methodology questions; serves as knowledge custodian and resource developer.' },
+      { title: 'Asset & Knowledge Development', desc: 'Inputs on AMF asset development; identifies and shares best-in-class account management tools to be disseminated across the firm.' }
+    ],
+    kpis: ['Number and quality of Account Sprints facilitated', 'AMF adoption and competency scores across coached AMs', 'Advancement evaluation consistency and quality'],
+    keyFacts: { reportsto: 'Account Resource Center Leader', tools: 'Growth IQ, MGOS, Roleplay.ai, Dynamics CRM', advancement: 'ARC Strategist → Senior ARC Strategist → Senior Account Manager', load: 'Many accounts, no fixed assigned load; portfolio-wide coverage' },
+    outcomes: ['Account Sprints delivered on time and with consistent quality', 'AMF coaching provided to AMs across the full portfolio', 'Advancement evaluations completed with objectivity'],
+    relationships: [
+      { name: 'Account Managers', desc: 'Primary coaching and facilitation relationship; delivers AMF Sprints and ongoing coaching to AMs across accounts' },
+      { name: 'GCSPs / Coord. Partners', desc: 'Program sponsors for Sprint facilitation; works with GCSPs to co-develop account strategy' },
+      { name: 'Sales Executives', desc: 'Coordination as needed; operates in the coaching lane but supports shared account goals' },
+      { name: 'Program Leadership / ARC Leader', desc: 'Embedded as evaluator and trainer within the formal advancement certification program' },
+      { name: 'Firm Enablement Functions', desc: 'Connects account teams to the right EY internal functions and resources via MGOS navigation' }
+    ],
+    competencies: ['AMF methodology mastery and Account Sprint facilitation', 'Internal coaching and sales capability development', 'MGOS navigation and firm enablement connectivity', 'Program evaluation and advancement certification']
+  },
+  {
+    id: 'gda-leader', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Growth Driver Activation (GDA)', title: 'Growth Driver Activation Leader', level: 'Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads the GDA team and strategy, driving growth through a two-pronged Pull (acceleration sessions) and Push (last-mile sales plays and campaigns) activation model across sectors.',
+    responsibilities: [
+      { title: 'Team Leadership & GDA Strategy', desc: 'Team leader responsible for implementing and overseeing GDA strategy. Drives sales and promotes growth through activating Growth Drivers and cross-sector campaigns.' },
+      { title: 'Two-Pronged Activation Model', desc: 'Deploys a Pull model (account and sector acceleration sessions) and a Push model (last-mile sales plays and campaigns for select solutions). Works with Americas leadership to activate Growth Drivers at scale across the firm.' },
+      { title: 'Hiring, Development & Performance', desc: 'Leads recruiting, hiring, development, and performance management of GDA Strategists. Builds a high-performing team of growth driver activation specialists.' },
+      { title: 'Senior Relationship & Influence', desc: 'Demonstrates strong sales and solutions activation expertise. Builds collaborative relationships with senior stakeholders across the firm and with clients.' },
+      { title: 'Solutions Activation Ecosystem', desc: 'Deep understanding of solution strategy and the growth driver ecosystem. Serves as an authoritative voice on Growth Driver capabilities and go-to-market strategy.' },
+      { title: 'Cross-Pillar Collaboration', desc: 'Collaborates with CG / I&A, Alliances, and Sales Activation pillars to deploy GDA resources where they can drive the greatest impact.' },
+      { title: 'Performance Management', desc: 'Sets team targets, monitors GDA deployment quality, and conducts performance reviews. Ensures GDA Strategists are meeting engagement and pipeline goals.' }
+    ],
+    kpis: ['GDA deployment quality and volume across accounts', 'Growth Driver pipeline activated and advanced', 'Team development and advancement metrics', 'Cross-sector GDA engagement impact'],
+    keyFacts: { reportsto: 'Sales Activation Leader', tools: 'Dynamics CRM, Growth IQ, MGOS, Sales Navigator, AI-enabled sales tools', advancement: 'GDA Leader → Sales Activation Leadership or Sales Executive', load: 'Portfolio-wide; oversees all GDA engagements across sectors and account tiers' },
+    outcomes: ['GDA team meeting deployment and pipeline targets', 'Growth Drivers activated at scale across sectors', 'Team developing toward next-level roles'],
+    relationships: [
+      { name: 'Sr. GDA / GDA Strategists (direct)', desc: 'Primary people leadership; coaching, development, and performance management of GDA team' },
+      { name: 'Sales Activation Leader', desc: 'Reports to; receives strategic direction and aligns GDA deployment with SA-wide resource strategy' },
+      { name: 'Americas Leadership (C&I / S&SP)', desc: 'Works collaboratively to prioritize and activate Growth Drivers at the Americas level' },
+      { name: 'Account Teams (GCSPs, AMs, SEs)', desc: 'Coordinates GDA deployment to support account-level growth priorities across all tiers' },
+      { name: 'Growth Driver Sub-Pillar Teams', desc: 'Partners with specific Growth Driver owners (AI, sustainability, tax technology) to develop and execute activation campaigns' }
+    ],
+    competencies: ['Growth Driver Activation team leadership', 'Growth driver ecosystem and solution strategy expertise', 'Cross-sector campaign development and deployment', 'Senior stakeholder relationship building and influence']
+  },
+  {
+    id: 'senior-gda', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Growth Driver Activation (GDA)', title: 'Senior Growth Driver Activation Strategist', level: 'Associate Director | 10–12 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Aligned to specific sectors to grow the Growth Driver footprint; drives cross-sector campaigns, GTM strategy, and pipeline while mentoring GDA Strategists.',
+    responsibilities: [
+      { title: 'Sector & Growth Driver Alignment', desc: 'Aligned to specific sectors with a focus on growing the Growth Driver footprint. Drives cross-sector campaigns and activates complex Growth Drivers within assigned areas.' },
+      { title: 'GTM Strategy Development', desc: 'Establishes and drives GTM efforts for Growth Driver activation. Collaborates with sector and account leadership to build joint activation plans and execution strategies.' },
+      { title: 'Pipeline Growth & Origination', desc: 'Influences and grows pipeline through growth driver activation. Identifies unmet needs where EY\'s Growth Driver capabilities can solve strategic client challenges.' },
+      { title: 'Sales Excellence & Best Practice Sharing', desc: 'Influences leaders and impacts sales excellence across the sector. Navigates EY\'s Growth Driver ecosystem and proactively shares best practices with team members.' },
+      { title: 'Sector Stakeholder Engagement', desc: 'Builds strong relationships with sector leaders, account teams, and Growth Driver domain experts. Acts as a senior connector between GDA resources and business needs.' },
+      { title: 'Process Innovation & Campaign Execution', desc: 'Innovates and improves upon processes across the Growth Driver ecosystem to simplify and accelerate growth. Executes multi-sector activation campaigns with consistent messaging and measurable impact.' },
+      { title: 'Mentoring & Collaboration', desc: 'Mentors GDA Strategists, proactively drives team collaboration, and shares knowledge to elevate team-wide capabilities and performance.' }
+    ],
+    kpis: ['Growth Driver pipeline activated and advanced', 'Sector origination contributions from GDA activity', 'Campaign execution quality and breadth', 'Team mentoring and knowledge sharing impact'],
+    keyFacts: { reportsto: 'Growth Driver Activation Leader', tools: 'Dynamics CRM, Growth IQ, Sales Navigator, MGOS, AI-enabled sales tools', advancement: 'Senior GDA Strategist → GDA Leader or Senior Account Manager', load: 'Portfolio of focus sector accounts and cross-sector campaign execution' },
+    outcomes: ['Growth Driver pipeline activated across focus sectors', 'Cross-sector campaigns executed effectively', 'GDA Strategists mentored and best practices shared'],
+    relationships: [
+      { name: 'GDA Strategists', desc: 'Mentoring relationship; guides and develops GDA Strategists on growth driver activation and selling skills' },
+      { name: 'Sector / Account Leadership', desc: 'Primary collaboration partner for GTM strategy development and GDA deployment within sectors' },
+      { name: 'GDA Leader', desc: 'Direct people leader providing strategic direction and performance management' },
+      { name: 'Account Managers', desc: 'Coordinates GDA activation with AM account plans to drive aligned, consistent account growth' },
+      { name: 'Growth Driver Domain Teams', desc: 'Partners with specific Growth Driver owners to translate capabilities into client-relevant activation plans' }
+    ],
+    competencies: ['Growth driver ecosystem navigation and activation', 'Cross-sector GTM strategy and campaign execution', 'Senior stakeholder influence and collaboration', 'Mentoring and team capability development']
+  },
+  {
+    id: 'gda-strategist', pillars: ['Sales Activation'], group: 'Sales Activation', subteam: 'Growth Driver Activation (GDA)', title: 'Growth Driver Activation Strategist', level: 'Assistant Director | 7–10 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'no', Focus: 'primary', Core: 'primary' },
+    focus: 'Aligned to specific sectors and accounts to grow the Growth Driver footprint; co-develops strategy and action plans, executes GTM campaigns, and contributes to pipeline origination.',
+    responsibilities: [
+      { title: 'Growth Driver Activation', desc: 'Aligned to specific sectors with a focus on growing the Growth Driver footprint. Drives growth driver activation campaigns aligned to assigned sectors and accounts.' },
+      { title: 'Co-Develop Strategy & Action Plans', desc: 'Co-develops strategy and action plans with SL/Sector leadership, SEs, AMs, and GCSPs. Executes GTM activities including acceleration sessions and last-mile campaigns aligned to assigned sectors and growth drivers.' },
+      { title: 'Pipeline Origination Contribution', desc: 'Influences and grows pipeline through growth driver activation. Contributes to sector and account-level pipeline by surfacing Growth Driver-powered opportunities.' },
+      { title: 'Sales Excellence & Ecosystem Navigation', desc: 'Influences sales excellence within assigned sectors and accounts. Navigates EY\'s Growth Driver ecosystem to connect teams to the right resources and capabilities.' },
+      { title: 'GTM Execution', desc: 'Executes GTM campaigns aligned to specific growth drivers. Activates EY\'s high-priority themes (AI, sustainability, workforce, tax technology) with client-facing account teams.' },
+      { title: 'Stakeholder Engagement', desc: 'Builds relationships with sector leaders, SL leads, and account teams. Becomes a trusted resource for growth driver knowledge and activation support.' },
+      { title: 'Knowledge Development', desc: 'Continuously builds personal expertise in assigned Growth Driver area(s). Contributes to team knowledge assets and shares insights with peer GDA Strategists.' }
+    ],
+    kpis: ['Growth Driver activation campaigns executed', 'Pipeline origination contributions from GDA activity', 'Sector engagement volume and quality', 'Growth driver knowledge and GTM execution'],
+    keyFacts: { reportsto: 'Growth Driver Activation Leader', tools: 'Dynamics CRM, Growth IQ, MGOS, Sales Navigator, AI-enabled sales tools', advancement: 'GDA Strategist → Senior GDA Strategist → Account Manager', load: 'Portfolio of Focus and Core accounts; Growth Driver campaign coverage' },
+    outcomes: ['Growth Driver campaigns activated across assigned sectors', 'Pipeline contribution from GDA activity', 'Sector team relationships established and maintained'],
+    relationships: [
+      { name: 'Senior GDA Strategist', desc: 'Mentoring and guidance relationship; provides coaching and best practice sharing' },
+      { name: 'SL / Sector Leadership', desc: 'Primary co-development relationship for strategy and action plans; executes within the sector\'s growth agenda' },
+      { name: 'GDA Leader', desc: 'People leader providing strategic direction and performance management' },
+      { name: 'Account Managers', desc: 'Coordinates GDA activation with AM account management plans for aligned growth driver messaging on accounts' },
+      { name: 'Account Teams (GCSPs, SEs)', desc: 'Supports account teams with growth driver insights; helps embed Growth Driver themes into client conversations' }
+    ],
+    competencies: ['Growth driver knowledge and ecosystem navigation', 'GTM execution and campaign activation', 'Sector stakeholder relationship building', 'Co-developing strategy with SL and sector leadership']
+  },
+  {
+    id: 'cgia-leader', pillars: ['Core Growth','Industries & Accounts'], group: 'Core Growth / Industries & Accounts', title: 'Leader', level: 'Director – Managing Director | 15+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'secondary', Core: 'no' },
+    focus: 'Leads all Core Growth and I&A sales professionals across the combined pillar; sets GTM and sales strategy, carries personal targets, and owns the firm\'s most senior client relationships.',
+    responsibilities: [
+      { title: 'Pillar Leadership & Sales Team Direction', desc: 'Leads all Core Growth and I&A sales professionals across the combined pillar. Sets performance standards, team culture, and strategic direction.' },
+      { title: 'GTM & Sales Strategy Development', desc: 'Develops and drives the go-to-market and sales strategy for the combined CG and I&A pillar in alignment with firm-wide priorities and S&SP Americas direction.' },
+      { title: 'SE Hiring, Training & Development', desc: 'Leads recruiting, hiring, onboarding, and development of Sales Executives and Sales Managers. Champions talent development and career progression across the pillar.' },
+      { title: 'Personal Sales & Origination', desc: 'Carries personal origination and sales targets alongside pillar leadership. Models elite selling behaviors and demonstrates that great leaders stay in the market.' },
+      { title: 'Senior C-Suite Relationship Management', desc: 'Owns EY\'s most senior client relationships across Core Growth and I&A accounts. Serves as the firm\'s highest-level sales presence with Board and CEO-level buyers.' },
+      { title: 'Cross-Pillar Collaboration', desc: 'Partners with Alliances, Managed Services, Services & Solutions, and Sales Activation pillars to deliver integrated solutions to CG and I&A accounts.' },
+      { title: 'Performance Management', desc: 'Sets team targets, monitors KPIs, and conducts regular performance reviews. Develops improvement and growth plans for all reporting Sales Managers and SEs.' }
+    ],
+    kpis: ['Overall pillar origination and sales totals', 'SE team quota attainment rate', 'Personal origination and sales contribution', 'Team headcount and voluntary attrition'],
+    keyFacts: { reportsto: 'S&SP Americas Leadership', tools: 'Dynamics CRM, Growth IQ, Account IQ, Pursuit Resource Center, Markets OS', advancement: 'Leader → S&SP Americas Leadership', load: 'Oversight of Premier and Strategic account portfolios across sectors' },
+    outcomes: ['Pillar origination and sales targets met or exceeded', 'SE team fully staffed, developed, and performing to quota', 'Cross-pillar collaboration driving integrated deal flow'],
+    relationships: [
+      { name: 'S&SP Americas Leadership', desc: 'Receives strategic direction; represents pillar performance and resource needs to Americas leadership' },
+      { name: 'Sales Managers / Sector Leaders', desc: 'Direct/indirect management; coaches and develops the next level of sales leadership within the pillar' },
+      { name: 'GCSPs / Coordinating Partners', desc: 'Senior-level alignment on Premier and Strategic account strategy; most senior S&SP voice in account planning sessions' },
+      { name: 'C-Suite Clients', desc: 'Owns the firm\'s highest-level client relationships; engaged at Board, CEO, and CFO level on transformational opportunities' },
+      { name: 'Alliance & Solution Partners', desc: 'Collaborates to build integrated GTM plays; brings Alliances and S&S capabilities into CG and I&A account strategies' }
+    ],
+    competencies: ['Strategic sales leadership and pillar-wide performance management', 'Go-to-market strategy development across CG and I&A', 'Senior C-suite relationship management', 'Personal sales origination and deal leadership']
+  },
+  {
+    id: 'cgia-sales-manager', pillars: ['Core Growth','Industries & Accounts'], group: 'Core Growth / Industries & Accounts', title: 'Sales Manager', level: 'Director – Managing Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'no', Core: 'no' },
+    focus: 'Manages a team of CG and I&A Sales Executives; executes sector GTM strategy, carries personal targets, and coaches SEs through deal qualification, pursuit strategy, and negotiation.',
+    responsibilities: [
+      { title: 'Team Leadership & SE Development', desc: 'Manages a team of CG and I&A Sales Executives. Responsible for hiring, onboarding, coaching, and developing SE talent toward full quota-carrying performance.' },
+      { title: 'Sector GTM Strategy Execution', desc: 'Develops and executes the sector-specific go-to-market strategy in alignment with the pillar leader and firm-wide growth priorities.' },
+      { title: 'Personal Sales Origination', desc: 'Carries personal origination and sales targets in addition to team leadership. Demonstrates elite selling behaviors as a model for the SE team.' },
+      { title: 'Deal Coaching & Pipeline Oversight', desc: 'Provides regular deal coaching and pipeline reviews. Coaches SEs on pursuit strategy, qualification rigor, and commercial negotiation to improve win rates.' },
+      { title: 'Hiring, Training & Onboarding', desc: 'Leads recruiting, hiring, and onboarding of Sales Executives. Ensures team is fully staffed and ramped to quota-carrying performance.' },
+      { title: 'Sales Innovation & Strategy', desc: 'Drives innovation in sales methodology and practices. Develops and executes sector sales strategy based on market trends and client needs. Partners with sector leaders, SLs, and GCSPs for coordinated coverage.' },
+      { title: 'Performance Management', desc: 'Sets individual SE targets, monitors KPIs, and conducts regular performance reviews. Develops individual growth plans and manages performance issues.' }
+    ],
+    kpis: ['Team origination total ($): aggregate SE pipeline created', 'Team personal sales total ($): aggregate closed revenue', 'Personal origination and sales ($)', 'Team headcount and attrition'],
+    keyFacts: { reportsto: 'Leader (Core Growth / Industries & Accounts)', tools: 'Dynamics CRM, Growth IQ, Account IQ, Sales Navigator, Pursuit Resource Center', advancement: 'Sales Manager → Sector Sales Leader → Leader → S&SP Leadership', load: 'Manages sector portfolio; carries personal sales and origination targets across Premier and Strategic' },
+    outcomes: ['Team origination and sales targets met or exceeded', 'Personal origination contribution achieved', 'SE team fully staffed and performing to quota'],
+    relationships: [
+      { name: 'Sales Executives (direct reports)', desc: 'Primary people leadership relationship; coaching, development, performance management, and motivation' },
+      { name: 'Pillar Leader', desc: 'Receives strategic direction; collaborates on GTM strategy, account prioritization, and resource allocation' },
+      { name: 'GCSPs / Coordinating Partners', desc: 'Coordinates SE deployment across high-potential accounts; ensures SE activity aligns with account-level growth agendas' },
+      { name: 'Sector Leadership', desc: 'Partners with sector leaders to align sales strategy with sector-specific go-to-market priorities and client opportunities' },
+      { name: 'Service Line Leaders', desc: 'Coordinates cross-SL solution development and pursuit teaming for complex multi-service-line deals' }
+    ],
+    competencies: ['Sales team leadership, coaching, and performance management', 'Sector-specific go-to-market strategy development', 'Personal sales origination and deal leadership', 'Cross-functional alignment and stakeholder management']
+  },
+  {
+    id: 'cgia-se', pillars: ['Core Growth','Industries & Accounts'], group: 'Core Growth / Industries & Accounts', title: 'Sales Executive', level: 'Associate Director – Director* | 10–12 years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'no', Core: 'no' },
+    focus: 'Owns new business origination across CG and I&A accounts; leads the full pursuit lifecycle, builds C-suite relationships, and applies Growth Driver and sector depth to differentiate EY.',
+    responsibilities: [
+      { title: 'Sales Origination', desc: 'Owns new business origination across CG and I&A accounts. Independently qualifies and pursues opportunities. Holds personal sales and origination targets.' },
+      { title: 'Full Pursuit Lifecycle Ownership', desc: 'Leads end-to-end sales process from opportunity identification through close. Manages pursuit strategy, proposal development, and commercial negotiation.' },
+      { title: 'C-Suite Relationship Management', desc: 'Builds and expands relationships with senior buyers including C-suite and Board-level stakeholders. Develops trusted advisor positioning across assigned accounts.' },
+      { title: 'Account Strategy', desc: 'Co-develops account strategy with GCSPs and Account Managers. Identifies whitespace and maintains a multi-year growth perspective on assigned accounts.' },
+      { title: 'Growth Driver Knowledge & Utilization', desc: 'Applies deep knowledge of EY\'s Growth Drivers (AI/technology, sustainability, workforce, tax) to generate new pipeline and differentiate EY in competitive situations.' },
+      { title: 'Pipeline Management & CRM Discipline', desc: 'Maintains rigorous pipeline hygiene in Dynamics CRM. Uses data-driven insights from Growth IQ to prioritize accounts and optimize sales effort allocation.' },
+      { title: 'Sector & Solution Depth', desc: 'Applies extensive industry expertise and deep knowledge of EY\'s offerings, alliances, and solutions to differentiate EY in competitive situations.' }
+    ],
+    kpis: ['Personal origination ($): new pipeline created', 'Personal sales bookings ($): closed revenue contribution', 'Sales forecasting accuracy; working capital management (ETCs, cash & billings)', 'Voice of Client discovery (ASQ & Win/Loss coverage)'],
+    keyFacts: { reportsto: 'Sales Manager (Core Growth / I&A)', tools: 'Dynamics CRM, Growth IQ, Account IQ, Sales Navigator, Pursuit Resource Center', advancement: 'Sales Executive → Account Leader (GCSP/RCP) → Account Executive → GCSP', load: 'Strategic and Premier accounts; sector-defined portfolio · Director: $100M+ account/portfolio GTER' },
+    outcomes: ['Personal origination and sales targets met or exceeded', 'New pipeline generated across assigned accounts', 'C-suite relationships built across Premier and Strategic accounts'],
+    relationships: [
+      { name: 'GCSP / Coordinating Partner', desc: 'Trusted advisor relationship; SE aligns origination strategy with GCSP\'s account direction and firm priorities' },
+      { name: 'Account Manager', desc: 'SE develops strategy and drives origination; AM activates account plan and manages day-to-day coordination' },
+      { name: 'C-Suite Clients', desc: 'Primary senior relationship owner; SE builds multi-year advisory relationships with CEO, CFO, and Board-level stakeholders' },
+      { name: 'Sales Manager', desc: 'Direct people leader providing coaching, deal review support, and performance oversight' },
+      { name: 'Service Line Specialists', desc: 'SE assembles and leads pursuit teams; mobilizes cross-SL experts from proposal development through close' }
+    ],
+    competencies: ['New business origination and opportunity qualification', 'Deal leadership — pursuit strategy, proposal, and negotiation', 'C-suite relationship management', 'Growth Driver knowledge and solution integration']
+  },
+  {
+    id: 'cgia-account-leader', pillars: ['Core Growth','Industries & Accounts'], group: 'Core Growth / Industries & Accounts', title: 'Account Leader', level: 'Associate Director – Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'primary', Strategic: 'primary', Focus: 'secondary', Core: 'no' },
+    focus: 'Owns the commercial relationship and growth strategy for assigned accounts; drives year-over-year growth and profitability, plays both SE and Account Leader roles, and owns senior client relationships.',
+    responsibilities: [
+      { title: 'Account Growth & Commercial Ownership', desc: 'Owns the commercial relationship and growth strategy for assigned accounts. Drives year-over-year account growth with a focus on profitability improvement.' },
+      { title: 'Commercial & Pursuit Best Practices', desc: 'Drives commercial and pursuit/deal best practices. Champions premium rates, engagement economics, and working capital management across the account portfolio.' },
+      { title: 'Account Planning & ROI Management', desc: 'Leads comprehensive account planning with cross-SL teams. Drives return on investment in accounts; manages engagement economics effectively and in a timely manner for profitability.' },
+      { title: 'Sales Execution', desc: 'Owns Sales Executive responsibilities on assigned accounts — prospecting, qualifying, and closing opportunities. Plays both SE and Account Leader roles at AD level.' },
+      { title: 'Growth Driver Activation', desc: 'Integrates EY\'s Growth Drivers (AI, sustainability, workforce, tax) into account strategy. Activates growth driver plays across assigned accounts.' },
+      { title: 'Voice of Client (ASQ & Win/Loss)', desc: 'Leads Account Strategic Questionnaire (ASQ) and Win/Loss analysis. Ensures client feedback drives account strategy adjustments and firm improvement.' },
+      { title: 'Senior Client Relationship Management', desc: 'Owns the senior commercial relationship on assigned accounts. Builds and maintains CEO-, CFO-, and Board-level advisory relationships.' }
+    ],
+    kpis: ['Account TER and account sales growth year-over-year', 'Account margin (sold and delivered)', 'Q&RM compliance and working capital management', 'FoP/SL integration, sales forecasting, Voice of Client (ASQ & Win/Loss coverage)'],
+    keyFacts: { reportsto: 'Leader (Core Growth / Industries & Accounts) / GCSP', tools: 'Dynamics CRM, Growth IQ, Account IQ, Pursuit Resource Center, P&CE/GSPP Portal, MGOS', advancement: 'Account Leader → GCSP / Global Client Service Partner', load: 'Mix of Premier and Strategic accounts; scales to full Book of Business at Director' },
+    outcomes: ['Account TER growth year-over-year', 'Account margin targets met', 'C-suite relationships strengthened and expanded'],
+    relationships: [
+      { name: 'GCSP', desc: 'Career destination and senior sponsor; Account Leader is the bridge to GCSP-level responsibility and performance framework' },
+      { name: 'Sales Executive', desc: 'SE drives origination while Account Leader manages commercial relationship and account activation across the broader portfolio' },
+      { name: 'Service Line Leaders', desc: 'Coordinates cross-SL integration to ensure EY brings full firm capabilities to bear on account opportunities' },
+      { name: 'Account Manager', desc: 'AM manages day-to-day account activation; Account Leader oversees the strategic direction of the full account team' },
+      { name: 'C-Suite Clients', desc: 'Primary owner of the commercial relationship; Account Leader is EY\'s most senior ongoing client-facing presence on the account' }
+    ],
+    competencies: ['Commercial account ownership and revenue growth', 'Account planning and cross-SL integration', 'Senior C-suite relationship management', 'Sales execution and pursuit leadership']
+  },
+  {
+    id: 'asm-leader', pillars: ['Alliances','Managed Services','Services & Solutions'], group: 'Alliances / S&S / Managed Services', title: 'Leader', level: 'Director – Managing Director | 15+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads all Alliances, Services & Solutions, and Managed Services sales professionals; drives the combined GTM strategy, carries personal targets, and owns EY\'s most strategic alliance partner relationships.',
+    responsibilities: [
+      { title: 'Pillar Leadership & Sales Team Direction', desc: 'Leads all Alliances, Services & Solutions, and Managed Services sales professionals. Sets performance standards, team culture, and strategic direction across the combined pillar.' },
+      { title: 'Alliance, S&S & MS Sales Strategy', desc: 'Develops and drives the go-to-market and sales strategy for all three sub-pillars in alignment with firm-wide priorities and S&SP Americas leadership direction.' },
+      { title: 'SE Hiring, Training & Development', desc: 'Leads recruiting, hiring, onboarding, and development of Sales Executives and Sales Managers across Alliances, S&S, and Managed Services sub-pillars.' },
+      { title: 'Personal Sales & Origination', desc: 'Carries personal origination and sales targets. Actively demonstrates elite selling behaviors in alliance and specialist sales contexts.' },
+      { title: 'Alliance & Partner Ecosystem Leadership', desc: 'Builds and maintains EY\'s most strategic alliance partner relationships. Serves as the senior EY voice with top alliance field and executive leadership.' },
+      { title: 'Cross-Pillar Collaboration', desc: 'Partners with Core Growth / I&A and Sales Activation pillars to deliver integrated alliance-powered and specialist solutions to all account tiers.' },
+      { title: 'Performance Management', desc: 'Sets team targets, monitors KPIs, and conducts regular performance reviews. Oversees talent development across all three sub-pillar teams.' }
+    ],
+    kpis: ['Overall pillar origination and sales totals across Alliances, S&S, and MS', 'SE team quota attainment rate', 'Personal origination and sales contribution', 'Alliance partner satisfaction metrics'],
+    keyFacts: { reportsto: 'S&SP Americas Leadership', tools: 'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center', advancement: 'Leader → S&SP Americas Leadership', load: 'Oversight of cross-pillar strategic and focus account portfolios' },
+    outcomes: ['Pillar origination and sales targets met or exceeded', 'Alliance partner relationships strengthened', 'SE team staffed, developed, and performing to quota'],
+    relationships: [
+      { name: 'S&SP Americas Leadership', desc: 'Receives strategic direction; represents pillar performance and resource needs' },
+      { name: 'Sales Managers / Sub-Pillar Leaders', desc: 'Direct/indirect management; coaches and develops next level of sales leadership across all three sub-pillars' },
+      { name: 'Alliance GTM Leaders', desc: 'Senior-level alignment on alliance investment priorities, co-sell motions, and joint go-to-market strategy' },
+      { name: 'Core Growth / I&A Leader', desc: 'Cross-pillar collaboration to integrate alliance, S&S, and MS capabilities into CG and I&A account strategies' },
+      { name: 'C-Suite Clients', desc: 'Owns the firm\'s highest-level relationships for alliance-powered and specialist solution pursuits' }
+    ],
+    competencies: ['Strategic sales leadership across Alliances, S&S, and Managed Services', 'Alliance partner ecosystem management', 'Personal sales origination and deal leadership', 'Cross-pillar integration and coordination']
+  },
+  {
+    id: 'asm-sales-manager', pillars: ['Alliances','Managed Services','Services & Solutions'], group: 'Alliances / S&S / Managed Services', title: 'Sales Manager', level: 'Director | 12+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Leads a team of Sales Executives within a specific sub-pillar (Alliances, S&S, or Managed Services); drives sub-pillar GTM strategy, owns critical partner/client relationships, and carries personal targets.',
+    responsibilities: [
+      { title: 'Sub-Pillar Team Leadership', desc: 'Leads a team of Sales Executives within a specific sub-pillar (Alliances, Services & Solutions, or Managed Services). Responsible for SE hiring, development, and performance management.' },
+      { title: 'Sub-Pillar Sales Strategy', desc: 'Develops and drives the go-to-market and sales strategy for the assigned sub-pillar in alignment with the pillar leader and firm-wide priorities.' },
+      { title: 'Critical Partner & Client Relationships', desc: 'Owns EY\'s most critical sub-pillar partner or client relationships at a leadership level. Serves as the senior EY voice for these strategic relationships.' },
+      { title: 'Personal Sales Origination', desc: 'Carries personal origination and sales targets in addition to team management. Actively pursues and closes complex deals to model elite behaviors.' },
+      { title: 'Pipeline Oversight & Deal Coaching', desc: 'Oversees team pipeline health, deal progression, and origination activity. Provides deal coaching and strategic guidance on large complex pursuits.' },
+      { title: 'Cross-Pillar GTM Alignment', desc: 'Aligns and interlocks with sector leaders, account teams, and peer Sales Managers on joint go-to-market strategy and account prioritization.' },
+      { title: 'Talent Development & Performance Management', desc: 'Builds coaching cadence for the SE team. Develops individual growth plans and ensures talent is progressing toward advanced SE and leadership tracks.' }
+    ],
+    kpis: ['Team origination total ($): aggregate SE pipeline', 'Team sales bookings total ($): aggregate closed revenue', 'Personal origination and personal sales ($)', 'Team headcount and attrition'],
+    keyFacts: { reportsto: 'Leader (Alliances / S&S / Managed Services)', tools: 'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center', advancement: 'Sales Manager → Pillar Leader → S&SP Leadership', load: 'Manages team portfolio; maintains senior-level partner and key client relationships' },
+    outcomes: ['Team origination and sales targets met or exceeded', 'Personal origination achieved', 'Sub-pillar SE team staffed and performing to quota'],
+    relationships: [
+      { name: 'Sales Executives (direct reports)', desc: 'Primary people leadership relationship; coaches, develops, and holds the SE team accountable on origination and sales targets' },
+      { name: 'Pillar Leader', desc: 'Receives strategic direction; reports on sub-pillar performance and collaborates on resource allocation' },
+      { name: 'Alliance GTM / Solution Domain Leaders', desc: 'Strategic alignment on investment priorities, co-sell motions, and solution area GTM strategy' },
+      { name: 'Sector Sales Leaders', desc: 'Cross-pillar collaboration to align sub-pillar sales activity with sector-specific account priorities' },
+      { name: 'S&SP Americas Leadership', desc: 'Reports into and collaborates with broader S&SP leadership on performance and strategic direction' }
+    ],
+    competencies: ['Sub-pillar sales team leadership and performance management', 'Strategic partner / solution area management', 'Personal sales origination and deal coaching', 'Cross-pillar GTM coordination']
+  },
+  {
+    id: 'asm-se', pillars: ['Alliances','Managed Services','Services & Solutions'], group: 'Alliances / S&S / Managed Services', title: 'Sales Executive', level: 'Asst. Director – Assoc. Director – Director* | 10+ years', status: 'Pending leadership review/approval',
+    seg: { Premier: 'no', Strategic: 'primary', Focus: 'primary', Core: 'no' },
+    focus: 'Relentlessly originates net-new pipeline within an assigned sub-pillar (Alliances, S&S, or Managed Services); builds partner/solution/domain expertise, shapes joint GTM motions, and drives complex pursuits.',
+    responsibilities: [
+      { title: 'Sales Origination (Sub-Pillar Focus)', desc: 'Relentlessly originates net-new pipeline within assigned sub-pillar (Alliances, Services & Solutions, or Managed Services). Holds personal sales and origination targets.' },
+      { title: 'Partner / Solution / Domain Positioning', desc: 'Builds credibility and deep expertise in assigned alliance partnerships, solution areas, or managed services capabilities. Positions EY as the preferred partner or provider.' },
+      { title: 'Joint GTM Motion Development', desc: 'Shapes joint go-to-market motions with alliance partners or solution domain leaders. Develops co-sell playbooks and integrated pursuit strategies.' },
+      { title: 'Sector & Executive Relationship Building', desc: 'Demonstrates deep sector understanding. Builds executive relationships to position EY as a strategic transformation partner powered by sub-pillar capabilities.' },
+      { title: 'Pipeline Management & Qualification', desc: 'Identifies, qualifies, and advances complex pipeline opportunities within the assigned sub-pillar. Maintains rigorous CRM hygiene and accurate forecasting.' },
+      { title: 'Cross-Functional Collaboration', desc: 'Orchestrates cross-service-line and cross-functional teams for pursuit opportunities. Injects sub-pillar solutions into existing account relationships.' },
+      { title: 'Competitive Intelligence & Positioning', desc: 'Tracks sub-pillar technology roadmaps, partner capabilities, and the competitive landscape. Translates intelligence into client-relevant narratives and pursuit strategies.' }
+    ],
+    kpis: ['Personal origination ($): target varies by sub-pillar and level', 'Personal sales bookings ($): target varies by sub-pillar and level', 'Active pipeline coverage ratio'],
+    keyFacts: { reportsto: 'Sales Manager (Alliances / S&S / Managed Services)', tools: 'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center, Roleplay.ai', advancement: 'Sales Executive → Account Executive → Account Leader; or → Sales Manager', load: 'Portfolio aligned to priority sub-pillar, sector, and alliance partner · Director requires multi-year goal achievement' },
+    outcomes: ['Personal origination and sales targets met or exceeded', 'Pipeline built across sub-pillar focus areas', 'Partner and solution relationships strengthened'],
+    relationships: [
+      { name: 'Alliance Partner Field / Solution Domain Leaders', desc: 'Core co-sell and solution development relationship; builds joint pipeline and shapes pursuits with partner counterparts' },
+      { name: 'EY Account Teams (GCSPs / AMs)', desc: 'Coordinates to inject sub-pillar solutions into existing account relationships and create new pursuit opportunities' },
+      { name: 'Sales Manager', desc: 'Direct people leader providing strategic direction, coaching, deal review, and performance management' },
+      { name: 'Sector Sales Leaders', desc: 'Cross-pillar alignment on sector GTM; ensures sub-pillar activity integrates with sector-wide account priorities' },
+      { name: 'C-Suite Clients', desc: 'Senior client engagement; builds advisory relationships powered by alliance technology or specialist capabilities' }
+    ],
+    competencies: ['Sub-pillar specific origination and opportunity qualification', 'Alliance partner management / solution area expertise', 'Deal leadership and commercial negotiation', 'Cross-functional pursuit collaboration']
+  }
+];
+
+const _UNUSED_OLD_ROLES = [
   {
     id: 'arc-strategist', pillar: 'Sales Activation', title: 'ARC Strategist', level: 'Assistant Director | 7–10 years',
     segments: { primary: ['Strategic','Focus'], secondary: [] },
@@ -1057,26 +1553,28 @@ function filterPillar(pillar, el) {
   document.querySelectorAll('.pillar-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('.role-card').forEach(card => {
-    card.style.display = (pillar === 'all' || card.dataset.pillar === pillar) ? '' : 'none';
+    const pillars = (card.dataset.pillars || '').split('||');
+    card.style.display = (pillar === 'all' || pillars.indexOf(pillar) !== -1) ? '' : 'none';
   });
 }
 
 function openModal(roleId) {
   const role = ROLES.find(r => r.id === roleId);
   if (!role) return;
-  document.getElementById('modal-pillar').textContent = role.pillar;
+  document.getElementById('modal-pillar').textContent = role.group + (role.subteam ? ' · ' + role.subteam : '');
   document.getElementById('modal-title').textContent = role.title;
-  document.getElementById('modal-level').textContent = role.level;
+  document.getElementById('modal-level').innerHTML = role.level + (role.status ? ` &nbsp;<span class="status-badge">${role.status}</span>` : '');
   const body = document.getElementById('modal-body');
-  const segs = role.segments.primary.map(s => `<span class="seg-dot seg-primary">${s}</span>`).join('') +
-               role.segments.secondary.map(s => `<span class="seg-dot seg-secondary">${s}</span>`).join('');
+  const segOrder = ['Premier','Strategic','Focus','Core'];
+  const segLabel = { primary: 'seg-primary', secondary: 'seg-secondary', no: 'seg-notinscope' };
+  const segs = segOrder.map(s => `<span class="seg-dot ${segLabel[role.seg[s]] || 'seg-notinscope'}">${s}</span>`).join('');
   body.innerHTML = `
     <div class="modal-2col">
       <div>
         <div class="modal-section-title">Core Responsibilities</div>
         ${role.responsibilities.map(r => `
           <div class="responsibility-item">
-            <strong>${r.num}. ${r.title}</strong>
+            <strong>${r.title}</strong>
             <p>${r.desc}</p>
           </div>`).join('')}
       </div>
@@ -1094,11 +1592,23 @@ function openModal(roleId) {
         <div class="kpi-list" style="margin-bottom:20px">
           ${role.kpis.map(k => `<div class="kpi-item">${k}</div>`).join('')}
         </div>
+        <div class="modal-section-title">Key Outcomes</div>
+        <ul class="bullet-list" style="margin-bottom:20px">
+          ${role.outcomes.map(o => `<li>${o}</li>`).join('')}
+        </ul>
         <div class="modal-section-title">Core Competencies</div>
         <ul class="bullet-list">
           ${role.competencies.map(c => `<li>${c}</li>`).join('')}
         </ul>
       </div>
+    </div>
+    <div class="modal-section-title">Key Relationships</div>
+    <div style="columns:2;column-gap:24px">
+      ${role.relationships.map(rel => `
+        <div class="rel-item" style="break-inside:avoid">
+          <strong>${rel.name}</strong>
+          <p>${rel.desc}</p>
+        </div>`).join('')}
     </div>`;
   document.getElementById('role-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1115,8 +1625,8 @@ function closeModalDirect() {
 function renderRoles() {
   const grid = document.getElementById('role-grid');
   grid.innerHTML = ROLES.map(r => `
-    <div class="role-card" data-pillar="${r.pillar}" onclick="openModal('${r.id}')">
-      <span class="pillar-tag">${r.pillar}</span>
+    <div class="role-card" data-pillars="${r.pillars.join('||')}" onclick="openModal('${r.id}')">
+      <span class="pillar-tag">${r.group}</span>${r.subteam ? `<span class="subteam-tag">${r.subteam}</span>` : ''}
       <h3>${r.title}</h3>
       <div class="level">${r.level.split('|')[0].trim()}</div>
       <div class="focus-snippet">${r.focus.substring(0, 120)}…</div>
