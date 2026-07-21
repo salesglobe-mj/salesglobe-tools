@@ -108,6 +108,54 @@
   .tl-step .tl-phase { font-size: 12.5px; font-weight: 700; color: var(--ey-dark); line-height: 1.3; margin-bottom: 6px; min-height: 34px; display: flex; align-items: center; justify-content: center; }
   .tl-step .tl-time { font-size: 10.5px; color: #fff; background: var(--ey-dark); border-radius: 10px; padding: 2px 8px; display: inline-block; }
   .tl-step.hm .tl-time { background: var(--ey-yellow); color: var(--ey-dark); }
+  .tl-step { cursor: pointer; transition: all 0.15s; }
+  .tl-step:hover { border-color: var(--ey-dark); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  .tl-step.selected { border-color: var(--ey-yellow); box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+  .tl-step .tl-caret { font-size: 10px; color: var(--ey-gray); margin-top: 6px; }
+  .tl-step.selected .tl-caret { color: var(--ey-dark); }
+  .tl-hint { font-size: 11.5px; color: var(--ey-gray); margin: 10px 0 0; font-style: italic; }
+
+  .tl-detail { margin-top: 16px; background: #fff; border: 1px solid var(--ey-border); border-radius: 8px; padding: 22px 24px; animation: fade 0.2s ease; }
+  .tl-detail-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
+  .tl-detail-head h4 { font-size: 16px; font-weight: 700; color: var(--ey-dark); }
+  .tl-detail-when { font-size: 11px; font-weight: 700; color: #fff; background: var(--ey-dark); border-radius: 10px; padding: 3px 10px; }
+  .illus-tag { font-size: 10px; font-weight: 700; color: #8a6d00; background: rgba(255,230,0,0.2); border: 1px solid rgba(255,230,0,0.55); padding: 2px 9px; border-radius: 10px; letter-spacing: 0.3px; }
+  .tl-detail-intro { font-size: 13px; color: #555; line-height: 1.55; margin: 12px 0 18px; }
+
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mini-table th { background: var(--ey-light); color: var(--ey-gray); padding: 8px 10px; text-align: left; font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 2px solid var(--ey-border); }
+  .mini-table th.c, .mini-table td.c { text-align: center; }
+  .mini-table td { padding: 8px 10px; border-bottom: 1px solid #f2f2f5; color: #444; }
+  .lvl { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+  .lvl-f { background: #E8F5E9; color: #2E7D32; }
+  .lvl-p { background: #E3F2FD; color: #1565C0; }
+  .lvl-g { background: #FFF8E1; color: #B8860B; }
+  .lvl-none { color: #bbb; }
+  .gap-flag { color: #e53935; font-weight: 700; }
+
+  .hm-row { display: grid; grid-template-columns: 210px 1fr 92px; gap: 12px; align-items: center; padding: 7px 0; }
+  .hm-name { font-size: 12.5px; color: var(--ey-dark); font-weight: 600; }
+  .hm-bar { height: 12px; border-radius: 6px; background: #eee; overflow: hidden; }
+  .hm-fill { height: 100%; border-radius: 6px; }
+  .hm-ontrack { background: #4CAF50; }
+  .hm-moderate { background: #FF9800; }
+  .hm-wide { background: #e53935; }
+  .hm-pct { font-size: 12px; font-weight: 700; color: var(--ey-dark); text-align: right; }
+  .hm-pct .delta { color: #2E7D32; font-size: 11px; margin-left: 4px; }
+  .hm-legend { display: flex; gap: 18px; margin: 4px 0 14px; font-size: 11.5px; color: #555; flex-wrap: wrap; }
+  .hm-legend span { display: flex; align-items: center; gap: 6px; }
+  .hm-dot { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+  .dev-action { background: var(--ey-light); border-radius: 6px; padding: 12px 14px; margin-bottom: 10px; border-left: 3px solid var(--ey-yellow); }
+  .dev-action .da-skill { font-size: 12.5px; font-weight: 700; color: var(--ey-dark); margin-bottom: 3px; }
+  .dev-action .da-gap { font-size: 10.5px; color: var(--practice); font-weight: 700; margin-bottom: 5px; }
+  .dev-action .da-body { font-size: 12px; color: #555; line-height: 1.5; }
+
+  .readiness-dial { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .dial { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dial-inner { width: 92px; height: 92px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .dial-inner .d-num { font-size: 26px; font-weight: 900; color: var(--ey-dark); line-height: 1; }
+  .dial-inner .d-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ey-gray); margin-top: 3px; }
 
   /* process steps */
   .pstep { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid var(--ey-border); }
@@ -319,14 +367,16 @@
         </div>
         <h3 style="font-size:14px;font-weight:700;color:var(--ey-dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px">The 12-Month Assessment Timeline</h3>
         <div class="timeline">
-          <div class="tl-step"><div class="tl-phase">Full Assessment</div><div class="tl-time">Months 1–2</div></div>
-          <div class="tl-step hm"><div class="tl-phase">Heat Map #1</div><div class="tl-time">Month 3</div></div>
-          <div class="tl-step"><div class="tl-phase">Learning in Motion</div><div class="tl-time">Months 4–6</div></div>
-          <div class="tl-step"><div class="tl-phase">Mid-Year Check-In</div><div class="tl-time">Months 7–8</div></div>
-          <div class="tl-step hm"><div class="tl-phase">Heat Map #2</div><div class="tl-time">Month 9</div></div>
-          <div class="tl-step"><div class="tl-phase">Manager Calibration</div><div class="tl-time">Month 10</div></div>
-          <div class="tl-step"><div class="tl-phase">Cycle Close</div><div class="tl-time">Month 12</div></div>
+          <div class="tl-step" onclick="showTL(0,this)"><div class="tl-phase">Full Assessment</div><div class="tl-time">Months 1–2</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step hm" onclick="showTL(1,this)"><div class="tl-phase">Heat Map #1</div><div class="tl-time">Month 3</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step" onclick="showTL(2,this)"><div class="tl-phase">Learning in Motion</div><div class="tl-time">Months 4–6</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step" onclick="showTL(3,this)"><div class="tl-phase">Mid-Year Check-In</div><div class="tl-time">Months 7–8</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step hm" onclick="showTL(4,this)"><div class="tl-phase">Heat Map #2</div><div class="tl-time">Month 9</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step" onclick="showTL(5,this)"><div class="tl-phase">Manager Calibration</div><div class="tl-time">Month 10</div><div class="tl-caret">▾ example</div></div>
+          <div class="tl-step" onclick="showTL(6,this)"><div class="tl-phase">Cycle Close</div><div class="tl-time">Month 12</div><div class="tl-caret">▾ example</div></div>
         </div>
+        <p class="tl-hint">Click any milestone above to see an illustrative example of what it produces.</p>
+        <div id="tl-detail"></div>
       </div>
 
       <div class="tab-content">
@@ -481,6 +531,150 @@ function showSection(id) {
   const map = { overview: 0, competency: 1, structure: 2, path: 3, decisions: 4 };
   document.querySelectorAll('.sidebar-item')[map[id]].classList.add('active');
   document.querySelector('.main').scrollTop = 0;
+}
+
+// ===== 12-Month timeline illustrative examples =====
+function heatMap(rows, showDelta) {
+  return `
+    <div class="hm-legend">
+      <span><i class="hm-dot hm-wide"></i> Wide gap</span>
+      <span><i class="hm-dot hm-moderate"></i> Moderate</span>
+      <span><i class="hm-dot hm-ontrack"></i> On track</span>
+    </div>` +
+    rows.map(r => `
+      <div class="hm-row">
+        <div class="hm-name">${r.name}</div>
+        <div class="hm-bar"><div class="hm-fill hm-${r.band}" style="width:${r.pct}%"></div></div>
+        <div class="hm-pct">${r.pct}%${showDelta && r.delta ? `<span class="delta">▲${r.delta}</span>` : ''}</div>
+      </div>`).join('');
+}
+
+const HM1 = [
+  { name: 'Opportunity Creation', pct: 72, band: 'moderate' },
+  { name: 'Opportunity Development', pct: 55, band: 'wide' },
+  { name: 'Account Management', pct: 88, band: 'ontrack' },
+  { name: 'Leadership & Coaching', pct: 60, band: 'wide' },
+  { name: 'Sales Intelligence', pct: 48, band: 'wide' },
+  { name: 'The EY Way', pct: 90, band: 'ontrack' },
+  { name: 'Personal Brand & Presence', pct: 65, band: 'moderate' }
+];
+const HM2 = [
+  { name: 'Opportunity Creation', pct: 78, band: 'moderate', delta: 6 },
+  { name: 'Opportunity Development', pct: 68, band: 'moderate', delta: 13 },
+  { name: 'Account Management', pct: 90, band: 'ontrack', delta: 2 },
+  { name: 'Leadership & Coaching', pct: 63, band: 'moderate', delta: 3 },
+  { name: 'Sales Intelligence', pct: 62, band: 'moderate', delta: 14 },
+  { name: 'The EY Way', pct: 92, band: 'ontrack', delta: 2 },
+  { name: 'Personal Brand & Presence', pct: 70, band: 'moderate', delta: 5 }
+];
+
+const TL_EXAMPLES = [
+  {
+    title: 'Full Assessment', when: 'Months 1–2',
+    intro: 'Both seller and manager rate every assigned skill against the behaviors defined for the role — independently, with evidence — then align. Agreed ratings measured against required levels roll up into the Readiness Score.',
+    body: `
+      <table class="mini-table">
+        <thead><tr><th>Skill (sample)</th><th class="c">Self</th><th class="c">Manager</th><th class="c">Agreed</th><th class="c">Required</th></tr></thead>
+        <tbody>
+          <tr><td>Opportunity ID &amp; Development</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
+          <tr><td>Deal Qualification</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
+          <tr><td>Value Articulation &amp; Storytelling</td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
+          <tr><td>Executive Engagement</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-g">Gold</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-g">Gold</span></td></tr>
+          <tr><td>AI-Powered Selling</td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11.5px;color:#888;margin-top:12px">Rows where <em>Agreed</em> sits below <em>Required</em> (e.g. <span class="gap-flag">Value Articulation, AI-Powered Selling</span>) are the gaps that pull down the Readiness Score and direct the year's coaching.</p>`
+  },
+  {
+    title: 'Heat Map #1', when: 'Month 3',
+    intro: 'The agreed ratings roll up into a competency heat map — a one-glance view of where the widest gaps sit across the seven areas. This is the starting baseline for the cycle.',
+    body: heatMap(HM1, false) + `<p style="font-size:11.5px;color:#888;margin-top:12px">Overall Readiness ≈ <strong>68%</strong>. The widest gaps — Sales Intelligence and Opportunity Development — get coaching attention first.</p>`
+  },
+  {
+    title: 'Learning in Motion', when: 'Months 4–6',
+    intro: 'Targeted development runs in the flow of work — not a classroom detour. Each action ties to a specific skill gap and is reinforced at increasing intervals until it sticks.',
+    body: `
+      <div class="dev-action"><div class="da-skill">Value Articulation &amp; Storytelling</div><div class="da-gap">Foundation → Practicing</div><div class="da-body">Co-develop and deliver the win-theme narrative on 2 live pursuits; debrief each with the coach against the behavioral anchor.</div></div>
+      <div class="dev-action"><div class="da-skill">AI-Powered Selling</div><div class="da-gap">Foundation → Practicing</div><div class="da-body">Complete the AI prospecting micro-module, then apply on a real account. Spaced retrieval checks at Day 7 and Day 30.</div></div>
+      <div class="dev-action"><div class="da-skill">Data Accuracy (Sales Intelligence)</div><div class="da-gap">Foundation → Practicing</div><div class="da-body">Weekly CRM hygiene review folded into the existing pipeline call — no extra meeting.</div></div>`
+  },
+  {
+    title: 'Mid-Year Check-In', when: 'Months 7–8',
+    intro: 'A lightweight formal check on progress — what moved, what stalled, and what to shift for the back half of the cycle.',
+    body: `
+      <table class="mini-table">
+        <thead><tr><th>Skill in development</th><th class="c">Start</th><th class="c">Now</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Value Articulation &amp; Storytelling</td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td style="color:#2E7D32;font-weight:700">✓ Moved — evidence on 2 pursuits</td></tr>
+          <tr><td>AI-Powered Selling</td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td style="color:#B8860B;font-weight:700">In progress — module done, application pending</td></tr>
+          <tr><td>Deal Qualification</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td style="color:#888">Holding at level</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11.5px;color:#888;margin-top:12px"><strong>Shift for H2:</strong> redirect focus toward Executive Engagement ahead of Q4 pursuits.</p>`
+  },
+  {
+    title: 'Heat Map #2', when: 'Month 9',
+    intro: 'The heat map is re-run — now showing movement against Heat Map #1. Visible progress is the signal the Pathway is working; perfection is not the bar.',
+    body: heatMap(HM2, true) + `<p style="font-size:11.5px;color:#888;margin-top:12px">Overall Readiness <strong>68% → 76% ▲</strong>. Sales Intelligence and Opportunity Development — the widest gaps in Heat Map #1 — show the biggest gains.</p>`
+  },
+  {
+    title: 'Manager Calibration', when: 'Month 10',
+    intro: 'Managers meet to align on standards — so "Practicing" means the same thing across every team in the pillar. The program owner facilitates and documents the calibrated outcomes.',
+    body: `
+      <ul class="bullet-list" style="margin-bottom:14px">
+        <li>Calibrate borderline ratings against the shared behavioral anchors, deal by deal</li>
+        <li>Compare rating distributions across managers to catch drift — one manager rating too generously, another too harshly</li>
+        <li>Document the calibrated outcome so standing is defensible in talent conversations</li>
+      </ul>
+      <table class="mini-table">
+        <thead><tr><th>Rating distribution across the pillar</th><th class="c">Foundation</th><th class="c">Practicing</th><th class="c">Gold</th></tr></thead>
+        <tbody>
+          <tr><td>Before calibration</td><td class="c">18%</td><td class="c">62%</td><td class="c">20%</td></tr>
+          <tr><td>After calibration</td><td class="c">27%</td><td class="c">61%</td><td class="c">12%</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:11.5px;color:#888;margin-top:12px">Calibration tightened over-generous "Gold" ratings to a defensible standard — removing single-manager bias.</p>`
+  },
+  {
+    title: 'Cycle Close', when: 'Month 12',
+    intro: 'The cycle closes with a confirmed Readiness Score and standing — which feeds talent reviews and sets next cycle\'s starting baseline.',
+    body: `
+      <div class="readiness-dial">
+        <div class="dial" style="background:conic-gradient(var(--ey-yellow) 0% 76%, #eee 76% 100%)">
+          <div class="dial-inner"><div class="d-num">76%</div><div class="d-lbl">Readiness</div></div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <ul class="bullet-list">
+            <li><strong>Standing confirmed</strong> against required levels for the role — documented and agreed</li>
+            <li><strong>Feeds talent &amp; succession</strong> conversations as an evidence-based input beyond manager opinion</li>
+            <li><strong>Becomes next cycle's baseline</strong> — the Month 1–2 assessment starts from here, not from zero</li>
+          </ul>
+        </div>
+      </div>`
+  }
+];
+
+function showTL(idx, el) {
+  document.querySelectorAll('.tl-step').forEach(s => s.classList.remove('selected'));
+  const detail = document.getElementById('tl-detail');
+  // toggle off if clicking the already-open step
+  if (el.dataset.open === '1') { el.dataset.open = '0'; detail.innerHTML = ''; return; }
+  document.querySelectorAll('.tl-step').forEach(s => s.dataset.open = '0');
+  el.classList.add('selected'); el.dataset.open = '1';
+  const ex = TL_EXAMPLES[idx];
+  detail.innerHTML = `
+    <div class="tl-detail">
+      <div class="tl-detail-head">
+        <h4>${ex.title}</h4>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="tl-detail-when">${ex.when}</span>
+          <span class="illus-tag">ILLUSTRATIVE EXAMPLE</span>
+        </div>
+      </div>
+      <p class="tl-detail-intro">${ex.intro}</p>
+      ${ex.body}
+    </div>`;
+  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // Tab switching — scoped to each tab-bar's following tab-content siblings
