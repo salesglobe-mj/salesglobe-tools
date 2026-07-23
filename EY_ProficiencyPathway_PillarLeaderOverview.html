@@ -34,8 +34,6 @@
   .sidebar-item.active { background: rgba(255,230,0,0.12); color: var(--ey-yellow); border-left-color: var(--ey-yellow); font-weight: 600; }
   .sidebar-num { font-size: 11px; color: #666; width: 16px; flex-shrink: 0; text-align: center; }
   .sidebar-item.active .sidebar-num { color: var(--ey-yellow); opacity: 0.8; }
-  .sidebar-item.decisions { margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; }
-  .sidebar-item.decisions .sidebar-num { color: var(--ey-yellow); }
 
   .main { flex: 1; overflow-y: auto; padding: 32px 40px; }
 
@@ -49,6 +47,7 @@
   .g2 { grid-template-columns: repeat(2, 1fr); }
   .g3 { grid-template-columns: repeat(3, 1fr); }
   .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g-auto { grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); }
   .card { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid var(--ey-border); }
   .card-top { border-top: 3px solid var(--ey-yellow); }
   .card h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--ey-gray); margin-bottom: 12px; }
@@ -64,6 +63,8 @@
   .pull-quote .big { font-size: 16px; font-weight: 600; line-height: 1.5; }
   .pull-quote .big em { color: var(--ey-yellow); font-style: normal; }
   .pull-quote .sub { font-size: 13px; color: #bbb; margin-top: 8px; line-height: 1.5; }
+  .quote-line { font-size: 14px; color: #fff; font-style: italic; line-height: 1.55; }
+  .quote-line::before { content: '“'; color: var(--ey-yellow); font-size: 22px; font-style: normal; vertical-align: -8px; margin-right: 2px; }
 
   /* tabs */
   .tab-bar { display: flex; border-bottom: 2px solid var(--ey-border); margin-bottom: 22px; gap: 0; flex-wrap: wrap; }
@@ -72,12 +73,36 @@
   .tab.active { color: var(--ey-dark); border-bottom-color: var(--ey-yellow); }
   .tab-content { display: none; }
   .tab-content.active { display: block; }
+  .lead-para { font-size: 14.5px; color: #333; line-height: 1.6; margin-bottom: 20px; }
+  .lead-para strong { color: var(--ey-dark); }
+
+  /* stats */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+  .stat-block { background: var(--ey-dark); border-radius: 8px; padding: 18px 16px; text-align: center; }
+  .stat-block .n { font-size: 34px; font-weight: 900; color: var(--ey-yellow); line-height: 1; }
+  .stat-block .l { font-size: 12px; color: #ccc; margin-top: 6px; line-height: 1.3; }
+
+  .roster { columns: 3; column-gap: 20px; }
+  .roster .r-name { font-size: 12.5px; color: #444; padding: 4px 0 4px 16px; position: relative; break-inside: avoid; line-height: 1.4; }
+  .roster .r-name::before { content: '▪'; position: absolute; left: 0; color: var(--ey-yellow); font-size: 9px; top: 7px; }
+  .roster .r-name b { color: var(--ey-dark); }
+
+  /* flow steps */
+  .flow-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .flow-step { background: #fff; border-radius: 8px; padding: 20px 18px; border: 1px solid var(--ey-border); border-top: 3px solid var(--ey-yellow); }
+  .flow-step .fs-num { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .flow-step .fs-num .n { width: 30px; height: 30px; border-radius: 50%; background: var(--ey-dark); color: var(--ey-yellow); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+  .flow-step .fs-num .t { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; color: var(--ey-dark); text-transform: uppercase; }
+  .flow-step p { font-size: 12.5px; color: #555; line-height: 1.5; }
+  .everyone-bar { background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 8px; padding: 14px 18px; margin-top: 16px; font-size: 12.5px; color: #444; line-height: 1.6; }
+  .everyone-bar strong { color: var(--ey-dark); }
 
   /* competency cards */
   .comp-card { background: #fff; border-radius: 8px; padding: 18px; border: 1px solid var(--ey-border); border-top: 3px solid var(--ey-yellow); }
   .comp-card.universal { border-top-color: var(--practice); }
-  .comp-card h4 { font-size: 15px; font-weight: 700; color: var(--ey-dark); margin-bottom: 6px; }
-  .comp-card p { font-size: 12.5px; color: #666; line-height: 1.5; }
+  .comp-card h4 { font-size: 14.5px; font-weight: 700; color: var(--ey-dark); margin-bottom: 7px; }
+  .comp-card p { font-size: 12px; color: #666; line-height: 1.5; }
+  .comp-card .why { font-size: 11px; color: #8a7500; font-style: italic; line-height: 1.45; margin-top: 9px; border-top: 1px dashed var(--ey-border); padding-top: 8px; }
   .group-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ey-gray); margin: 6px 0 14px; }
   .group-label span { color: var(--ey-dark); }
 
@@ -104,13 +129,12 @@
 
   /* timeline */
   .timeline { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 8px; }
-  .tl-step { flex: 1; min-width: 110px; background: #fff; border: 1px solid var(--ey-border); border-radius: 8px; padding: 14px 12px; text-align: center; position: relative; }
+  .tl-step { flex: 1; min-width: 110px; background: #fff; border: 1px solid var(--ey-border); border-radius: 8px; padding: 14px 12px; text-align: center; position: relative; cursor: pointer; transition: all 0.15s; }
+  .tl-step:hover { border-color: var(--ey-dark); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  .tl-step.selected { border-color: var(--ey-yellow); box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
   .tl-step .tl-phase { font-size: 12.5px; font-weight: 700; color: var(--ey-dark); line-height: 1.3; margin-bottom: 6px; min-height: 34px; display: flex; align-items: center; justify-content: center; }
   .tl-step .tl-time { font-size: 10.5px; color: #fff; background: var(--ey-dark); border-radius: 10px; padding: 2px 8px; display: inline-block; }
   .tl-step.hm .tl-time { background: var(--ey-yellow); color: var(--ey-dark); }
-  .tl-step { cursor: pointer; transition: all 0.15s; }
-  .tl-step:hover { border-color: var(--ey-dark); box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-  .tl-step.selected { border-color: var(--ey-yellow); box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
   .tl-step .tl-caret { font-size: 10px; color: var(--ey-gray); margin-top: 6px; }
   .tl-step.selected .tl-caret { color: var(--ey-dark); }
   .tl-hint { font-size: 11.5px; color: var(--ey-gray); margin: 10px 0 0; font-style: italic; }
@@ -130,7 +154,6 @@
   .lvl-f { background: #E8F5E9; color: #2E7D32; }
   .lvl-p { background: #E3F2FD; color: #1565C0; }
   .lvl-g { background: #FFF8E1; color: #B8860B; }
-  .lvl-none { color: #bbb; }
   .gap-flag { color: #e53935; font-weight: 700; }
 
   .hm-row { display: grid; grid-template-columns: 210px 1fr 92px; gap: 12px; align-items: center; padding: 7px 0; }
@@ -177,7 +200,6 @@
   .raci-legend b { color: var(--ey-dark); }
 
   /* stick conditions */
-  .stat-num { font-size: 26px; font-weight: 900; color: var(--ey-yellow); -webkit-text-stroke: 0.5px var(--ey-dark); line-height: 1; }
   .stick-card { background: #fff; border-radius: 8px; padding: 18px; border: 1px solid var(--ey-border); border-left: 4px solid var(--ey-yellow); }
   .stick-card h4 { font-size: 14px; font-weight: 700; color: var(--ey-dark); margin-bottom: 6px; }
   .stick-card p { font-size: 12.5px; color: #555; line-height: 1.5; }
@@ -192,18 +214,10 @@
   .phase-card ul { list-style: none; }
   .phase-card li { font-size: 11.5px; color: #555; padding: 3px 0 3px 14px; position: relative; line-height: 1.4; }
   .phase-card li::before { content: '·'; position: absolute; left: 3px; color: var(--ey-yellow); font-weight: 900; }
-
-  /* decisions */
-  .decisions-intro { background: var(--ey-dark); color: #fff; border-radius: 8px; padding: 20px 24px; margin-bottom: 22px; }
-  .decisions-intro p { font-size: 14px; line-height: 1.5; }
-  .decisions-intro p em { color: var(--ey-yellow); font-style: normal; font-weight: 600; }
-  .decision-block { background: #fff; border-radius: 8px; padding: 20px; border: 1px solid var(--ey-border); }
-  .decision-block h4 { font-size: 14px; font-weight: 700; color: var(--ey-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .decision-block h4::before { content: ''; width: 10px; height: 10px; background: var(--ey-yellow); border-radius: 50%; flex-shrink: 0; }
-  .decision-block ul { list-style: none; }
-  .decision-block li { font-size: 13px; color: #444; padding: 7px 0 7px 20px; position: relative; line-height: 1.5; border-bottom: 1px solid #f2f2f5; }
-  .decision-block li:last-child { border-bottom: none; }
-  .decision-block li::before { content: '?'; position: absolute; left: 0; color: var(--ey-yellow); font-weight: 900; }
+  .phase-card li strong { color: var(--ey-dark); }
+  .cm-note { background: var(--ey-dark); color: #fff; border-radius: 8px; padding: 18px 22px; margin-top: 18px; }
+  .cm-note h4 { font-size: 13px; font-weight: 700; color: var(--ey-yellow); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .cm-note p { font-size: 13px; color: #ddd; line-height: 1.55; }
 
   .readiness-box { background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 8px; padding: 18px 20px; margin-top: 18px; }
   .readiness-box h4 { font-size: 13px; font-weight: 700; color: var(--ey-dark); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -211,7 +225,8 @@
   .readiness-box .pct { color: var(--ey-dark); font-weight: 700; }
 
   @media (max-width: 900px) {
-    .g3, .g4 { grid-template-columns: repeat(2, 1fr); }
+    .g3, .g4, .flow-4, .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .roster { columns: 2; }
     .sidebar { width: 190px; }
   }
 </style>
@@ -231,47 +246,125 @@
 
 <div class="app">
   <div class="sidebar">
-    <div class="sidebar-item active" onclick="showSection('overview')"><span class="sidebar-num">—</span>The Case</div>
+    <div class="sidebar-item active" onclick="showSection('overview')"><span class="sidebar-num">—</span>Overview &amp; Context</div>
     <div class="sidebar-item" onclick="showSection('competency')"><span class="sidebar-num">1</span>Competency &amp; Skills</div>
     <div class="sidebar-item" onclick="showSection('structure')"><span class="sidebar-num">2</span>Program Structure &amp; Rhythm</div>
     <div class="sidebar-item" onclick="showSection('path')"><span class="sidebar-num">3</span>Building the Path</div>
-    <div class="sidebar-item decisions" onclick="showSection('decisions')"><span class="sidebar-num">★</span>Where We Need Your Input</div>
   </div>
 
   <div class="main">
 
-    <!-- THE CASE -->
+    <!-- OVERVIEW & CONTEXT -->
     <div id="section-overview" class="section active">
-      <div class="section-title">The Case for a Proficiency Pathway</div>
-      <div class="section-sub">Why EY is moving from measuring participation to measuring demonstrated capability.</div>
-      <div class="card-grid g2">
-        <div class="card card-top">
-          <h3>Current Situation</h3>
-          <ul class="bullet-list">
-            <li>High variability in sales execution across a globally distributed organization</li>
-            <li>~50% of the workforce are new joiners; prior certification momentum has stalled</li>
-            <li>Inconsistent adoption of sales process, tools, and language across markets</li>
-            <li>No defined path for sellers to build and demonstrate capability</li>
-          </ul>
+      <div class="section-title">Overview &amp; Context</div>
+      <div class="section-sub">What this project is, why we're doing it, and how every seller moves through the Pathway.</div>
+      <div class="tab-bar">
+        <div class="tab active" data-tab>Background &amp; Purpose</div>
+        <div class="tab" data-tab>The Case</div>
+        <div class="tab" data-tab>Executive Summary</div>
+        <div class="tab" data-tab>How It Works</div>
+      </div>
+
+      <!-- Background & Purpose -->
+      <div class="tab-content active">
+        <div class="card card-top" style="margin-bottom:16px">
+          <h3>What It Is</h3>
+          <p>A role-based framework: for each sales role it defines the competencies and the underlying skills sellers need, sets the standard for what "good" looks like at each level, and gives them a structured way to build, demonstrate, and be measured on that capability — building on EY's existing curriculum and filling gaps with new content where needed.</p>
         </div>
-        <div class="card card-top">
-          <h3>The Approach</h3>
-          <ul class="bullet-list">
-            <li><strong>Role-calibrated model.</strong> Defines required skills and behaviors by role, not one-size-fits-all</li>
-            <li><strong>Proficiency standards.</strong> Foundation / Practicing / Gold Standard expectations at each level</li>
-            <li><strong>Learning pathways.</strong> Maps existing curriculum to development needs, role by role</li>
-            <li><strong>Builds on what exists.</strong> Extends EY's Brilliant Basics and sales enablement investments</li>
-          </ul>
+        <div class="card-grid g2">
+          <div class="card card-top">
+            <h3>The Purpose — Why We're Doing It</h3>
+            <ul class="bullet-list">
+              <li>Replace wide variability with one consistent way of selling across regions and service lines</li>
+              <li>Shift from measuring course completion to measuring demonstrated capability</li>
+              <li>Give sellers a clear, transparent path to develop — and eventually to advance</li>
+              <li>Drive adoption people buy into ("what's in it for me") — ultimately to win more deals</li>
+            </ul>
+          </div>
+          <div class="card card-top">
+            <h3>The History — How We Got Here</h3>
+            <ul class="bullet-list">
+              <li>A long-standing goal of Julie Bernicke's sales organization; accelerated once leadership aligned at the summit</li>
+              <li>SalesGlobe engaged to design the framework and interview leaders across the firm</li>
+              <li>Anchored on Brilliant Basics and existing programs — extended with new content where gaps exist</li>
+              <li>Piloting with the US Core team (~300 sellers), then scaling globally to all roles and levels</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pull-quote">
+          <div class="quote-line">We can't just focus on the learning — we need the application, demonstrated behavior, measurement, and change management, or we won't move the needle the way we intend to.</div>
         </div>
       </div>
-      <div class="pull-quote">
-        <div class="big">A curriculum tells people what to attend. A Proficiency Pathway defines what they must <em>demonstrate</em>.</div>
-        <div class="sub">That shift moves EY from measuring participation to measuring demonstrated capability — and connects development directly to career progression.</div>
+
+      <!-- The Case -->
+      <div class="tab-content">
+        <div class="card-grid g2">
+          <div class="card card-top">
+            <h3>Current Situation</h3>
+            <ul class="bullet-list">
+              <li>High variability in sales execution across a globally distributed organization</li>
+              <li>~50% of the workforce are new joiners; prior certification momentum has stalled</li>
+              <li>Inconsistent adoption of sales process, tools, and language across markets</li>
+              <li>No defined path for sellers to build and demonstrate capability</li>
+            </ul>
+          </div>
+          <div class="card card-top">
+            <h3>The Approach</h3>
+            <ul class="bullet-list">
+              <li><strong>Role-calibrated model.</strong> Defines required skills and behaviors by role, not one-size-fits-all</li>
+              <li><strong>Proficiency standards.</strong> Foundation / Practicing / Gold Standard expectations at each level</li>
+              <li><strong>Learning pathways.</strong> Maps existing curriculum to development needs, role by role</li>
+              <li><strong>Builds on what exists.</strong> Extends EY's Brilliant Basics and sales enablement investments</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pull-quote">
+          <div class="big">A curriculum tells people what to attend. A Proficiency Pathway defines what they must <em>demonstrate</em>.</div>
+          <div class="sub">That shift moves EY from measuring participation to measuring demonstrated capability — and connects development directly to career progression.</div>
+        </div>
       </div>
-      <div class="card-grid g3" style="margin-top:20px">
-        <div class="card"><h3>Section 1</h3><h2>Competency &amp; Skills</h2><p>Seven competency areas and the 24 skills that define EY sales excellence.</p></div>
-        <div class="card"><h3>Section 2</h3><h2>Structure &amp; Rhythm</h2><p>How the program runs — cadence, assessment, accountabilities, and what makes it stick.</p></div>
-        <div class="card"><h3>Section 3</h3><h2>Building the Path</h2><p>The six-phase rollout, from framework to full adoption.</p></div>
+
+      <!-- Executive Summary -->
+      <div class="tab-content">
+        <p class="lead-para">EY is getting <strong>one consistent way to define, measure, and grow sales capability</strong> — a role-calibrated Proficiency Pathway that every seller moves through, built on EY's existing L&amp;D investment.</p>
+        <div class="stats-row">
+          <div class="stat-block"><div class="n">9</div><div class="l">EY leaders interviewed</div></div>
+          <div class="stat-block"><div class="n">17</div><div class="l">sales roles in scope</div></div>
+          <div class="stat-block"><div class="n">7</div><div class="l">core competencies</div></div>
+          <div class="stat-block"><div class="n">24</div><div class="l">defined skills</div></div>
+        </div>
+        <div class="card-grid g3" style="margin-bottom:18px">
+          <div class="card card-top"><h3>What We Did</h3><ul class="bullet-list"><li>Interviewed 9 EY sales and functional leaders</li><li>Reviewed the full L&amp;D ecosystem (Brilliant Basics + 6 active programs)</li><li>Inventoried all 17 sales roles across the S&amp;SP pillars</li></ul></div>
+          <div class="card card-top"><h3>What We Built</h3><ul class="bullet-list"><li>7 competencies and 24 skills, calibrated by role</li><li>Foundation / Practicing / Gold Standard proficiency levels</li><li>A role-based assessment approach that produces a Readiness Score</li></ul></div>
+          <div class="card card-top"><h3>What Happens Next</h3><ul class="bullet-list"><li>Confirm the framework with pillar leaders (this conversation)</li><li>Tie proficiency to coaching, development, and advancement</li><li>Pilot with one cohort, then scale across the pillars</li></ul></div>
+        </div>
+        <div class="card">
+          <h3>Interview Roster</h3>
+          <div class="roster">
+            <div class="r-name"><b>Julie Branicki</b> — USLI Strategic Sales Leader</div>
+            <div class="r-name"><b>Lindsay Brown</b> — USLI Sales Activation Leader</div>
+            <div class="r-name"><b>Sarah Whitton</b> — Global Client Leadership Leader</div>
+            <div class="r-name"><b>Ross Ashbourn</b> — UK&amp;I Sales Leader</div>
+            <div class="r-name"><b>Scott Pergola</b> — Core Growth Pillar Leader</div>
+            <div class="r-name"><b>Wendy Ware</b> — Alliances Pillar Leader</div>
+            <div class="r-name"><b>Emma Hawthorne</b> — Oceania Sales Leader</div>
+            <div class="r-name"><b>Tim Teagle</b> — USLI Modern Client Experience / Demand Generation Leader</div>
+            <div class="r-name"><b>Kris Cole</b> — EW Sales Leader</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="tab-content">
+        <p class="lead-para"><strong>Every seller in scope participates.</strong> The same process and cadence for all, with expectations calibrated to their role.</p>
+        <div class="flow-4">
+          <div class="flow-step"><div class="fs-num"><div class="n">1</div><div class="t">Assess</div></div><p>Every seller is measured against the Foundation / Practicing / Gold Standard levels defined for their role.</p></div>
+          <div class="flow-step"><div class="fs-num"><div class="n">2</div><div class="t">Align</div></div><p>Self-assessment and manager assessment are reconciled in a triangulation conversation, producing a Readiness Score.</p></div>
+          <div class="flow-step"><div class="fs-num"><div class="n">3</div><div class="t">Develop</div></div><p>Coaching, curriculum, and on-the-job practice happen in the flow of business — not off the side of the desk.</p></div>
+          <div class="flow-step"><div class="fs-num"><div class="n">4</div><div class="t">Advance</div></div><p>Proficiency is demonstrated, not just attended. Standing informs coaching focus, development, and advancement.</p></div>
+        </div>
+        <div class="everyone-bar" style="margin-top:16px"><strong>The rhythm:</strong> a formal review twice a year, every year — reinforced between gates by coaching and real work. We prove it with a pilot, then scale.</div>
+        <div class="everyone-bar"><strong>Everyone has a role:</strong> sellers self-assess and own their development · managers coach and confirm standing · leaders sponsor and set the tone · L&amp;D keeps curriculum current.</div>
       </div>
     </div>
 
@@ -286,34 +379,34 @@
       </div>
 
       <div class="tab-content active">
+        <p style="font-size:13px;color:#666;margin-bottom:18px">Across executive interviews and assessment data, seven areas emerged as the foundation of high performance.</p>
         <div class="group-label">The Sales Process <span>· role-calibrated</span></div>
         <div class="card-grid g3" style="margin-bottom:22px">
-          <div class="comp-card"><h4>Opportunity Creation</h4><p>Origination discipline — every seller owns pipeline; no one waits to be handed a deal.</p></div>
-          <div class="comp-card"><h4>Opportunity Development</h4><p>EY's defined pursuit model: diagnose the problem, differentiate, win the work.</p></div>
-          <div class="comp-card"><h4>Account Management</h4><p>Relationship depth and breadth that sustains growth beyond any single partner.</p></div>
+          <div class="comp-card"><h4>Opportunity Creation</h4><p>Builds the origination discipline to identify, qualify, and advance opportunities across accounts, alliances, and solutions-led pursuits.</p><div class="why">Why it matters: every seller owns origination; no one waits to be handed a deal.</div></div>
+          <div class="comp-card"><h4>Opportunity Development</h4><p>Anchors sellers in EY's defined pursuit model so they run the play consistently — from diagnosing the client's problem to winning the work.</p><div class="why">Why it matters: credentials get you in the room; storytelling and strategy win the deal.</div></div>
+          <div class="comp-card"><h4>Account Management</h4><p>Builds the relationship depth and breadth that makes sustained account growth possible independent of any single partner.</p><div class="why">Why it matters: intentional engagement unlocks expansion beyond current scope.</div></div>
         </div>
         <div class="group-label">The Sales Professional <span>· universal</span></div>
         <div class="card-grid g4">
-          <div class="comp-card universal"><h4>Leadership &amp; Coaching</h4><p>Multiplies EY-wide capability by making coaching a Gold Standard expectation.</p></div>
-          <div class="comp-card universal"><h4>Sales Intelligence</h4><p>Turns data, tools, and AI into consistent, repeatable seller behaviors.</p></div>
-          <div class="comp-card universal"><h4>The EY Way</h4><p>EY's go-to-market model, internal navigation, and shared sales language.</p></div>
-          <div class="comp-card universal"><h4>Personal Brand &amp; Presence</h4><p>Internal visibility and external market credibility that open doors.</p></div>
+          <div class="comp-card universal"><h4>Leadership &amp; Coaching</h4><p>Builds organizational sales capability by making coaching, strategy, and culture modeling a Gold Standard expectation at every level.</p><div class="why">Why it matters: team members developing others multiplies capability EY-wide.</div></div>
+          <div class="comp-card universal"><h4>Sales Intelligence</h4><p>Converts data, tools, and AI into consistent seller behaviors that drive efficiency and informed decision making.</p><div class="why">Why it matters: data discipline makes performance visible and repeatable across the team.</div></div>
+          <div class="comp-card universal"><h4>The EY Way</h4><p>Grounds sellers in EY's go-to-market model, internal navigation, and shared sales language as the foundation for everything else.</p><div class="why">Why it matters: sellers who don't know how EY works can't activate its full breadth.</div></div>
+          <div class="comp-card universal"><h4>Personal Brand &amp; Presence</h4><p>Develops the internal visibility and external market presence that opens doors and establishes long-term commercial credibility.</p><div class="why">Why it matters: brand and credibility open doors that skills and track record alone cannot.</div></div>
         </div>
       </div>
 
       <div class="tab-content">
-        <p style="font-size:13px;color:#666;margin-bottom:18px">Twenty-four skills sit beneath the seven competencies. Not every skill carries the same weight for every role.</p>
+        <p style="font-size:13px;color:#666;margin-bottom:18px">Each competency is built on a defined set of skills. Not every skill carries the same weight for every role — the expected level of proficiency varies based on accountability and career stage.</p>
         <div class="card-grid g4" style="margin-bottom:16px">
-          <div class="skill-comp"><h4>Opportunity Creation</h4><ul><li>Sector &amp; Solutions Knowledge</li><li>Opportunity ID &amp; Development</li><li>Deal Qualification</li><li>Pipeline Discipline &amp; Forecasting</li></ul></div>
+          <div class="skill-comp"><h4>Opportunity Creation</h4><ul><li>Sector &amp; Solutions Knowledge</li><li>Opportunity Identification &amp; Development</li><li>Deal Qualification</li><li>Pipeline Discipline &amp; Forecasting</li></ul></div>
           <div class="skill-comp"><h4>Opportunity Development</h4><ul><li>Problem Solving &amp; Pursuit Strategy</li><li>Value Articulation &amp; Storytelling</li><li>Commercial Structuring &amp; Negotiation</li></ul></div>
           <div class="skill-comp"><h4>Account Management</h4><ul><li>Account Planning</li><li>Client Relationship Management</li><li>Executive Engagement</li><li>Communication &amp; Influence</li></ul></div>
           <div class="skill-comp"><h4>Leadership &amp; Coaching</h4><ul><li>Sales Culture Modeling</li><li>Team Coaching &amp; Development</li><li>Sales Strategy &amp; Planning</li></ul></div>
         </div>
-        <div class="card-grid g4">
+        <div class="card-grid g3">
           <div class="skill-comp"><h4>Sales Intelligence</h4><ul><li>Data Accuracy</li><li>Sales Tool Proficiency</li><li>AI-Powered Selling</li><li>Data-Driven Decision Making</li></ul></div>
           <div class="skill-comp"><h4>The EY Way</h4><ul><li>EY Go-to-Market Model</li><li>Internal Stakeholder Navigation</li><li>Sales Language &amp; Standards</li></ul></div>
           <div class="skill-comp"><h4>Personal Brand &amp; Presence</h4><ul><li>Internal Brand Building</li><li>Network Development</li><li>External Market Presence</li></ul></div>
-          <div class="skill-comp" style="border-top:3px solid var(--practice)"><h4>Built to Scale</h4><ul><li><strong>Seller track:</strong> process skills weighted heaviest (Staff → Assoc. Director)</li><li><strong>Leadership track:</strong> professional competencies (GCSPs, Partners, Leaders)</li><li>Same 7 + same cadence; weights &amp; required levels shift by role</li></ul></div>
         </div>
       </div>
 
@@ -324,19 +417,19 @@
             <div class="mk-icon" style="color:var(--foundation)">▬</div>
             <span class="mk-label mk-foundation">FOUNDATION · Developing</span>
             <p>Skill is understood and beginning to show in real client and account situations. Applied with guidance; not yet independently consistent.</p>
-            <div class="how-know"><strong>How we know</strong>Demonstrated in at least one live situation with coaching support.</div>
+            <div class="how-know"><strong>Markers</strong>Demonstrated in at least one live situation with coaching support.</div>
           </div>
           <div class="milestone">
             <div class="mk-icon" style="color:var(--practice)">●</div>
             <span class="mk-label mk-practice">PRACTICING · Performing</span>
-            <p>Skill is applied independently and consistently — part of how the work gets done, not activated by prompting. Reliable over time.</p>
-            <div class="how-know"><strong>How we know</strong>Unprompted, consistent application confirmed across multiple situations by manager or coach.</div>
+            <p>Skill is applied independently and consistently — part of how the work gets done, not activated by prompting. Reliable across situations over time.</p>
+            <div class="how-know"><strong>Markers</strong>Unprompted, consistent application confirmed across multiple situations by manager or coach.</div>
           </div>
           <div class="milestone">
             <div class="mk-icon" style="color:var(--gold)">★</div>
             <span class="mk-label mk-gold">GOLD STANDARD · Elevating</span>
             <p>Skill is modeled at the highest level and actively raising others' capability. The visible standard on the team.</p>
-            <div class="how-know"><strong>How we know</strong>A colleague, direct report, or team member demonstrably improves as a result.</div>
+            <div class="how-know"><strong>Markers</strong>A colleague, direct report, or team member demonstrably improves as a result.</div>
           </div>
         </div>
         <div class="journey-strip">
@@ -359,11 +452,12 @@
       </div>
 
       <div class="tab-content active">
-        <div class="card-grid g4" style="margin-bottom:24px">
-          <div class="card card-top"><h3>Six-Month Cadence</h3><p>Formal structured review with the leader twice a year. Three inputs required — self-assessment, manager alignment, and KPI thresholds. All three must clear.</p></div>
-          <div class="card card-top"><h3>Ongoing Rhythm</h3><p>Development runs through existing meetings — pipeline calls, account reviews, 1:1s. Curriculum supports the journey; the job is where capability builds.</p></div>
-          <div class="card card-top"><h3>Self-Assessment</h3><p>Skill-by-skill checklist against behaviors defined for the role and level. Becomes the working document for the manager alignment conversation.</p></div>
-          <div class="card card-top"><h3>Advancement Requirements</h3><p>Evaluated against the behavioral level for assigned skills. Not every skill is an advancement gate — some are purely developmental.</p></div>
+        <div class="card-grid g-auto" style="margin-bottom:24px">
+          <div class="card card-top"><h3>A Six-Month Cadence</h3><p>Formal structured review with the leader twice a year. Three inputs required — self-assessment, manager alignment, and KPI thresholds. All three must clear; no single input is sufficient.</p></div>
+          <div class="card card-top"><h3>An Ongoing Rhythm</h3><p>Development runs through existing meetings — pipeline calls, account reviews, 1:1s. Manager and coach give informal feedback between formal gates. The job is where capability builds.</p></div>
+          <div class="card card-top"><h3>A Self-Assessment</h3><p>Skill-by-skill checklist against behaviors defined for the role and level. The individual notes evidence and flags where they need support — the working document for the manager conversation.</p></div>
+          <div class="card card-top"><h3>Advancement Requirements</h3><p>Evaluated against the behavioral level for assigned skills at that role. Not every skill is an advancement gate — some are purely developmental.</p></div>
+          <div class="card card-top"><h3>Where It Connects</h3><p>Standing feeds into talent reviews and bench-strength conversations. Succession slates for larger accounts and priority pursuits require demonstrated standing — a consistent, evidence-based input beyond manager opinion.</p></div>
         </div>
         <h3 style="font-size:14px;font-weight:700;color:var(--ey-dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px">The 12-Month Assessment Timeline</h3>
         <div class="timeline">
@@ -388,7 +482,7 @@
         </div>
         <div class="readiness-box">
           <h4>The Readiness Score</h4>
-          <p>A single weighted percentage — agreed ratings measured against required levels, weighted by each skill's importance. <span class="pct">100%</span> means the seller meets the required level on every skill. Gaps on high-weight skills have the greatest impact on the score.</p>
+          <p>A single weighted percentage — agreed-upon ratings measured against required levels, weighted by each skill's importance. <span class="pct">100%</span> means the seller meets the required level on every skill. Gaps on high-weight skills have the greatest impact on the score.</p>
         </div>
       </div>
 
@@ -438,12 +532,16 @@
 
       <div class="tab-content active">
         <div class="card-grid g3">
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">01</span><span class="phase-time">2 mo.</span></div><h4>Foundation &amp; Alignment</h4><ul><li>Secure executive sponsorship</li><li>Establish governance &amp; owner</li><li>Align on shared language</li><li>Define success metrics</li></ul></div>
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">02</span><span class="phase-time">Iterative</span></div><h4>Curriculum &amp; Content Audit</h4><ul><li>Map existing content to model</li><li>Identify skill coverage gaps</li><li>Determine gap-fill strategy</li><li>Scope pilot roles</li></ul></div>
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">03</span><span class="phase-time">3+ mo.</span></div><h4>Framework Design</h4><ul><li>Co-create proficiency defs</li><li>Map levels by role</li><li>Validate with sample</li></ul></div>
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">04</span><span class="phase-time">Ongoing</span></div><h4>Infrastructure &amp; Tools</h4><ul><li>Select tracking platform</li><li>Design self &amp; mgr assessments</li><li>Build heat map dashboards</li></ul></div>
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">05</span><span class="phase-time">Pre-launch</span></div><h4>Manager Enablement</h4><ul><li>Train on model &amp; process</li><li>Provide coaching guidance</li><li>Role play hard conversations</li></ul></div>
-          <div class="phase-card"><div class="phase-head"><span class="phase-num">06</span><span class="phase-time">6+ mo.</span></div><h4>Pilot Program</h4><ul><li>Run first full cycle</li><li>Collect structured feedback</li><li>Find friction points</li><li>Iterate before scaling</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">01</span><span class="phase-time">2 Months</span></div><h4>Foundation &amp; Alignment</h4><ul><li><strong>Secure executive sponsorship</strong> — leadership champions it, not HR</li><li><strong>Establish governance</strong> — define the long-term decision owner</li><li><strong>Align on language</strong> — one vocabulary across all pillars</li><li><strong>Define success metrics</strong> — agree upfront how success is measured</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">02</span><span class="phase-time">Iterative</span></div><h4>Curriculum &amp; Content Audit</h4><ul><li><strong>Inventory existing content</strong> — map what exists to the model</li><li><strong>Identify gaps</strong> — where content doesn't yet exist</li><li><strong>Determine gap-fill strategy</strong> — coaching vs. formal content</li><li><strong>Prioritize development</strong> — build the most critical gaps first</li><li><strong>Scope pilot roles</strong> — start small and correctable</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">03</span><span class="phase-time">3 Months Min.</span></div><h4>Framework Design</h4><ul><li><strong>Co-create proficiency definitions</strong> — leaders define what "good" looks like</li><li><strong>Map proficiency by role</strong> — each role needs different levels</li><li><strong>Validate with a sample</strong> — test definitions before full build</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">04</span><span class="phase-time">Ongoing</span></div><h4>Infrastructure &amp; Tools</h4><ul><li><strong>Select tracking tool</strong> — platform choice drives everything downstream</li><li><strong>Design self-assessment</strong> — sellers rate with supporting evidence</li><li><strong>Design manager assessment</strong> — observed behaviors, not just opinions</li><li><strong>Build reporting dashboards</strong> — heat maps live from day one</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">05</span><span class="phase-time">Pre-launch</span></div><h4>Manager Enablement</h4><ul><li><strong>Train on the model</strong> — deep familiarity before seller launch</li><li><strong>Train on the process</strong> — clarity before going live</li><li><strong>Coaching plan guidance</strong> — structure the development conversation</li><li><strong>Role-play practice</strong> — rehearse hard conversations first</li><li><strong>Assess manager readiness</strong> — confirm they can run it well</li></ul></div>
+          <div class="phase-card"><div class="phase-head"><span class="phase-num">06</span><span class="phase-time">6 Months Min.</span></div><h4>Pilot</h4><ul><li><strong>Run first full cycle</strong> — assess, review, plan, capture data</li><li><strong>Collect structured feedback</strong> — sellers and managers both weigh in</li><li><strong>Evaluate reporting output</strong> — does the data surface useful insights?</li><li><strong>Identify friction points</strong> — find where the process breaks down</li><li><strong>Iterate before scaling</strong> — fix problems before expanding rollout</li></ul></div>
+        </div>
+        <div class="cm-note">
+          <h4>Roll-Out: Embed &amp; Sustain</h4>
+          <p>Change management is not a phase — it runs across all six. Framing the Pathway as career development rather than performance management, activating peer champions, and addressing resistance proactively are what carry adoption through every step.</p>
         </div>
       </div>
 
@@ -464,58 +562,11 @@
       </div>
 
       <div class="tab-content">
-        <p style="font-size:13px;color:#666;margin-bottom:18px">The manager's job is to build capability, not just measure it — an ongoing relationship anchored by the assessment, not a once-a-year event.</p>
+        <p style="font-size:13px;color:#666;margin-bottom:18px">The manager's job is to build capability, not just measure it — an ongoing development relationship anchored by the assessment, not a once-a-year evaluation.</p>
         <div class="card-grid g3">
-          <div class="pstep"><h4>Coaching Expectations</h4><ul class="bullet-list"><li><strong>Before:</strong> rate each skill ahead of the calibration meeting</li><li><strong>During:</strong> lead the conversation; agree on levels; co-create the plan</li><li><strong>After:</strong> coach to the plan via field observation and feedback</li><li><strong>Mid-year:</strong> a formal check on progress and what needs to shift</li></ul></div>
-          <div class="pstep"><h4>Preparing a Manager to Coach</h4><ul class="bullet-list"><li><strong>Know the tool:</strong> how the workbook works and what each output means</li><li><strong>Lead the conversation:</strong> run a calibration, handle rating disagreements</li><li><strong>Give feedback:</strong> specific, behavioral, tied to a skill gap</li><li><strong>Practice first:</strong> role-play scenarios before any real conversation</li></ul></div>
-          <div class="pstep"><h4>Coaching the Coach</h4><ul class="bullet-list"><li><strong>Coaching playbook:</strong> what to observe and ask, skill by skill</li><li><strong>Pulse survey:</strong> flags struggling managers before the cycle ends</li><li><strong>Calibration session:</strong> managers align on standards, learn from peers</li><li><strong>Named program owner:</strong> a single point of contact between touchpoints</li></ul></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DECISIONS -->
-    <div id="section-decisions" class="section">
-      <div class="section-title">Where We Need Your Input</div>
-      <div class="section-sub">The key decisions this framework depends on — the purpose of today's conversation.</div>
-      <div class="decisions-intro">
-        <p>The purpose of this conversation is <em>directional feedback</em> on the questions below. We are not looking for final answers today — we are looking for your read as a Pillar Leader on what will work for your team.</p>
-      </div>
-      <div class="card-grid g2">
-        <div class="decision-block">
-          <h4>Framework Design</h4>
-          <ul>
-            <li>Which roles are in scope first, and which are deferred?</li>
-            <li>Do the tier mappings hold? (Entry / Mid / Senior / Leadership)</li>
-            <li>What are the top 3 competencies per role in your pillar?</li>
-          </ul>
-        </div>
-        <div class="decision-block">
-          <h4>Talent Linkage &amp; Governance</h4>
-          <ul>
-            <li>Does proficiency standing connect to promotion and talent reviews?</li>
-            <li>Who owns this program long-term within S&amp;SP?</li>
-          </ul>
-        </div>
-        <div class="decision-block">
-          <h4>Assessment &amp; Cadence</h4>
-          <ul>
-            <li>Annual + 6-month check-in: does this cadence work for your team?</li>
-            <li>What platform should house the model and assessments?</li>
-          </ul>
-        </div>
-        <div class="decision-block">
-          <h4>Coaching &amp; Manager Readiness</h4>
-          <ul>
-            <li>What does the manager coaching model look like in your pillar?</li>
-            <li>Who at the manager level owns cadence and outcomes?</li>
-          </ul>
-        </div>
-        <div class="decision-block" style="grid-column:1 / -1">
-          <h4>Pilot</h4>
-          <ul>
-            <li>Which cohort pilots first — role, team, or geography?</li>
-            <li>What does success look like at Month 6, and who decides?</li>
-          </ul>
+          <div class="pstep"><h4>Coaching Expectations</h4><ul class="bullet-list"><li><strong>Before:</strong> rate each skill ahead of the calibration meeting — preparation is the standard</li><li><strong>During:</strong> lead the conversation; review evidence; agree on levels; co-create the plan</li><li><strong>After:</strong> coach to the plan via field observation, targeted feedback, and check-ins</li><li><strong>Mid-year:</strong> a formal check — where are we, what's working, what needs to shift</li></ul></div>
+          <div class="pstep"><h4>Preparing a Manager to Coach</h4><ul class="bullet-list"><li><strong>Know the tool:</strong> how the workbook works and what each output means</li><li><strong>Lead the conversation:</strong> run a calibration; handle rating disagreements</li><li><strong>Give feedback:</strong> specific, behavioral, tied to a skill gap</li><li><strong>Practice first:</strong> role-play scenarios before any real conversation</li></ul></div>
+          <div class="pstep"><h4>Coaching the Coach</h4><ul class="bullet-list"><li><strong>Coaching playbook:</strong> what to observe and ask, skill by skill</li><li><strong>Pulse survey:</strong> flags struggling managers before the cycle ends</li><li><strong>Calibration session:</strong> managers align on standards, learn from peers</li><li><strong>Team heat map:</strong> managers see aggregate Readiness and prioritize coaching</li><li><strong>Named program owner:</strong> a single point of contact between touchpoints</li></ul></div>
         </div>
       </div>
     </div>
@@ -528,7 +579,7 @@ function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
   document.getElementById('section-' + id).classList.add('active');
-  const map = { overview: 0, competency: 1, structure: 2, path: 3, decisions: 4 };
+  const map = { overview: 0, competency: 1, structure: 2, path: 3 };
   document.querySelectorAll('.sidebar-item')[map[id]].classList.add('active');
   document.querySelector('.main').scrollTop = 0;
 }
@@ -576,7 +627,7 @@ const TL_EXAMPLES = [
       <table class="mini-table">
         <thead><tr><th>Skill (sample)</th><th class="c">Self</th><th class="c">Manager</th><th class="c">Agreed</th><th class="c">Required</th></tr></thead>
         <tbody>
-          <tr><td>Opportunity ID &amp; Development</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
+          <tr><td>Opportunity Identification &amp; Development</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
           <tr><td>Deal Qualification</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
           <tr><td>Value Articulation &amp; Storytelling</td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-f">Foundation</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td></tr>
           <tr><td>Executive Engagement</td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-g">Gold</span></td><td class="c"><span class="lvl lvl-p">Practicing</span></td><td class="c"><span class="lvl lvl-g">Gold</span></td></tr>
@@ -655,11 +706,9 @@ const TL_EXAMPLES = [
 ];
 
 function showTL(idx, el) {
-  document.querySelectorAll('.tl-step').forEach(s => s.classList.remove('selected'));
   const detail = document.getElementById('tl-detail');
-  // toggle off if clicking the already-open step
-  if (el.dataset.open === '1') { el.dataset.open = '0'; detail.innerHTML = ''; return; }
-  document.querySelectorAll('.tl-step').forEach(s => s.dataset.open = '0');
+  if (el.dataset.open === '1') { el.dataset.open = '0'; el.classList.remove('selected'); detail.innerHTML = ''; return; }
+  document.querySelectorAll('.tl-step').forEach(s => { s.classList.remove('selected'); s.dataset.open = '0'; });
   el.classList.add('selected'); el.dataset.open = '1';
   const ex = TL_EXAMPLES[idx];
   detail.innerHTML = `
