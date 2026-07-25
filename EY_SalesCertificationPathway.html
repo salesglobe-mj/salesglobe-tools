@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EY Sales Certification Pathway</title>
+<style>
+  :root {
+    --ey-yellow: #FFE600;
+    --ey-dark: #1A1A24;
+    --ey-mid: #2E2E38;
+    --ey-gray: #747480;
+    --ey-light: #F6F6FA;
+    --ey-border: #E0E0E8;
+    --gold: #C9A227;
+    --sa: #4A90D9;      /* Sales Activation */
+    --cg: #6BBF6B;      /* Core Growth */
+    --al: #B07CD9;      /* Alliances */
+    --req: #2E7D32;
+    --opt: #B8860B;
+    --done: #2E7D32;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--ey-light); color: var(--ey-dark); min-height: 100vh; }
+
+  /* ---------- Header ---------- */
+  .header { background: var(--ey-dark); color: #fff; padding: 0 32px; height: 62px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .header-logo { display: flex; align-items: center; gap: 14px; }
+  .ey-badge { background: var(--ey-yellow); color: var(--ey-dark); font-weight: 900; font-size: 19px; padding: 5px 11px; border-radius: 3px; letter-spacing: 1px; }
+  .header-title { font-size: 16.5px; font-weight: 600; letter-spacing: 0.3px; }
+  .header-sub { font-size: 12px; color: #aaa; margin-top: 1px; }
+  .draft-badge { color: #FF5A5A; font-size: 14px; font-weight: 800; letter-spacing: 3px; border: 2px solid #FF5A5A; padding: 3px 12px; border-radius: 4px; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 30px 32px 80px; }
+
+  /* ---------- Intro ---------- */
+  .intro { margin-bottom: 26px; }
+  .intro h1 { font-size: 27px; font-weight: 800; letter-spacing: -0.3px; }
+  .intro p { font-size: 14.5px; color: #555; line-height: 1.6; margin-top: 8px; max-width: 820px; }
+
+  /* ---------- Role selector ---------- */
+  .selector { background: #fff; border: 1px solid var(--ey-border); border-top: 4px solid var(--ey-yellow); border-radius: 10px; padding: 22px 24px; margin-bottom: 26px; }
+  .selector-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--ey-gray); margin-bottom: 12px; }
+  .selector-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 11.5px; font-weight: 700; color: var(--ey-dark); text-transform: uppercase; letter-spacing: 0.4px; }
+  select { font-family: inherit; font-size: 14px; padding: 11px 14px; border: 1px solid var(--ey-border); border-radius: 7px; background: #fff; color: var(--ey-dark); min-width: 300px; cursor: pointer; }
+  select:focus { outline: none; border-color: var(--ey-dark); }
+  .reset-btn { font-size: 12.5px; font-weight: 600; color: var(--ey-gray); background: none; border: none; cursor: pointer; padding: 11px 4px; text-decoration: underline; }
+  .reset-btn:hover { color: var(--ey-dark); }
+
+  /* ---------- Empty state ---------- */
+  .empty { text-align: center; padding: 60px 20px; color: var(--ey-gray); }
+  .empty .big { font-size: 40px; margin-bottom: 10px; }
+  .empty p { font-size: 14px; }
+
+  #view { display: none; }
+  #view.on { display: block; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Role summary ---------- */
+  .role-head { background: var(--ey-dark); color: #fff; border-radius: 10px; padding: 22px 26px; margin-bottom: 22px; display: flex; gap: 26px; flex-wrap: wrap; justify-content: space-between; }
+  .role-head .rh-main { flex: 1; min-width: 260px; }
+  .pillar-chip { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 11px; border-radius: 11px; margin-bottom: 10px; color: #fff; }
+  .role-head h2 { font-size: 22px; font-weight: 800; line-height: 1.2; }
+  .role-head .rh-lvl { font-size: 13px; color: #cfcfd6; margin-top: 6px; }
+  .rh-facts { display: grid; grid-template-columns: repeat(2, auto); gap: 12px 30px; align-content: start; }
+  .rh-fact .k { font-size: 10px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--ey-yellow); }
+  .rh-fact .v { font-size: 12.5px; color: #eee; margin-top: 2px; max-width: 260px; line-height: 1.4; }
+
+  /* ---------- Chevron pathway ---------- */
+  .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ey-gray); margin: 4px 0 14px; }
+  .section-label span { color: var(--ey-dark); }
+  .chevron-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 8px; }
+  .chev { position: relative; flex: 1 1 150px; min-width: 150px; background: #fff; border: 1px solid var(--ey-border); cursor: pointer; padding: 15px 20px 15px 30px; transition: all 0.15s; clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 16px 50%); }
+  .chev:first-child { clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%); padding-left: 20px; }
+  .chev:hover { background: #fbfbfd; }
+  .chev.active { background: var(--ey-dark); border-color: var(--ey-dark); }
+  .chev.active .chev-name { color: #fff; }
+  .chev.active .chev-num { color: var(--ey-yellow); }
+  .chev.active .chev-meta { color: #bbb; }
+  .chev-num { font-size: 10px; font-weight: 800; letter-spacing: 0.6px; color: var(--ey-gray); text-transform: uppercase; }
+  .chev-name { font-size: 13.5px; font-weight: 700; color: var(--ey-dark); line-height: 1.25; margin-top: 3px; }
+  .chev-meta { font-size: 10.5px; color: var(--ey-gray); margin-top: 4px; }
+  .chev .tag-req { position: absolute; top: 6px; right: 20px; font-size: 8.5px; font-weight: 800; letter-spacing: 0.4px; padding: 1px 6px; border-radius: 8px; }
+  .tag-required { background: #E8F5E9; color: var(--req); }
+  .tag-optional { background: #FFF8E1; color: var(--opt); }
+  .chev.cert { background: var(--ey-yellow); border-color: var(--gold); }
+  .chev.cert .chev-num, .chev.cert .chev-name { color: var(--ey-dark); }
+  .chev.cert.active { background: var(--gold); }
+  .chev-ring { position: absolute; bottom: 6px; right: 22px; font-size: 10px; font-weight: 800; color: var(--done); }
+  .chev.active .chev-ring { color: var(--ey-yellow); }
+
+  .path-hint { font-size: 11.5px; color: var(--ey-gray); font-style: italic; margin-bottom: 22px; }
+
+  /* ---------- Progress bar ---------- */
+  .prog-wrap { background: #fff; border: 1px solid var(--ey-border); border-radius: 10px; padding: 16px 22px; margin-bottom: 22px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .prog-track { flex: 1; min-width: 220px; height: 12px; background: var(--ey-light); border-radius: 8px; overflow: hidden; border: 1px solid var(--ey-border); }
+  .prog-fill { height: 100%; background: linear-gradient(90deg, var(--ey-yellow), var(--gold)); width: 0%; transition: width 0.4s ease; }
+  .prog-text { font-size: 13px; font-weight: 700; color: var(--ey-dark); white-space: nowrap; }
+  .prog-text span { color: var(--gold); }
+  .prog-sub { font-size: 11.5px; color: var(--ey-gray); }
+
+  /* ---------- Track detail ---------- */
+  .detail { background: #fff; border: 1px solid var(--ey-border); border-radius: 10px; padding: 26px 28px; }
+  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-bottom: 2px solid var(--ey-yellow); padding-bottom: 16px; margin-bottom: 4px; }
+  .detail-head h3 { font-size: 20px; font-weight: 800; color: var(--ey-dark); }
+  .detail-head .dh-meta { font-size: 12.5px; color: var(--ey-gray); margin-top: 5px; line-height: 1.5; }
+  .detail-head .dh-meta b { color: var(--ey-dark); }
+  .dur-pill { font-size: 11px; font-weight: 700; color: #fff; background: var(--ey-dark); border-radius: 11px; padding: 4px 13px; white-space: nowrap; }
+  .objective { background: rgba(255,230,0,0.12); border-left: 4px solid var(--ey-yellow); border-radius: 6px; padding: 12px 16px; margin: 18px 0 20px; font-size: 13px; color: #444; line-height: 1.55; }
+  .objective b { color: #8a6d00; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+
+  .grp-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ey-dark); margin: 22px 0 12px; padding-left: 12px; border-left: 3px solid var(--sa); }
+  .note-row { font-size: 12px; color: #8a6d00; background: rgba(255,230,0,0.1); border: 1px dashed rgba(201,162,39,0.5); border-radius: 6px; padding: 9px 13px; margin: 4px 0 14px; line-height: 1.5; }
+
+  /* module rows */
+  .mod { display: flex; align-items: center; gap: 14px; padding: 13px 4px; border-bottom: 1px solid #f1f1f5; }
+  .mod:last-child { border-bottom: none; }
+  .mod-check { width: 22px; height: 22px; flex-shrink: 0; border: 2px solid var(--ey-border); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #fff; transition: all 0.15s; }
+  .mod-check:hover { border-color: var(--gold); }
+  .mod-check.checked { background: var(--done); border-color: var(--done); }
+  .mod-check.checked::after { content: '✓'; color: #fff; font-size: 14px; font-weight: 900; }
+  .mod-body { flex: 1; min-width: 0; }
+  .mod-name { font-size: 14px; font-weight: 600; color: var(--ey-dark); line-height: 1.4; }
+  .mod.done .mod-name { color: var(--ey-gray); text-decoration: line-through; }
+  .mod-meta { font-size: 11.5px; color: var(--ey-gray); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .mm-pill { background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 9px; padding: 1px 8px; font-size: 10.5px; }
+  .mm-hw { background: #FFF3E0; border-color: #FFCC80; color: #B8860B; font-weight: 700; }
+  .launch { flex-shrink: 0; font-family: inherit; font-size: 12px; font-weight: 700; padding: 8px 15px; border-radius: 7px; border: 1px solid var(--ey-border); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .launch.ready { background: var(--ey-dark); color: var(--ey-yellow); border-color: var(--ey-dark); }
+  .launch.ready:hover { background: #000; }
+  .launch.pending { background: #fafafa; color: #aaa; cursor: not-allowed; }
+
+  /* assessment block */
+  .assess { margin-top: 22px; background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 8px; padding: 16px 18px; }
+  .assess h4 { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ey-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .assess h4::before { content: '★'; color: var(--gold); }
+  .assess ul { list-style: none; }
+  .assess li { font-size: 13px; color: #444; padding: 5px 0 5px 18px; position: relative; line-height: 1.5; }
+  .assess li::before { content: '▪'; position: absolute; left: 0; color: var(--gold); font-size: 10px; top: 8px; }
+  .assess.none { background: #f7f7fa; }
+  .assess.none h4::before { content: '○'; color: var(--ey-gray); }
+  .assess.none p { font-size: 12.5px; color: var(--ey-gray); font-style: italic; }
+
+  /* certification panel */
+  .cert-panel .req-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f1f5; }
+  .cert-panel .req-item:last-child { border-bottom: none; }
+  .req-ico { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--ey-dark); color: var(--ey-yellow); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; }
+  .req-txt { font-size: 13.5px; color: #333; line-height: 1.5; padding-top: 3px; }
+  .req-txt b { color: var(--ey-dark); }
+
+  /* ---------- Role profile accordion ---------- */
+  .profile-panel { margin: -8px 0 22px; }
+  .pp-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pp-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--ey-gray); }
+  .pp-title span { color: var(--ey-dark); }
+  .pp-expand { font-size: 12px; font-weight: 700; color: var(--ey-dark); background: none; border: none; cursor: pointer; letter-spacing: 0.3px; }
+  .pp-expand:hover { color: var(--gold); }
+  .acc { background: #fff; border: 1px solid var(--ey-border); border-radius: 9px; margin-bottom: 10px; overflow: hidden; }
+  .acc-head { display: flex; align-items: center; gap: 12px; padding: 15px 18px; cursor: pointer; user-select: none; transition: background 0.12s; }
+  .acc-head:hover { background: #fbfbfd; }
+  .acc.open .acc-head { border-bottom: 1px solid var(--ey-border); }
+  .acc-ico { width: 30px; height: 30px; flex-shrink: 0; border-radius: 7px; background: var(--ey-light); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .acc.open .acc-ico { background: rgba(255,230,0,0.2); }
+  .acc-h-txt { flex: 1; }
+  .acc-h-txt .h1 { font-size: 14.5px; font-weight: 700; color: var(--ey-dark); }
+  .acc-h-txt .h2 { font-size: 11.5px; color: var(--ey-gray); margin-top: 1px; }
+  .acc-caret { font-size: 12px; color: var(--ey-gray); transition: transform 0.2s; }
+  .acc.open .acc-caret { transform: rotate(90deg); color: var(--ey-dark); }
+  .acc-body { display: none; padding: 18px; }
+  .acc.open .acc-body { display: block; animation: fade 0.2s ease; }
+
+  /* responsibilities */
+  .resp-item { padding: 10px 0; border-bottom: 1px solid #f2f2f5; }
+  .resp-item:first-child { padding-top: 0; }
+  .resp-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .resp-item .rt { font-size: 13.5px; font-weight: 700; color: var(--ey-dark); margin-bottom: 3px; }
+  .resp-item .rt::before { content: '▪'; color: var(--gold); font-size: 11px; margin-right: 7px; }
+  .resp-item .rd { font-size: 12.5px; color: #555; line-height: 1.5; padding-left: 18px; }
+
+  /* segment focus tiles */
+  .seg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .seg-tile { border: 1px solid var(--ey-border); border-radius: 8px; padding: 13px 14px; text-align: center; border-top: 3px solid var(--ey-border); }
+  .seg-tile .sn { font-size: 12px; font-weight: 800; letter-spacing: 0.5px; color: var(--ey-dark); }
+  .seg-tile .sc { font-size: 10.5px; color: var(--ey-gray); margin: 3px 0 9px; }
+  .seg-pri { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.3px; padding: 3px 10px; border-radius: 10px; text-transform: uppercase; }
+  .pri-primary { background: #E8F5E9; color: #2E7D32; }
+  .seg-tile.primary { border-top-color: #4CAF50; }
+  .pri-secondary { background: #FFF8E1; color: #B8860B; }
+  .seg-tile.secondary { border-top-color: #FFC107; }
+  .pri-none { background: #f2f2f5; color: #999; }
+
+  /* bullet lists */
+  .plist { list-style: none; }
+  .plist li { font-size: 13px; color: #444; padding: 6px 0 6px 20px; position: relative; line-height: 1.5; border-bottom: 1px solid #f5f5f8; }
+  .plist li:last-child { border-bottom: none; }
+  .plist li::before { content: '▪'; position: absolute; left: 2px; color: var(--gold); font-size: 10px; top: 8px; }
+
+  /* relationships */
+  .rel-item { padding: 11px 0; border-bottom: 1px solid #f2f2f5; }
+  .rel-item:last-child { border-bottom: none; }
+  .rel-item .rw { font-size: 13px; font-weight: 700; color: var(--ey-dark); }
+  .rel-item .rdd { font-size: 12.5px; color: #555; line-height: 1.5; margin-top: 2px; }
+
+  /* competency chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 12.5px; font-weight: 600; color: var(--ey-dark); background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 20px; padding: 7px 14px; }
+
+  @media (max-width: 720px) {
+    .seg-grid { grid-template-columns: repeat(2, 1fr); }
+    .wrap { padding: 22px 18px 60px; }
+    select { min-width: 100%; }
+    .field { width: 100%; }
+    .rh-facts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-logo">
+      <span class="ey-badge">EY</span>
+      <div>
+        <div class="header-title">Sales Certification Pathway</div>
+        <div class="header-sub">Americas Sales &amp; Strategic Pursuits</div>
+      </div>
+    </div>
+    <span class="draft-badge">DRAFT</span>
+  </div>
+
+  <div class="wrap">
+    <div class="intro">
+      <h1>Your path to Sales Certification</h1>
+      <p>Select your role to see the full certification curriculum mapped to your position — every track, course, and assessment you'll complete on the way to certification. Check off courses as you go to track your progress. Course links will be added as the learning modules go live.</p>
+    </div>
+
+    <div class="selector">
+      <div class="selector-label">Step 1 · Choose your role</div>
+      <div class="selector-row">
+        <div class="field">
+          <label for="roleSelect">Job Role</label>
+          <select id="roleSelect">
+            <option value="">— Select a role —</option>
+          </select>
+        </div>
+        <button class="reset-btn" id="resetBtn" style="display:none">Reset progress for this role</button>
+      </div>
+    </div>
+
+    <div class="empty" id="empty">
+      <div class="big">🎓</div>
+      <p>Select your role above to view your personalized certification pathway.</p>
+    </div>
+
+    <div id="view">
+      <!-- Role summary -->
+      <div class="role-head" id="roleHead"></div>
+
+      <!-- Role profile accordion -->
+      <div class="profile-panel" id="profilePanel">
+        <div class="pp-bar">
+          <div class="pp-title">Role profile · <span>reference &amp; refresher</span></div>
+          <button class="pp-expand" id="ppExpand">Expand all ▾</button>
+        </div>
+        <div id="accHost"></div>
+      </div>
+
+      <!-- Chevron pathway -->
+      <div class="section-label">Step 2 · Your certification pathway &nbsp;·&nbsp; <span>click any step for details</span></div>
+      <div class="chevron-bar" id="chevronBar"></div>
+      <div class="path-hint" id="pathHint"></div>
+
+      <!-- Progress -->
+      <div class="prog-wrap">
+        <div class="prog-text">Overall progress: <span id="progPct">0%</span></div>
+        <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+        <div class="prog-sub" id="progSub"></div>
+      </div>
+
+      <!-- Track detail -->
+      <div class="detail" id="detail"></div>
+    </div>
+  </div>
+
+<script>
+/* ============================================================
+   MODULE LINKS — paste course URLs here as they go live.
+   Key = module id (see TRACKS below). Leave '' until available.
+   Any module with a non-empty link shows a live "Launch" button.
+   ============================================================ */
+const MODULE_LINKS = {
+  // Tools & Technology
+  'growth-iq': '', 'account-iq': '', 'sales-navigator': '', 'insights-engine': '',
+  'hpc-tech': '', 'lens': '', 'dynamics-crm': '',
+  // Sales Process — Accounts
+  'amf': '', 'tool-refresher': '', 'strategic-account-planning': '',
+  // Sales Process — Relationships
+  'baseline-agenda': '', 'trust-ask': '', 'client-conversations': '', 'agenda-social-styles': '',
+  'client-value-language': '', 'prioritize-relationships': '', 'hpc-1': '', 'hpc-2': '', 'cx': '',
+  // Sales Process — Deals
+  'get-to-green': '', 'pricing': '', 'negotiation': '', 'powermap': '', 'pursuit-coaching': '', 'pursuit-tools': '',
+  // Sector
+  'ig-landscape': '', 'sector-deep-dives': '',
+  // Solutions
+  'service-lines': '', 'managed-services': '', 'alliances-course': '', 'solution-deep-dives': '',
+  // Leadership
+  'all-in-leadership': '', 'all-in-debrief': '',
+  'lead-sales-manager': '', 'lead-lam': '', 'lead-all-other': '',
+  // Procurement
+  'procurement-program': ''
+};
+
+/* ============================================================
+   CURRICULUM  (from EY Sales Certification Program Outline)
+   ============================================================ */
+const TRACKS = {
+  tools: {
+    num: 1, name: 'Tools & Technology', short: 'Tools & Tech',
+    duration: '3 months', format: 'Live virtual drop-ins (60 min each)',
+    objective: 'Ensure baseline fluency and applied usage of core sales tools.',
+    groups: [{ modules: [
+      { id:'growth-iq', name:'Growth IQ — Demo, walkthrough & application', meta:['60 min','Live virtual'] },
+      { id:'account-iq', name:'Account IQ — Insights to action', meta:['60 min','Live virtual'] },
+      { id:'sales-navigator', name:'Sales Navigator — Relationship & opportunity acceleration', meta:['60 min','Live virtual'] },
+      { id:'insights-engine', name:'Insights Engine Agent', meta:['60 min','Live virtual'] },
+      { id:'hpc-tech', name:'HPC Technology & Agents — Capabilities & use cases', meta:['60 min','Live virtual'] },
+      { id:'lens', name:'LENs — Foundational + new enhancements', meta:['60 min','Live virtual'] },
+      { id:'dynamics-crm', name:'Dynamics CRM (including Leads)', meta:['60 min','Live virtual'] }
+    ]}],
+    assessment: null
+  },
+  process: {
+    num: 2, name: 'Sales Process', short: 'Sales Process',
+    duration: '6 months', format: 'Live virtual + in-person immersion · Homework assignments',
+    objective: 'Drive disciplined account strategy, trusted client relationships, and consistent, high-quality pursuit execution to win and grow.',
+    groups: [
+      { label: '2A · Accounts Module', modules: [
+        { id:'amf', name:'Account Management Framework', meta:['90 min','Live virtual'], hw:true },
+        { id:'tool-refresher', name:'Refresher on tool-enabled account insights: Growth IQ, Account IQ, Sales Navigator', meta:['60 min','Live virtual'] },
+        { id:'strategic-account-planning', name:'Strategic Account Planning', meta:['75 min','Live virtual'] }
+      ], assessment: ['Full Account Plan case study'] },
+      { label: '2B · Relationships Module', note: 'Markets Academy aligned · format could be in person for 1–2 days. Homework includes role play using Roleplay.ai & Conversation Coach tools.', modules: [
+        { id:'baseline-agenda', name:'Baseline agenda meeting assessment', meta:['Baseline'] },
+        { id:'trust-ask', name:'Trust & Ask Mindset', meta:['2.5 hrs'] },
+        { id:'client-conversations', name:'Client Conversations', meta:['2.5 hrs'] },
+        { id:'agenda-social-styles', name:'Agenda Meetings & Social Styles', meta:['2.5 hrs'] },
+        { id:'client-value-language', name:'Understanding Client Value Language', meta:['2.5 hrs'] },
+        { id:'prioritize-relationships', name:'Prioritizing & strengthening your relationships', meta:['2.5 hrs'] },
+        { id:'hpc-1', name:'High Performance Communication — Part 1 (WBL)', meta:['70 min','WBL'] },
+        { id:'hpc-2', name:'High Performance Communication — Part 2 (WBL)', meta:['2 hrs','WBL'] },
+        { id:'cx', name:'CX', meta:[] }
+      ], assessment: ['6-box plan','Agenda meeting','CX conversation'] },
+      { label: '2C · Deals Module', note: 'Format could be in person for 1–2 days. Homework includes role play using Roleplay.ai & Conversation Coach tools.', modules: [
+        { id:'get-to-green', name:'Get to Green — opportunity identification & qualification', meta:['60–90 min'] },
+        { id:'pricing', name:'Pricing intelligently', meta:['60–90 min'] },
+        { id:'negotiation', name:'Negotiation strategies', meta:['60–90 min'] },
+        { id:'powermap', name:'PowerMap & stakeholder strategy', meta:['60–90 min'] },
+        { id:'pursuit-coaching', name:'Pursuit & orals coaching', meta:['60–90 min'] },
+        { id:'pursuit-tools', name:'Pursuit & Orals — Tools & Agents to leverage', meta:['60–90 min'] }
+      ], assessment: ['Shadow Strategic Deals Team Member on a pursuit','End-to-end pursuit simulation'] }
+    ]
+  },
+  sector: {
+    num: 3, name: 'Sector', short: 'Sector',
+    duration: '3 months', format: 'Virtual live / WBL · parallel with Solutions',
+    objective: 'Build sector fluency and market credibility.',
+    groups: [{ modules: [
+      { id:'ig-landscape', name:'IG & sector landscape overview', meta:['60 min','Virtual live'] },
+      { id:'sector-deep-dives', name:'Sector deep dives aligned to accounts you serve', meta:['90 min','Virtual live'] }
+    ]}],
+    assessment: ['Earn at least one Sector Badge (cohort-based accountability)']
+  },
+  solutions: {
+    num: 4, name: 'Solutions', short: 'Solutions',
+    duration: '3 months', format: 'Virtual live · parallel with Sector',
+    objective: 'Confidently articulate EY solutions & value by client need.',
+    groups: [{ modules: [
+      { id:'service-lines', name:'Overview of Service Lines & Core Solutions', meta:['60–90 min ×4','Virtual live'] },
+      { id:'managed-services', name:'Managed Services', meta:['90 min'], hw:true, hwText:'MS assessment + account action plan' },
+      { id:'alliances-course', name:'Alliances', meta:['90 min'], hw:true, hwText:'Alliance mapping + account action plan' },
+      { id:'solution-deep-dives', name:'Sector-Specific Solution Deep Dives (incl. Tech & AI Solutions)', meta:['2 hrs'] }
+    ]}],
+    assessment: ['Case study: Solution selection & value articulation — tailored to client, sector & business challenge']
+  },
+  leadership: {
+    num: 5, name: 'Leadership', short: 'Leadership',
+    duration: '3 months', format: 'WBL / Virtual live',
+    objective: 'Build leadership and influence skills that inspire confidence, drive growth, and create value — strengthening personal, team, and GTM leadership while modeling S&SP culture and brand ambassadorship.',
+    dynamic: true, // role-based sub-track injected at render
+    assessment: ['Leadership Demonstration & Validation (across Personal, Team & GTM Leadership)']
+  },
+  procurement: {
+    num: 6, name: 'Procurement', short: 'Procurement',
+    duration: '6 months', format: 'Virtual live',
+    objective: 'Follow the existing Procurement Certification Program.',
+    conditional: true,
+    groups: [{ modules: [
+      { id:'procurement-program', name:'Procurement Certification Program (existing program)', meta:['6 months','Virtual live'] }
+    ]}],
+    assessment: ['Per existing Procurement Certification Program requirements']
+  }
+};
+
+const LEAD_TRACKS = {
+  'sales-manager': { id:'lead-sales-manager', name:'Sales Manager Leadership Track', meta:['90 min','Virtual live'] },
+  'lam':           { id:'lead-lam',           name:'Lead Account Manager (LAM) Leadership Track', meta:['90 min','Virtual live'] },
+  'all-other':     { id:'lead-all-other',     name:'All Other Leadership Roles Track', meta:['90 min','Virtual live'] }
+};
+const LEAD_LABELS = { 'sales-manager':'Sales Manager', 'lam':'Lead Account Manager (LAM)', 'all-other':'All Other Leadership Roles' };
+
+/* ============================================================
+   ROLES  (from EY Sales Certification Job Profiles)
+   proc: 'required' | 'optional' | 'na'   lead: which leadership sub-track
+   ============================================================ */
+const PILLAR_COLORS = { 'Sales Activation':'var(--sa)', 'Core Growth / Industries & Accounts':'var(--cg)', 'Alliances / Services & Solutions / Managed Services':'var(--al)' };
+const ROLES = [
+  // Sales Activation
+  { id:'sa-leader', pillar:'Sales Activation', name:'Sales Activation Leader', level:'Director', exp:'15+ years', reports:'S&SP Americas Leadership', tools:'Dynamics CRM, Growth IQ, MGOS, Roleplay.ai, Account IQ', adv:'SA Leader → S&SP Americas Leadership', lead:'all-other', proc:'na' },
+  { id:'sa-lam', pillar:'Sales Activation', name:'Lead Account Manager (Associate Director)', level:'Associate Director', exp:'12+ years', reports:'Sales Activation Leader', tools:'Growth IQ, Account IQ, Dynamics CRM, MGOS, Roleplay.ai', adv:'Lead AM (AD) → SA Leadership or Sales Executive', lead:'lam', proc:'required' },
+  { id:'sa-sam', pillar:'Sales Activation', name:'Senior Account Manager', level:'Associate Director', exp:'10–12 years', reports:'Lead Account Manager, AD / Sales Activation Leader', tools:'Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, Roleplay.ai', adv:'Senior AM → Lead AM (AD) → SA Leadership; or ARC/GDA Strategist', lead:'all-other', proc:'required' },
+  { id:'sa-am', pillar:'Sales Activation', name:'Account Manager', level:'Assistant Director', exp:'7–10 years', reports:'GCSP / Coordinating Partner', tools:'Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, Roleplay.ai', adv:'Account Manager → Senior AM → Lead AM (AD)', lead:'all-other', proc:'required' },
+  { id:'sa-arc-leader', pillar:'Sales Activation', name:'Account Resource Center (ARC) Leader', level:'Director', exp:'12+ years', reports:'Sales Activation Leader', tools:'Growth IQ, Account IQ, MGOS, Dynamics CRM, Roleplay.ai', adv:'ARC Leader → SA Leadership or Sales Executive', lead:'all-other', proc:'na' },
+  { id:'sa-sr-arc', pillar:'Sales Activation', name:'Senior ARC Strategist', level:'Associate Director', exp:'10–12 years', reports:'Account Resource Center Leader', tools:'Growth IQ, Account IQ, MGOS, Dynamics CRM, Roleplay.ai', adv:'Senior ARC Strategist → ARC Leader or Senior Account Manager', lead:'all-other', proc:'na' },
+  { id:'sa-arc', pillar:'Sales Activation', name:'ARC Strategist', level:'Assistant Director', exp:'7–10 years', reports:'Account Resource Center Leader', tools:'Growth IQ, MGOS, Roleplay.ai, Dynamics CRM', adv:'ARC Strategist → Senior ARC Strategist → Senior Account Manager', lead:'all-other', proc:'na' },
+  { id:'sa-gda-leader', pillar:'Sales Activation', name:'Growth Driver Activation (GDA) Leader', level:'Director', exp:'12+ years', reports:'Sales Activation Leader', tools:'Dynamics CRM, Growth IQ, MGOS, Sales Navigator, AI-enabled sales tools', adv:'GDA Leader → SA Leadership or Sales Executive', lead:'all-other', proc:'na' },
+  { id:'sa-sr-gda', pillar:'Sales Activation', name:'Senior GDA Strategist', level:'Associate Director', exp:'10–12 years', reports:'Growth Driver Activation Leader', tools:'Dynamics CRM, Growth IQ, Sales Navigator, MGOS, AI-enabled sales tools', adv:'Senior GDA Strategist → GDA Leader or Senior Account Manager', lead:'all-other', proc:'na' },
+  { id:'sa-gda', pillar:'Sales Activation', name:'GDA Strategist', level:'Assistant Director', exp:'7–10 years', reports:'Growth Driver Activation Leader', tools:'Dynamics CRM, Growth IQ, MGOS, Sales Navigator, AI-enabled sales tools', adv:'GDA Strategist → Senior GDA Strategist → Account Manager', lead:'all-other', proc:'na' },
+  // Core Growth / Industries & Accounts
+  { id:'cg-leader', pillar:'Core Growth / Industries & Accounts', name:'Leader', level:'Director – Managing Director', exp:'15+ years', reports:'S&SP Americas Leadership', tools:'Dynamics CRM, Growth IQ, Account IQ, Pursuit Resource Center, Markets OS', adv:'Leader → S&SP Americas Leadership', lead:'all-other', proc:'na' },
+  { id:'cg-sm', pillar:'Core Growth / Industries & Accounts', name:'Sales Manager', level:'Director – Managing Director', exp:'12+ years', reports:'Leader (Core Growth / I&A)', tools:'Dynamics CRM, Growth IQ, Account IQ, Sales Navigator, Pursuit Resource Center', adv:'Sales Manager → Sector Sales Leader → Leader → S&SP Leadership', lead:'sales-manager', proc:'na' },
+  { id:'cg-se', pillar:'Core Growth / Industries & Accounts', name:'Sales Executive', level:'Associate Director – Director', exp:'10–12 years', reports:'Sales Manager (Core Growth / I&A)', tools:'Dynamics CRM, Growth IQ, Account IQ, Sales Navigator, Pursuit Resource Center', adv:'Sales Executive → Account Leader (GCSP/RCP) → Account Executive → GCSP', lead:'all-other', proc:'optional' },
+  { id:'cg-al', pillar:'Core Growth / Industries & Accounts', name:'Account Leader', level:'Associate Director – Director', exp:'12+ years', reports:'Leader (Core Growth / I&A) / GCSP', tools:'Dynamics CRM, Growth IQ, Account IQ, Pursuit Resource Center, P&CE/GSPP Portal, MGOS', adv:'Account Leader → GCSP / Global Client Service Partner', lead:'all-other', proc:'na' },
+  // Alliances / Services & Solutions / Managed Services
+  { id:'al-leader', pillar:'Alliances / Services & Solutions / Managed Services', name:'Leader', level:'Director – Managing Director', exp:'15+ years', reports:'S&SP Americas Leadership', tools:'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center', adv:'Leader → S&SP Americas Leadership', lead:'all-other', proc:'na' },
+  { id:'al-sm', pillar:'Alliances / Services & Solutions / Managed Services', name:'Sales Manager', level:'Director', exp:'12+ years', reports:'Leader (Alliances / S&S / Managed Services)', tools:'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center', adv:'Sales Manager → Pillar Leader → S&SP Leadership', lead:'sales-manager', proc:'na' },
+  { id:'al-se', pillar:'Alliances / Services & Solutions / Managed Services', name:'Sales Executive', level:'Assistant Director – Associate Director – Director', exp:'10+ years', reports:'Sales Manager (Alliances / S&S / Managed Services)', tools:'Dynamics CRM, Growth IQ, Sales Navigator, Alliance Partner Portals, Pursuit Resource Center, Roleplay.ai', adv:'Sales Executive → Account Executive → Account Leader; or Sales Manager', lead:'all-other', proc:'optional' }
+];
+
+/* Role profile detail (from EY Sales Certification Job Profiles deck) */
+const PROFILES = {"sa-leader": {"resp": [{"t": "Sales Activation Leadership", "d": "Responsible for advancing the focus of the Sales Activation team on client-centric and client-facing activity. Leads the full team across Account Management, ARC, and Growth Driver Activation sub-teams."}, {"t": "Strategic Resource Deployment", "d": "Leads the deployment of Sales Activation resources where they can drive greatest impact in our accounts, sectors, and growth drivers. Manages intake and prioritization across all three sub-pillars."}, {"t": "Team Hiring, Development & Performance", "d": "Leads recruiting, hiring, and development of Lead Account Managers, ARC Leaders, and GDA Leaders. Sets performance standards and team culture."}, {"t": "Account Management Framework Oversight", "d": "Champions adoption and excellence of the Account Management Framework (AMF) across all account types. Ensures AMF discipline is embedded across the SA team."}, {"t": "Cross-Pillar Collaboration", "d": "Partners with Core Growth / I&A and Alliances / S&S / MS pillars to deploy SA resources in support of shared account strategies and growth priorities."}, {"t": "Program Innovation", "d": "Drives innovation in Sales Activation programs, coaching methodologies, and growth driver activation approaches. Continuously evolves the SA operating model."}, {"t": "Performance Management", "d": "Sets team targets, monitors KPIs, and conducts regular performance reviews. Provides coaching and escalates performance issues for sub-team leaders."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["AMF adoption and quality across the portfolio", "Account Sprints delivered and impact measured", "Sub-team performance against individual targets", "Headcount and team development"], "out": ["Sales Activation sub-teams performing at target", "AMF consistently applied across the account portfolio", "SA resources deployed to highest-impact opportunities"], "rel": [{"who": "S&SP Americas Leadership", "d": "Receives strategic direction; represents SA team performance and resource needs to Americas leadership"}, {"who": "Lead AMs / ARC Leader / GDA Leader", "d": "Direct management of sub-team leaders; coaches and holds accountable the next level of SA leadership"}, {"who": "Core Growth / I&A & Alliances Leaders", "d": "Cross-pillar collaboration; deploys SA resources in alignment with account and sales strategies"}, {"who": "GCSPs / Coordinating Partners", "d": "Senior collaboration on where SA resources can add most value to account teams across all tiers"}, {"who": "EY L&D / Program Leadership", "d": "Partners on SA program design, AMF updates, and advancement certification processes"}], "comp": ["Sales Activation program leadership and resource deployment", "AMF methodology and account management excellence", "Cross-pillar collaboration and coordination", "Team leadership and talent development"]}, "sa-lam": {"resp": [{"t": "Team Leadership & Counseling", "d": "Leads team of sector account managers, serving as counselor and owning performance management. Provides coaching, development guidance, and career support."}, {"t": "Senior Account Manager on Priority Account", "d": "Serves as the Senior Account Manager on a priority account alongside team leadership responsibilities. Demonstrates AM best practices in action."}, {"t": "Recruiting, Hiring & Development", "d": "Leads recruiting, hiring, deployment, training, and development of Account Managers within the sector. Ensures team is staffed and fully ramped."}, {"t": "AMF Execution & Account Strategy", "d": "Ensures AMF is consistently applied across all team accounts. Collaborates on account strategy with GCSPs and SEs; drives execution of account plans."}, {"t": "Change Management & Community Leadership", "d": "Leads the Sales Activation community within the sector. Owns change management and fosters collaboration with GCSPs and Sector leadership. Owns and drives AM-focused projects and initiatives."}, {"t": "Influence & Performance Standards", "d": "Influences account team leaders and senior stakeholders. Raises the bar on account management excellence and drives sales activation standards across the sector."}, {"t": "Cross-SL Integration", "d": "Facilitates cross-service-line planning and integration on team accounts. Connects account teams to the right SL resources for pursuit support and growth execution."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Not in Scope"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["AM team AMF adoption and account cadence rates", "Team account advancement and pipeline metrics", "Personal AM performance on priority account", "Community engagement and team development"], "out": ["AM team performing consistently against AMF standards", "Priority account activated and growing", "AM community thriving with best practices shared"], "rel": [{"who": "Account Managers (direct reports)", "d": "Primary people leadership; responsible for coaching, development, and performance management of AM team"}, {"who": "Sales Activation Leader", "d": "Reports to; receives strategic direction and resource support for sector AM deployment"}, {"who": "GCSPs / Coordinating Partners", "d": "Aligns AM team activity with account strategy; ensures AM execution supports account growth priorities"}, {"who": "ARC Strategists", "d": "Coordinates with ARC on Sprint facilitation and coaching support for AM team accounts"}, {"who": "Sales Executives", "d": "AM team supports SE-led pursuits with account intelligence; SE and AM align on shared accounts for integrated activation"}], "comp": ["Account team leadership and people management", "AMF methodology and account activation excellence", "Sector community leadership and knowledge sharing", "Cross-SL integration and stakeholder influence"]}, "sa-sam": {"resp": [{"t": "AMF Planning & Execution", "d": "Leads account management cadence on 1–2 assigned Premier, Strategic, or Focus accounts. Primary owner of all AMF activities including planning, execution, and annual review."}, {"t": "ASQ Ownership & Facilitation", "d": "Develops and leads the Account Strategic Questionnaire (ASQ). Captures findings, drives action items, and ensures year-end follow-through with the client team."}, {"t": "Account Strategy Development", "d": "Co-develops account plan with GCSP and SE. Identifies whitespace and maintains account plan cadence; drives coordinated execution across the account team."}, {"t": "Cross-SL Coordination", "d": "Integrates across service lines and geographies. Manages internal team coordination; serves as account knowledge hub connecting teams across the portfolio."}, {"t": "Senior Client Relationship Management", "d": "Owns stakeholder mapping and senior relationship health monitoring. Owns targeted client relationships (Procurement, DEI, etc.) and teams with account leaders to advance and expand client relationships."}, {"t": "Pipeline & CRM Discipline", "d": "Maintains accurate pipeline in Dynamics CRM. Supports SE-led pursuits with account intelligence and timely, accurate pipeline contributions."}, {"t": "Mentoring & Team Influence", "d": "Mentors Account Managers within the sector. Proactively drives team collaboration and shares best practices. Operates with agility and strong problem-solving skills."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Secondary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["AMF cadence completion rate across assigned accounts", "ASQ completion and follow-through rate", "Account plan quality and execution consistency", "CRM pipeline accuracy"], "out": ["AMF cadence running consistently on assigned accounts", "ASQ completed with documented year-end follow-through", "Account plan co-developed and updated regularly"], "rel": [{"who": "GCSP / Coordinating Partner", "d": "Sets strategy; Senior AM executes. Primary direction-setter and operational engine for account activation"}, {"who": "Sales Executive", "d": "SE drives origination; Senior AM activates the account plan and provides intelligence for SE-led pursuits"}, {"who": "Account Manager", "d": "Senior AM mentors and shares best practices across the Sales Activation ecosystem"}, {"who": "ARC Strategist", "d": "ARC provides AMF coaching and facilitates Account Sprints; Senior AM is a key collaborator and beneficiary"}, {"who": "Client Stakeholders (Dir/VP)", "d": "Senior AM owns day-to-day relationship management; builds trust and expands reach across the client organization"}], "comp": ["AMF execution and account activation", "ASQ ownership and facilitation", "Senior client relationship management", "Cross-SL coordination and team collaboration"]}, "sa-am": {"resp": [{"t": "AMF Planning & Execution", "d": "Leads account management cadence on 1–2 assigned accounts. Primary owner of all AMF activities including planning, execution, and annual review."}, {"t": "ASQ Ownership", "d": "Develops the ASQ plan, leads client interviews, captures findings, drives action items, and ensures year-end follow-through on all commitments."}, {"t": "Account Strategy", "d": "Co-develops account plan with GCSP and SE. Identifies whitespace and maintains account plan cadence; ensures coordinated execution across the account team."}, {"t": "Cross-SL Coordination", "d": "Integrates across service lines and geographies. Manages internal team; serves as account knowledge hub connecting teams to growth resources and EY capabilities."}, {"t": "Client Relationship Management", "d": "Owns stakeholder mapping and relationship health monitoring. Expands relationships across the account organization over time; builds trust at Director/VP level."}, {"t": "Pipeline & CRM Discipline", "d": "Maintains accurate pipeline in Dynamics CRM. Supports SE-led pursuits with account intelligence and timely, accurate pipeline data."}, {"t": "Tool Proficiency", "d": "Proficient in Growth IQ, Account IQ, Dynamics CRM, Sales Navigator, and Roleplay.ai to drive account effectiveness and sales activation."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["AMF cadence completion rate across assigned accounts", "ASQ completion and follow-through rate", "CRM pipeline accuracy and timeliness", "Account plan quality and execution"], "out": ["AMF cadence running consistently on all assigned accounts", "ASQ completed with documented year-end follow-through", "Account plan co-developed and updated regularly", "CRM pipeline accurate, current, and complete"], "rel": [{"who": "GCSP / Coordinating Partner", "d": "Sets strategy; AM executes. Primary direction-setter; AM is the operational engine that activates the GCSP's account vision"}, {"who": "Sales Executive", "d": "AM supports SE-led pursuits with account intelligence; SE owns origination while AM manages the account activation framework"}, {"who": "ARC Strategist", "d": "ARC provides AMF coaching and facilitates Account Sprints; AM is the primary beneficiary of ARC coaching and program evaluation"}, {"who": "Cross-SL Service Line Leads", "d": "AM coordinates across service lines, facilitates introductions, and manages internal team integration on the account"}, {"who": "Client Stakeholders (Dir/VP)", "d": "AM owns day-to-day relationship management; builds trust and expands reach across the client organization"}], "comp": ["AMF execution and account activation", "ASQ ownership and facilitation", "Stakeholder management and relationship expansion", "CRM and pipeline discipline"]}, "sa-arc-leader": {"resp": [{"t": "Team Leadership & Development", "d": "Team leader accountable for growth, development, and performance of the ARC team. Sets strategic direction, coaches team members, and builds a high-performing ARC."}, {"t": "ARC Strategic Direction", "d": "Sets and implements the strategic direction of the Account Resource Center. Ensures ARC delivers a scalable, cost-effective, and high-value model — bringing standardized, proven AMF tools to all accounts with emphasis on Top-end Core and High Potential Core accounts."}, {"t": "AMF Methodology Expertise", "d": "Demonstrates deep AMF methodology expertise. Champions AMF adoption and innovation across the team. Recognized as a firm leader in account management excellence."}, {"t": "Executive Relationship Building", "d": "Develops strong rapport with Executive Leaders across S&SP and account teams. Ensures ARC resources are deployed where they can drive greatest impact."}, {"t": "Accurate Account Needs Assessment", "d": "Maintains the ability to accurately assess account needs and opportunities. Deploys the right ARC resources to match account team requirements and readiness."}, {"t": "Program & Certification Oversight", "d": "Oversees the ARC team's role in the Proficiency Pathway and advancement certification programs. Ensures program quality and consistency across all evaluations."}, {"t": "Cross-Functional Collaboration", "d": "Partners with SA Leader, GDA Leader, and Lead AMs to ensure coordinated deployment of Sales Activation resources across the account portfolio."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["ARC team AMF delivery quality and consistency", "Account Sprint volume and impact metrics", "Team development and advancement rates", "Executive leader satisfaction with ARC deployment"], "out": ["ARC team performing consistently against delivery standards", "AMF expertise recognized across the firm", "ARC resources deployed to highest-impact accounts"], "rel": [{"who": "Sr. ARC Strategists / ARC Strategists", "d": "Primary people leadership; responsible for coaching, development, and performance management of ARC team"}, {"who": "Sales Activation Leader", "d": "Reports to; receives strategic direction and supports SA-wide resource deployment strategy"}, {"who": "GCSPs / Executive Leaders", "d": "Senior-level relationships to understand account needs and ensure effective ARC resource deployment"}, {"who": "Lead Account Managers", "d": "Coordinates with Lead AMs to align ARC Sprint facilitation and coaching with AM account plans"}, {"who": "EY L&D / Program Leadership", "d": "Partners on AMF methodology updates, Proficiency Pathway program design, and certification standards"}], "comp": ["Account Resource Center team leadership", "AMF methodology mastery and program oversight", "Strategic deployment of ARC resources", "Executive relationship building and influence"]}, "sa-sr-arc": {"resp": [{"t": "AMF-Based Account Consultations", "d": "Executes AMF-based consultations and account acceleration sessions. Builds a strong AMF foundation on assigned accounts and drives consistent methodology adoption."}, {"t": "Account-Specific Growth Strategy", "d": "Develops account-specific growth strategies and executes plans with account leaders on complex, multi-stakeholder accounts."}, {"t": "Account Sprint Facilitation", "d": "Designs and facilitates Account Sprints on complex, high-priority accounts. Recognized as the go-to ARC resource for Sprint delivery in complex environments."}, {"t": "AMF Mentoring & Capability Building", "d": "AMF methodology expert and key leader for account activation. Mentors ARC Strategists and Account Managers; proactively drives team collaboration."}, {"t": "Executive Stakeholder Influence", "d": "Operates at the executive level; influences GCSPs and senior account team leaders to adopt AMF practices and apply them with rigor."}, {"t": "Internal Brand & Knowledge Building", "d": "Proactively shares best practices, creates AMF knowledge assets, and contributes to the ongoing development of the ARC resource library."}, {"t": "Program Evaluation", "d": "Evaluates Account Manager and Sales Executive advancement submissions. Applies objective criteria consistently and provides constructive feedback."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Secondary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["AMF consultation and Sprint delivery quality", "Account growth metrics on engaged accounts", "Advancement evaluation quality and consistency", "Team mentoring and collaboration impact"], "out": ["AMF consultations and Sprints delivered with quality", "Account growth supported across engaged accounts", "ARC Strategists mentored and developed"], "rel": [{"who": "Account Managers", "d": "Primary coaching and facilitation relationship; Senior ARC delivers AMF Sprints and complex consultations to AMs"}, {"who": "GCSPs / Coord. Partners", "d": "Program sponsors and strategic account leads; Senior ARC collaborates with GCSPs to develop account strategy"}, {"who": "ARC Strategists", "d": "Mentoring relationship; Senior ARC guides and develops ARC Strategists on methodology and execution"}, {"who": "ARC Leader", "d": "Direct people leader; provides strategic direction and deployment guidance"}, {"who": "Sales Executives", "d": "Coordination on shared accounts; Senior ARC supports activation that enables SE-led origination"}], "comp": ["AMF methodology mastery on complex accounts", "Account Sprint facilitation and consultation delivery", "Executive stakeholder influence", "Mentoring, coaching, and capability development"]}, "sa-arc": {"resp": [{"t": "AMF Consultations", "d": "Delivers AMF-based consultations across many accounts. Not assigned to 1–2 accounts — works broadly across the full portfolio to build AMF foundations and drive adoption."}, {"t": "Account Sprint Facilitation", "d": "Designs and facilitates Account Sprints. Core competency: driving account teams through structured, time-bound growth planning to advance account strategy."}, {"t": "Internal Sales Coaching", "d": "Coaches Account Managers on AMF application, account cadence, and account management discipline. Primary coaching relationship is with AMs across the portfolio."}, {"t": "MGOS Navigation", "d": "Navigates the Markets Growth Operating System. Connects account teams to the right firm resources and enablement functions to activate account plans."}, {"t": "Program Evaluation", "d": "Assesses AM and SE advancement gate submissions. Serves as program evaluator and coach. Ensures objective and consistent evaluation standards are applied."}, {"t": "AMF Process Expertise", "d": "Deep AMF methodology knowledge. Recognized as firm expert consulted by teams on methodology questions; serves as knowledge custodian and resource developer."}, {"t": "Asset & Knowledge Development", "d": "Inputs on AMF asset development; identifies and shares best-in-class account management tools to be disseminated across the firm."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Secondary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Number and quality of Account Sprints facilitated", "AMF adoption and competency scores across coached AMs", "Advancement evaluation consistency and quality"], "out": ["Account Sprints delivered on time and with consistent quality", "AMF coaching provided to AMs across the full portfolio", "Advancement evaluations completed with objectivity"], "rel": [{"who": "Account Managers", "d": "Primary coaching and facilitation relationship; ARC delivers AMF Sprints and ongoing coaching to AMs across accounts"}, {"who": "GCSPs / Coord. Partners", "d": "Program sponsors for Sprint facilitation; ARC works with GCSPs to co-develop account strategy"}, {"who": "Sales Executives", "d": "Coordination as needed; ARC operates in the coaching lane but supports shared account goals"}, {"who": "Program Leadership / ARC Leader", "d": "ARC Strategist is embedded as evaluator and trainer within the formal advancement certification program"}, {"who": "Firm Enablement Functions", "d": "ARC connects account teams to the right EY internal functions and resources via MGOS navigation"}], "comp": ["AMF methodology mastery and Account Sprint facilitation", "Internal coaching and sales capability development", "MGOS navigation and firm enablement connectivity", "Program evaluation and advancement certification"]}, "sa-gda-leader": {"resp": [{"t": "Team Leadership & GDA Strategy", "d": "Team leader responsible for implementing and overseeing GDA strategy. Drives sales and promotes growth through activating Growth Drivers and cross-sector campaigns."}, {"t": "Two-Pronged Activation Model", "d": "Deploys a Pull model (account and sector acceleration sessions) and a Push model (last-mile sales plays and campaigns for select solutions). Works with Americas leadership to activate Growth Drivers at scale across the firm."}, {"t": "Hiring, Development & Performance", "d": "Leads recruiting, hiring, development, and performance management of GDA Strategists. Builds a high-performing team of growth driver activation specialists."}, {"t": "Senior Relationship & Influence", "d": "Demonstrates strong sales and solutions activation expertise. Builds collaborative relationships with senior stakeholders across the firm and with clients."}, {"t": "Solutions Activation Ecosystem", "d": "Deep understanding of solution strategy and the growth driver ecosystem. Serves as an authoritative voice on Growth Driver capabilities and go-to-market strategy."}, {"t": "Cross-Pillar Collaboration", "d": "Collaborates with CG / I&A, Alliances, and Sales Activation pillars to deploy GDA resources where they can drive the greatest impact."}, {"t": "Performance Management", "d": "Sets team targets, monitors GDA deployment quality, and conducts performance reviews. Ensures GDA Strategists are meeting engagement and pipeline goals."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["GDA deployment quality and volume across accounts", "Growth Driver pipeline activated and advanced", "Team development and advancement metrics", "Cross-sector GDA engagement impact"], "out": ["GDA team meeting deployment and pipeline targets", "Growth Drivers activated at scale across sectors", "Team developing toward next-level roles"], "rel": [{"who": "Sr. GDA / GDA Strategists (direct)", "d": "Primary people leadership; responsible for coaching, development, and performance management of GDA team"}, {"who": "Sales Activation Leader", "d": "Reports to; receives strategic direction and aligns GDA deployment with SA-wide resource strategy"}, {"who": "Americas Leadership (C&I / S&SP)", "d": "Works collaboratively to prioritize and activate Growth Drivers at the Americas level"}, {"who": "Account Teams (GCSPs, AMs, SEs)", "d": "Coordinates GDA deployment to support account-level growth priorities across all tiers"}, {"who": "Growth Driver Sub-Pillar Teams", "d": "Partners with specific Growth Driver owners (AI, sustainability, tax technology) to develop and execute activation campaigns"}], "comp": ["Growth Driver Activation team leadership", "Growth driver ecosystem and solution strategy expertise", "Cross-sector campaign development and deployment", "Senior stakeholder relationship building and influence"]}, "sa-sr-gda": {"resp": [{"t": "Sector & Growth Driver Alignment", "d": "Aligned to specific sectors with a focus on growing the Growth Driver footprint. Drives cross-sector campaigns and activates complex Growth Drivers within assigned areas."}, {"t": "GTM Strategy Development", "d": "Establishes and drives GTM efforts for Growth Driver activation. Collaborates with sector and account leadership to build joint activation plans and execution strategies."}, {"t": "Pipeline Growth & Origination", "d": "Influences and grows pipeline through growth driver activation. Identifies unmet needs where EY's Growth Driver capabilities can solve strategic client challenges."}, {"t": "Sales Excellence & Best Practice Sharing", "d": "Influences leaders and impacts sales excellence across the sector. Navigates EY's Growth Driver ecosystem and proactively shares best practices with team members."}, {"t": "Sector Stakeholder Engagement", "d": "Builds strong relationships with sector leaders, account teams, and Growth Driver domain experts. Acts as a senior connector between GDA resources and business needs."}, {"t": "Process Innovation & Campaign Execution", "d": "Innovates and improves upon processes across the Growth Driver ecosystem to simplify and accelerate growth. Executes multi-sector activation campaigns with consistent messaging and measurable impact."}, {"t": "Mentoring & Collaboration", "d": "Mentors GDA Strategists, proactively drives team collaboration, and shares knowledge to elevate team-wide capabilities and performance."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Growth Driver pipeline activated and advanced", "Sector origination contributions from GDA activity", "Campaign execution quality and breadth", "Team mentoring and knowledge sharing impact"], "out": ["Growth Driver pipeline activated across focus sectors", "Cross-sector campaigns executed effectively", "GDA Strategists mentored and best practices shared"], "rel": [{"who": "GDA Strategists", "d": "Mentoring relationship; Senior GDA Strategist guides and develops GDA Strategists on growth driver activation and selling skills"}, {"who": "Sector / Account Leadership", "d": "Primary collaboration partner for GTM strategy development and GDA deployment within sectors"}, {"who": "GDA Leader", "d": "Direct people leader providing strategic direction and performance management"}, {"who": "Account Managers", "d": "Coordinates GDA activation with AM account plans to drive aligned, consistent account growth"}, {"who": "Growth Driver Domain Teams", "d": "Partners with specific Growth Driver owners to translate capabilities into client-relevant activation plans"}], "comp": ["Growth driver ecosystem navigation and activation", "Cross-sector GTM strategy and campaign execution", "Senior stakeholder influence and collaboration", "Mentoring and team capability development"]}, "sa-gda": {"resp": [{"t": "Growth Driver Activation", "d": "Aligned to specific sectors with a focus on growing the Growth Driver footprint. Drives growth driver activation campaigns aligned to assigned sectors and accounts."}, {"t": "Co-Develop Strategy & Action Plans", "d": "Co-develops strategy and action plans with SL/Sector leadership, SEs, AMs, and GCSPs. Executes GTM activities including acceleration sessions and last-mile campaigns aligned to assigned sectors and growth drivers."}, {"t": "Pipeline Origination Contribution", "d": "Influences and grows pipeline through growth driver activation. Contributes to sector and account-level pipeline by surfacing Growth Driver-powered opportunities."}, {"t": "Sales Excellence & Ecosystem Navigation", "d": "Influences sales excellence within assigned sectors and accounts. Navigates EY's Growth Driver ecosystem to connect teams to the right resources and capabilities."}, {"t": "GTM Execution", "d": "Executes GTM campaigns aligned to specific growth drivers. Activates EY's high-priority themes (AI, sustainability, workforce, tax technology) with client-facing account teams."}, {"t": "Stakeholder Engagement", "d": "Builds relationships with sector leaders, SL leads, and account teams. Becomes a trusted resource for growth driver knowledge and activation support."}, {"t": "Knowledge Development", "d": "Continuously builds personal expertise in assigned Growth Driver area(s). Contributes to team knowledge assets and shares insights with peer GDA Strategists."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Not in Scope"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Primary"}], "kpis": ["Growth Driver activation campaigns executed", "Pipeline origination contributions from GDA activity", "Sector engagement volume and quality", "Growth driver knowledge and GTM execution"], "out": ["Growth Driver campaigns activated across assigned sectors", "Pipeline contribution from GDA activity", "Sector team relationships established and maintained"], "rel": [{"who": "Senior GDA Strategist", "d": "Mentoring and guidance relationship; Senior GDA Strategist provides coaching and best practice sharing"}, {"who": "SL / Sector Leadership", "d": "Primary co-development relationship for strategy and action plans; GDA Strategist executes within the sector's growth agenda"}, {"who": "GDA Leader", "d": "People leader providing strategic direction and performance management"}, {"who": "Account Managers", "d": "Coordinates GDA activation with AM account management plans for aligned growth driver messaging on accounts"}, {"who": "Account Teams (GCSPs, SEs)", "d": "Supports account teams with growth driver insights; helps embed Growth Driver themes into client conversations"}], "comp": ["Growth driver knowledge and ecosystem navigation", "GTM execution and campaign activation", "Sector stakeholder relationship building", "Co-developing strategy with SL and sector leadership"]}, "cg-leader": {"resp": [{"t": "Pillar Leadership & Sales Team Direction", "d": "Leads all Core Growth and I&A sales professionals across the combined pillar. Sets performance standards, team culture, and strategic direction."}, {"t": "GTM & Sales Strategy Development", "d": "Develops and drives the go-to-market and sales strategy for the combined CG and I&A pillar in alignment with firm-wide priorities and S&SP Americas direction."}, {"t": "SE Hiring, Training & Development", "d": "Leads recruiting, hiring, onboarding, and development of Sales Executives and Sales Managers. Champions talent development and career progression across the pillar."}, {"t": "Personal Sales & Origination", "d": "Carries personal origination and sales targets alongside pillar leadership. Models elite selling behaviors and demonstrates that great leaders stay in the market."}, {"t": "Senior C-Suite Relationship Management", "d": "Owns EY's most senior client relationships across Core Growth and I&A accounts. Serves as the firm's highest-level sales presence with Board and CEO-level buyers."}, {"t": "Cross-Pillar Collaboration", "d": "Partners with Alliances, Managed Services, Services & Solutions, and Sales Activation pillars to deliver integrated solutions to Core Growth and I&A accounts."}, {"t": "Performance Management", "d": "Sets team targets, monitors KPIs, and conducts regular performance reviews. Develops improvement and growth plans for all reporting Sales Managers and SEs."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Secondary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Overall pillar origination and sales totals", "SE team quota attainment rate", "Personal origination and sales contribution", "Team headcount and voluntary attrition"], "out": ["Pillar origination and sales targets met or exceeded", "SE team fully staffed, developed, and performing to quota", "Cross-pillar collaboration driving integrated deal flow"], "rel": [{"who": "S&SP Americas Leadership", "d": "Receives strategic direction; represents pillar performance and resource needs to Americas leadership"}, {"who": "Sales Managers / Sector Leaders", "d": "Direct/indirect management; coaches and develops the next level of sales leadership within the pillar"}, {"who": "GCSPs / Coordinating Partners", "d": "Senior-level alignment on Premier and Strategic account strategy; most senior S&SP voice in account planning sessions"}, {"who": "C-Suite Clients", "d": "Owns the firm's highest-level client relationships; engaged at Board, CEO, and CFO level on transformational opportunities"}, {"who": "Alliance & Solution Partners", "d": "Collaborates to build integrated GTM plays; brings Alliances and S&S capabilities into CG and I&A account strategies"}], "comp": ["Strategic sales leadership and pillar-wide performance management", "Go-to-market strategy development across CG and I&A", "Senior C-suite relationship management", "Personal sales origination and deal leadership"]}, "cg-sm": {"resp": [{"t": "Team Leadership & SE Development", "d": "Manages a team of CG and I&A Sales Executives. Responsible for hiring, onboarding, coaching, and developing SE talent toward full quota-carrying performance."}, {"t": "Sector GTM Strategy Execution", "d": "Develops and executes the sector-specific go-to-market strategy in alignment with the pillar leader and firm-wide growth priorities."}, {"t": "Personal Sales Origination", "d": "Carries personal origination and sales targets in addition to team leadership. Demonstrates elite selling behaviors as a model for the SE team."}, {"t": "Deal Coaching & Pipeline Oversight", "d": "Provides regular deal coaching and pipeline reviews. Coaches SEs on pursuit strategy, qualification rigor, and commercial negotiation to improve win rates."}, {"t": "Hiring, Training & Onboarding", "d": "Leads recruiting, hiring, and onboarding of Sales Executives. Ensures team is fully staffed and ramped to quota-carrying performance."}, {"t": "Sales Innovation & Strategy", "d": "Drives innovation in sales methodology and practices. Develops and executes sector sales strategy based on market trends and client needs. Partners with sector leaders, SLs, and GCSPs for coordinated coverage."}, {"t": "Performance Management", "d": "Sets individual SE targets, monitors KPIs, and conducts regular performance reviews. Develops individual growth plans and manages performance issues."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Not in Scope"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Team origination total ($): aggregate SE pipeline created", "Team personal sales total ($): aggregate closed revenue", "Personal origination and sales ($)", "Team headcount and attrition"], "out": ["Team origination and sales targets met or exceeded", "Personal origination contribution achieved", "SE team fully staffed and performing to quota"], "rel": [{"who": "Sales Executives (direct reports)", "d": "Primary people leadership relationship; responsible for coaching, development, performance management, and motivation"}, {"who": "Pillar Leader", "d": "Receives strategic direction; collaborates on GTM strategy, account prioritization, and resource allocation"}, {"who": "GCSPs / Coordinating Partners", "d": "Coordinates SE deployment across high-potential accounts; ensures SE activity aligns with account-level growth agendas"}, {"who": "Sector Leadership", "d": "Partners with sector leaders to align sales strategy with sector-specific go-to-market priorities and client opportunities"}, {"who": "Service Line Leaders", "d": "Coordinates cross-SL solution development and pursuit teaming for complex multi-service-line deals"}], "comp": ["Sales team leadership, coaching, and performance management", "Sector-specific go-to-market strategy development", "Personal sales origination and deal leadership", "Cross-functional alignment and stakeholder management"]}, "cg-se": {"resp": [{"t": "Sales Origination", "d": "Owns new business origination across CG and I&A accounts. Independently qualifies and pursues opportunities. Holds personal sales and origination targets."}, {"t": "Full Pursuit Lifecycle Ownership", "d": "Leads end-to-end sales process from opportunity identification through close. Manages pursuit strategy, proposal development, and commercial negotiation."}, {"t": "C-Suite Relationship Management", "d": "Builds and expands relationships with senior buyers including C-suite and Board-level stakeholders. Develops trusted advisor positioning across assigned accounts."}, {"t": "Account Strategy", "d": "Co-develops account strategy with GCSPs and Account Managers. Identifies whitespace and maintains a multi-year growth perspective on assigned accounts."}, {"t": "Growth Driver Knowledge & Utilization", "d": "Applies deep knowledge of EY's Growth Drivers (AI/technology, sustainability, workforce, tax) to generate new pipeline and differentiate EY in competitive situations."}, {"t": "Pipeline Management & CRM Discipline", "d": "Maintains rigorous pipeline hygiene in Dynamics CRM. Uses data-driven insights from Growth IQ to prioritize accounts and optimize sales effort allocation."}, {"t": "Sector & Solution Depth", "d": "Applies extensive industry expertise and deep knowledge of EY's offerings, alliances, and solutions to differentiate EY in competitive situations."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Not in Scope"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Personal origination ($): new pipeline created", "Personal sales bookings ($): closed revenue contribution", "Sales forecasting accuracy; working capital management (ETCs, cash & billings)", "Voice of Client discovery (ASQ & Win/Loss coverage)"], "out": ["Personal origination and sales targets met or exceeded", "New pipeline generated across assigned accounts", "C-suite relationships built across Premier and Strategic accounts"], "rel": [{"who": "GCSP / Coordinating Partner", "d": "Trusted advisor relationship; SE aligns origination strategy with GCSP's account direction and firm priorities"}, {"who": "Account Manager", "d": "SE develops strategy and drives origination; AM activates account plan and manages day-to-day coordination"}, {"who": "C-Suite Clients", "d": "Primary senior relationship owner; SE builds multi-year advisory relationships with CEO, CFO, and Board-level stakeholders"}, {"who": "Sales Manager", "d": "Direct people leader providing coaching, deal review support, and performance oversight"}, {"who": "Service Line Specialists", "d": "SE assembles and leads pursuit teams; mobilizes cross-SL experts from proposal development through close"}], "comp": ["New business origination and opportunity qualification", "Deal leadership — pursuit strategy, proposal, and negotiation", "C-suite relationship management", "Growth Driver knowledge and solution integration"]}, "cg-al": {"resp": [{"t": "Account Growth & Commercial Ownership", "d": "Owns the commercial relationship and growth strategy for assigned accounts. Drives year-over-year account growth with a focus on profitability improvement."}, {"t": "Commercial & Pursuit Best Practices", "d": "Drives commercial and pursuit/deal best practices. Champions premium rates, engagement economics, and working capital management across the account portfolio."}, {"t": "Account Planning & ROI Management", "d": "Leads comprehensive account planning with cross-SL teams. Drives return on investment in accounts; manages engagement economics effectively and in a timely manner for profitability."}, {"t": "Sales Execution", "d": "Owns Sales Executive responsibilities on assigned accounts — prospecting, qualifying, and closing opportunities. Plays both SE and Account Leader roles at AD level."}, {"t": "Growth Driver Activation", "d": "Integrates EY's Growth Drivers (AI, sustainability, workforce, tax) into account strategy. Activates growth driver plays across assigned accounts."}, {"t": "Voice of Client (ASQ & Win/Loss)", "d": "Leads Account Strategic Questionnaire (ASQ) and Win/Loss analysis. Ensures client feedback drives account strategy adjustments and firm improvement."}, {"t": "Senior Client Relationship Management", "d": "Owns the senior commercial relationship on assigned accounts. Builds and maintains CEO-, CFO-, and Board-level advisory relationships."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Primary"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Secondary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Account TER and account sales growth year-over-year", "Account margin (sold and delivered)", "Q&RM compliance and working capital management", "FoP/SL integration, sales forecasting, Voice of Client (ASQ & Win/Loss coverage)"], "out": ["Account TER growth year-over-year", "Account margin targets met", "C-suite relationships strengthened and expanded"], "rel": [{"who": "GCSP", "d": "Career destination and senior sponsor; Account Leader is the bridge to GCSP-level responsibility and performance framework"}, {"who": "Sales Executive", "d": "SE drives origination while Account Leader manages commercial relationship and account activation across the broader portfolio"}, {"who": "Service Line Leaders", "d": "Coordinates cross-SL integration to ensure EY brings full firm capabilities to bear on account opportunities"}, {"who": "Account Manager", "d": "AM manages day-to-day account activation; Account Leader oversees the strategic direction of the full account team"}, {"who": "C-Suite Clients", "d": "Primary owner of the commercial relationship; Account Leader is EY's most senior ongoing client-facing presence on the account"}], "comp": ["Commercial account ownership and revenue growth", "Account planning and cross-SL integration", "Senior C-suite relationship management", "Sales execution and pursuit leadership"]}, "al-leader": {"resp": [{"t": "Pillar Leadership & Sales Team Direction", "d": "Leads all Alliances, Services & Solutions, and Managed Services sales professionals. Sets performance standards, team culture, and strategic direction across the combined pillar."}, {"t": "Alliance, S&S & MS Sales Strategy", "d": "Develops and drives the go-to-market and sales strategy for all three sub-pillars in alignment with firm-wide priorities and S&SP Americas leadership direction."}, {"t": "SE Hiring, Training & Development", "d": "Leads recruiting, hiring, onboarding, and development of Sales Executives and Sales Managers across Alliances, S&S, and Managed Services sub-pillars."}, {"t": "Personal Sales & Origination", "d": "Carries personal origination and sales targets. Actively demonstrates elite selling behaviors in alliance and specialist sales contexts."}, {"t": "Alliance & Partner Ecosystem Leadership", "d": "Builds and maintains EY's most strategic alliance partner relationships. Serves as the senior EY voice with top alliance field and executive leadership."}, {"t": "Cross-Pillar Collaboration", "d": "Partners with Core Growth / I&A and Sales Activation pillars to deliver integrated alliance-powered and specialist solutions to all account tiers."}, {"t": "Performance Management", "d": "Sets team targets, monitors KPIs, and conducts regular performance reviews. Oversees talent development across all three sub-pillar teams."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Overall pillar origination and sales totals across Alliances, S&S, and MS", "SE team quota attainment rate", "Personal origination and sales contribution", "Alliance partner satisfaction metrics"], "out": ["Pillar origination and sales targets met or exceeded", "Alliance partner relationships strengthened", "SE team staffed, developed, and performing to quota"], "rel": [{"who": "S&SP Americas Leadership", "d": "Receives strategic direction; represents pillar performance and resource needs"}, {"who": "Sales Managers / Sub-Pillar Leaders", "d": "Direct/indirect management; coaches and develops next level of sales leadership across all three sub-pillars"}, {"who": "Alliance GTM Leaders", "d": "Senior-level alignment on alliance investment priorities, co-sell motions, and joint go-to-market strategy"}, {"who": "Core Growth / I&A Leader", "d": "Cross-pillar collaboration to integrate alliance, S&S, and MS capabilities into CG and I&A account strategies"}, {"who": "C-Suite Clients", "d": "Owns the firm's highest-level relationships for alliance-powered and specialist solution pursuits"}], "comp": ["Strategic sales leadership across Alliances, S&S, and Managed Services", "Alliance partner ecosystem management", "Personal sales origination and deal leadership", "Cross-pillar integration and coordination"]}, "al-sm": {"resp": [{"t": "Sub-Pillar Team Leadership", "d": "Leads a team of Sales Executives within a specific sub-pillar (Alliances, Services & Solutions, or Managed Services). Responsible for SE hiring, development, and performance management."}, {"t": "Sub-Pillar Sales Strategy", "d": "Develops and drives the go-to-market and sales strategy for the assigned sub-pillar in alignment with the pillar leader and firm-wide priorities."}, {"t": "Critical Partner & Client Relationships", "d": "Owns EY's most critical sub-pillar partner or client relationships at a leadership level. Serves as the senior EY voice for these strategic relationships."}, {"t": "Personal Sales Origination", "d": "Carries personal origination and sales targets in addition to team management. Actively pursues and closes complex deals to model elite behaviors."}, {"t": "Pipeline Oversight & Deal Coaching", "d": "Oversees team pipeline health, deal progression, and origination activity. Provides deal coaching and strategic guidance on large complex pursuits."}, {"t": "Cross-Pillar GTM Alignment", "d": "Aligns and interlocks with sector leaders, account teams, and peer Sales Managers on joint go-to-market strategy and account prioritization."}, {"t": "Talent Development & Performance Management", "d": "Builds coaching cadence for the SE team. Develops individual growth plans and ensures talent is progressing toward advanced SE and leadership tracks."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Team origination total ($): aggregate SE pipeline", "Team sales bookings total ($): aggregate closed revenue", "Personal origination and personal sales ($)", "Team headcount and attrition"], "out": ["Team origination and sales targets met or exceeded", "Personal origination achieved", "Sub-pillar SE team staffed and performing to quota"], "rel": [{"who": "Sales Executives (direct reports)", "d": "Primary people leadership relationship; coaches, develops, and holds the SE team accountable on origination and sales targets"}, {"who": "Pillar Leader", "d": "Receives strategic direction; reports on sub-pillar performance and collaborates on resource allocation"}, {"who": "Alliance GTM / Solution Domain Leaders", "d": "Strategic alignment on investment priorities, co-sell motions, and solution area GTM strategy"}, {"who": "Sector Sales Leaders", "d": "Cross-pillar collaboration to align sub-pillar sales activity with sector-specific account priorities"}, {"who": "S&SP Americas Leadership", "d": "Reports into and collaborates with broader S&SP leadership on performance and strategic direction"}], "comp": ["Sub-pillar sales team leadership and performance management", "Strategic partner / solution area management", "Personal sales origination and deal coaching", "Cross-pillar GTM coordination"]}, "al-se": {"resp": [{"t": "Sales Origination (Sub-Pillar Focus)", "d": "Relentlessly originates net-new pipeline within assigned sub-pillar (Alliances, Services & Solutions, or Managed Services). Holds personal sales and origination targets."}, {"t": "Partner / Solution / Domain Positioning", "d": "Builds credibility and deep expertise in assigned alliance partnerships, solution areas, or managed services capabilities. Positions EY as the preferred partner or provider."}, {"t": "Joint GTM Motion Development", "d": "Shapes joint go-to-market motions with alliance partners or solution domain leaders. Develops co-sell playbooks and integrated pursuit strategies."}, {"t": "Sector & Executive Relationship Building", "d": "Demonstrates deep sector understanding. Builds executive relationships to position EY as a strategic transformation partner powered by sub-pillar capabilities."}, {"t": "Pipeline Management & Qualification", "d": "Identifies, qualifies, and advances complex pipeline opportunities within the assigned sub-pillar. Maintains rigorous CRM hygiene and accurate forecasting."}, {"t": "Cross-Functional Collaboration", "d": "Orchestrates cross-service-line and cross-functional teams for pursuit opportunities. Injects sub-pillar solutions into existing account relationships."}, {"t": "Competitive Intelligence & Positioning", "d": "Tracks sub-pillar technology roadmaps, partner capabilities, and the competitive landscape. Translates intelligence into client-relevant narratives and pursuit strategies."}], "seg": [{"name": "PREMIER", "count": "(~110 accounts)", "pri": "Not in Scope"}, {"name": "STRATEGIC", "count": "(~160 accounts)", "pri": "Primary"}, {"name": "FOCUS", "count": "(~2,500 accounts)", "pri": "Primary"}, {"name": "CORE", "count": "(~200K accounts)", "pri": "Not in Scope"}], "kpis": ["Personal origination ($): target varies by sub-pillar and level", "Personal sales bookings ($): target varies by sub-pillar and level", "Active pipeline coverage ratio"], "out": ["Personal origination and sales targets met or exceeded", "Pipeline built across sub-pillar focus areas", "Partner and solution relationships strengthened"], "rel": [{"who": "Alliance Partner Field / Solution Domain Leaders", "d": "Core co-sell and solution development relationship; SE builds joint pipeline and shapes pursuits with partner counterparts"}, {"who": "EY Account Teams (GCSPs / AMs)", "d": "Coordinates to inject sub-pillar solutions into existing account relationships and create new pursuit opportunities"}, {"who": "Sales Manager", "d": "Direct people leader providing strategic direction, coaching, deal review, and performance management"}, {"who": "Sector Sales Leaders", "d": "Cross-pillar alignment on sector GTM; ensures sub-pillar activity integrates with sector-wide account priorities"}, {"who": "C-Suite Clients", "d": "Senior client engagement; SE builds advisory relationships powered by alliance technology or specialist capabilities"}], "comp": ["Sub-pillar specific origination and opportunity qualification", "Alliance partner management / solution area expertise", "Deal leadership and commercial negotiation", "Cross-functional pursuit collaboration"]}};
+
+/* ============================================================
+   State + helpers
+   ============================================================ */
+let currentRole = null;
+let currentTrackKey = null;
+let progress = {}; // moduleId -> true
+
+function storageKey(roleId){ return 'ey-cert-' + roleId; }
+function loadProgress(roleId){ try { return JSON.parse(localStorage.getItem(storageKey(roleId))||'{}'); } catch(e){ return {}; } }
+function saveProgress(roleId){ try { localStorage.setItem(storageKey(roleId), JSON.stringify(progress)); } catch(e){} }
+
+// Build ordered list of track keys that apply to a role
+function pathwayFor(role){
+  const keys = ['tools','process','sector','solutions','leadership'];
+  if (role.proc !== 'na') keys.push('procurement');
+  return keys;
+}
+
+// All module ids in a track for a given role (leadership resolves dynamic sub-track)
+function moduleIdsForTrack(key, role){
+  const t = TRACKS[key];
+  let ids = [];
+  if (key === 'leadership'){
+    ids = ['all-in-leadership','all-in-debrief', LEAD_TRACKS[role.lead].id];
+  } else {
+    (t.groups||[]).forEach(g => g.modules.forEach(m => ids.push(m.id)));
+  }
+  return ids;
+}
+
+function allModuleIds(role){
+  let ids = [];
+  pathwayFor(role).forEach(k => ids = ids.concat(moduleIdsForTrack(k, role)));
+  return ids;
+}
+
+/* ============================================================
+   Populate role selector
+   ============================================================ */
+(function initSelect(){
+  const sel = document.getElementById('roleSelect');
+  const pillars = [...new Set(ROLES.map(r => r.pillar))];
+  pillars.forEach(p => {
+    const og = document.createElement('optgroup');
+    og.label = p;
+    ROLES.filter(r => r.pillar === p).forEach(r => {
+      const o = document.createElement('option');
+      o.value = r.id; o.textContent = r.name + '  ·  ' + r.level;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  sel.addEventListener('change', e => selectRole(e.target.value));
+})();
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!currentRole) return;
+  if (confirm('Reset all course progress for ' + currentRole.name + '?')){
+    progress = {}; saveProgress(currentRole.id); renderAll();
+  }
+});
+
+function selectRole(id){
+  currentRole = ROLES.find(r => r.id === id) || null;
+  const view = document.getElementById('view');
+  const empty = document.getElementById('empty');
+  const resetBtn = document.getElementById('resetBtn');
+  if (!currentRole){ view.classList.remove('on'); empty.style.display='block'; resetBtn.style.display='none'; return; }
+  empty.style.display='none'; view.classList.add('on'); resetBtn.style.display='inline-block';
+  progress = loadProgress(currentRole.id);
+  currentTrackKey = 'tools';
+  renderAll();
+}
+
+function renderAll(){ renderRoleHead(); renderProfile(); renderChevrons(); renderProgress(); renderDetail(); }
+
+/* ---------- Role profile accordion ---------- */
+const PROFILE_SECTIONS = [
+  { key:'resp', icon:'🎯', title:'Core Responsibilities', sub:'What this role owns' },
+  { key:'seg',  icon:'🗂️', title:'Segment Focus', sub:'Account tiers you serve' },
+  { key:'kpis', icon:'📊', title:'Key Performance Indicators', sub:'How performance is measured' },
+  { key:'out',  icon:'✅', title:'Key Outcomes', sub:'What good looks like' },
+  { key:'rel',  icon:'🤝', title:'Key Relationships', sub:'Who you work with' },
+  { key:'comp', icon:'⭐', title:'Core Competencies', sub:'Skills that matter most' }
+];
+let openSections = {};
+
+function renderProfile(){
+  const host = document.getElementById('accHost');
+  const p = PROFILES[currentRole.id];
+  if (!p){ document.getElementById('profilePanel').style.display='none'; return; }
+  document.getElementById('profilePanel').style.display='block';
+  host.innerHTML = PROFILE_SECTIONS.map(s => {
+    const count = sectionCount(p, s.key);
+    const open = openSections[s.key];
+    return `<div class="acc ${open?'open':''}" data-key="${s.key}">
+      <div class="acc-head">
+        <div class="acc-ico">${s.icon}</div>
+        <div class="acc-h-txt"><div class="h1">${s.title}</div><div class="h2">${s.sub} · ${count}</div></div>
+        <div class="acc-caret">▸</div>
+      </div>
+      <div class="acc-body">${sectionBody(p, s.key)}</div>
+    </div>`;
+  }).join('');
+  host.querySelectorAll('.acc-head').forEach(h => h.addEventListener('click', () => {
+    const k = h.parentElement.dataset.key;
+    openSections[k] = !openSections[k];
+    h.parentElement.classList.toggle('open');
+    syncExpandLabel();
+  }));
+  syncExpandLabel();
+}
+
+function sectionCount(p, key){
+  const n = (p[key]||[]).length;
+  const label = { resp:'items', seg:'tiers', kpis:'metrics', out:'outcomes', rel:'contacts', comp:'competencies' }[key];
+  return n + ' ' + label;
+}
+
+function sectionBody(p, key){
+  if (key === 'resp') return (p.resp||[]).map(r => `<div class="resp-item"><div class="rt">${r.t}</div>${r.d?`<div class="rd">${r.d}</div>`:''}</div>`).join('');
+  if (key === 'seg'){
+    return `<div class="seg-grid">` + (p.seg||[]).map(s => {
+      const pri = /primary/i.test(s.pri) ? 'primary' : /secondary/i.test(s.pri) ? 'secondary' : 'none';
+      const cls = pri==='none' ? 'pri-none' : 'pri-'+pri;
+      return `<div class="seg-tile ${pri}"><div class="sn">${s.name}</div><div class="sc">${s.count}</div><span class="seg-pri ${cls}">${s.pri}</span></div>`;
+    }).join('') + `</div>`;
+  }
+  if (key === 'rel') return (p.rel||[]).map(r => `<div class="rel-item"><div class="rw">${r.who}</div><div class="rdd">${r.d}</div></div>`).join('');
+  if (key === 'comp') return `<div class="chips">` + (p.comp||[]).map(c => `<span class="chip">${c}</span>`).join('') + `</div>`;
+  // kpis / out — bullet lists
+  return `<ul class="plist">` + (p[key]||[]).map(x => `<li>${x}</li>`).join('') + `</ul>`;
+}
+
+function syncExpandLabel(){
+  const keys = PROFILE_SECTIONS.map(s => s.key);
+  const allOpen = keys.every(k => openSections[k]);
+  document.getElementById('ppExpand').textContent = allOpen ? 'Collapse all ▴' : 'Expand all ▾';
+}
+
+document.getElementById('ppExpand').addEventListener('click', () => {
+  const keys = PROFILE_SECTIONS.map(s => s.key);
+  const allOpen = keys.every(k => openSections[k]);
+  keys.forEach(k => openSections[k] = !allOpen);
+  renderProfile();
+});
+
+/* ---------- Role summary ---------- */
+function renderRoleHead(){
+  const r = currentRole;
+  const color = PILLAR_COLORS[r.pillar];
+  const procTxt = r.proc==='required' ? 'Required' : r.proc==='optional' ? 'Optional' : 'Not required';
+  document.getElementById('roleHead').innerHTML = `
+    <div class="rh-main">
+      <span class="pillar-chip" style="background:${color}">${r.pillar}</span>
+      <h2>${r.name}</h2>
+      <div class="rh-lvl">${r.level} &nbsp;·&nbsp; ${r.exp} experience</div>
+    </div>
+    <div class="rh-facts">
+      <div class="rh-fact"><div class="k">Reports to</div><div class="v">${r.reports}</div></div>
+      <div class="rh-fact"><div class="k">Leadership track</div><div class="v">${LEAD_LABELS[r.lead]}</div></div>
+      <div class="rh-fact"><div class="k">Core tools</div><div class="v">${r.tools}</div></div>
+      <div class="rh-fact"><div class="k">Procurement track</div><div class="v">${procTxt}</div></div>
+    </div>`;
+}
+
+/* ---------- Chevron pathway ---------- */
+function renderChevrons(){
+  const r = currentRole;
+  const keys = pathwayFor(r);
+  const bar = document.getElementById('chevronBar');
+  bar.innerHTML = '';
+  keys.forEach(key => {
+    const t = TRACKS[key];
+    const ids = moduleIdsForTrack(key, r);
+    const done = ids.filter(i => progress[i]).length;
+    const complete = done === ids.length && ids.length>0;
+    const div = document.createElement('div');
+    div.className = 'chev' + (key===currentTrackKey ? ' active' : '');
+    let tag = '';
+    if (key==='procurement') tag = `<span class="tag-req ${r.proc==='required'?'tag-required':'tag-optional'}">${r.proc==='required'?'REQUIRED':'OPTIONAL'}</span>`;
+    div.innerHTML = `${tag}
+      <div class="chev-num">Track ${t.num}</div>
+      <div class="chev-name">${t.short}</div>
+      <div class="chev-meta">${t.duration} · ${done}/${ids.length}</div>
+      ${complete?'<span class="chev-ring">✓</span>':''}`;
+    div.addEventListener('click', () => { currentTrackKey = key; renderAll(); });
+    bar.appendChild(div);
+  });
+  // Certification end-cap
+  const cert = document.createElement('div');
+  cert.className = 'chev cert' + (currentTrackKey==='cert' ? ' active' : '');
+  cert.innerHTML = `<div class="chev-num">Finish</div><div class="chev-name">Certification</div><div class="chev-meta">Completion &amp; award</div>`;
+  cert.addEventListener('click', () => { currentTrackKey='cert'; renderAll(); });
+  bar.appendChild(cert);
+
+  document.getElementById('pathHint').textContent =
+    `${keys.length} tracks on your pathway · Program duration ~12–18 months.` +
+    (r.proc==='optional' ? ' Procurement is optional for your role.' : '');
+}
+
+/* ---------- Progress ---------- */
+function renderProgress(){
+  const ids = allModuleIds(currentRole);
+  const done = ids.filter(i => progress[i]).length;
+  const pct = ids.length ? Math.round(done/ids.length*100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('progSub').textContent = `${done} of ${ids.length} courses complete · 85% participation required to certify`;
+}
+
+/* ---------- Track / certification detail ---------- */
+function renderDetail(){
+  const el = document.getElementById('detail');
+  if (currentTrackKey === 'cert'){ el.innerHTML = certPanel(); return; }
+  const r = currentRole, key = currentTrackKey, t = TRACKS[key];
+
+  let html = `<div class="detail-head">
+    <div><h3>Track ${t.num} · ${t.name}</h3><div class="dh-meta"><b>Format:</b> ${t.format}</div></div>
+    <span class="dur-pill">${t.duration}</span>
+  </div>
+  <div class="objective"><b>Objective</b><br>${t.objective}</div>`;
+
+  if (key === 'leadership'){
+    html += groupHTML({ label:'Foundational Leadership — required for all participants', modules:[
+      { id:'all-in-leadership', name:'All in Leadership (WBL)', meta:['40 min','WBL'] },
+      { id:'all-in-debrief', name:'Debrief on All in Leadership — what this means for S&SP / expectations', meta:['60 min','Virtual live'] }
+    ]});
+    const lt = LEAD_TRACKS[r.lead];
+    html += `<div class="note-row"><b>Your role-based track:</b> based on your role (${r.name}), you complete the <b>${LEAD_LABELS[r.lead]}</b> track. Participants select one of: Personal, Team & GTM Leadership.</div>`;
+    html += groupHTML({ label:'Role-Based Leadership Track (select one)', modules:[ lt ] });
+    html += assessHTML(t.assessment);
+  } else {
+    (t.groups||[]).forEach(g => {
+      html += groupHTML(g);
+      if (g.assessment) html += assessHTML(g.assessment, true);
+    });
+    if (t.assessment) html += assessHTML(t.assessment);
+    else if (key === 'tools') html += `<div class="assess none"><h4>Assessment</h4><p>No homework or assessment for this track.</p></div>`;
+  }
+  el.innerHTML = html;
+  el.querySelectorAll('.mod-check').forEach(c => c.addEventListener('click', () => toggleModule(c.dataset.id)));
+}
+
+function groupHTML(g){
+  let h = '';
+  if (g.label) h += `<div class="grp-label">${g.label}</div>`;
+  if (g.note) h += `<div class="note-row">${g.note}</div>`;
+  g.modules.forEach(m => h += moduleHTML(m));
+  return h;
+}
+
+function moduleHTML(m){
+  const checked = progress[m.id];
+  const link = MODULE_LINKS[m.id];
+  const metaPills = (m.meta||[]).map(x => `<span class="mm-pill">${x}</span>`).join('');
+  const hw = m.hw ? `<span class="mm-pill mm-hw">Homework${m.hwText?': '+m.hwText:''}</span>` : '';
+  const btn = link
+    ? `<a class="launch ready" href="${link}" target="_blank" rel="noopener">Launch ▸</a>`
+    : `<button class="launch pending" disabled title="Link coming soon">Link coming soon</button>`;
+  return `<div class="mod ${checked?'done':''}">
+    <div class="mod-check ${checked?'checked':''}" data-id="${m.id}" role="checkbox" aria-checked="${!!checked}"></div>
+    <div class="mod-body">
+      <div class="mod-name">${m.name}</div>
+      <div class="mod-meta">${metaPills}${hw}</div>
+    </div>
+    ${btn}
+  </div>`;
+}
+
+function assessHTML(items, sub){
+  const title = sub ? 'Module Assessment' : 'Track Assessment';
+  return `<div class="assess"><h4>${title}</h4><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+}
+
+function certPanel(){
+  const r = currentRole;
+  const reqs = [
+    ['85%','Participation in <b>85%</b> of the learning courses & homework across all tracks on your pathway'],
+    ['◆','Completion of the <b>Sector Badge</b> (at least one)'],
+    ['✓','Successful completion & <b>"pass" rating</b> for ALL assessments'],
+    ['🏆','In-person <b>awards ceremony</b> for anyone who fully completes the program']
+  ];
+  if (r.proc==='required') reqs.splice(3,0,['P','Completion of the <b>Procurement Certification</b> (required for your role)']);
+  return `<div class="detail-head">
+      <div><h3>Program Completion &amp; Certification</h3><div class="dh-meta">What it takes to earn your Sales Certification</div></div>
+      <span class="dur-pill">~12–18 months</span>
+    </div>
+    <div class="objective"><b>You're certifying as</b><br>${r.name} · ${r.pillar}</div>
+    <div class="cert-panel">
+      ${reqs.map(x=>`<div class="req-item"><div class="req-ico">${x[0]}</div><div class="req-txt">${x[1]}</div></div>`).join('')}
+    </div>`;
+}
+
+function toggleModule(id){
+  progress[id] = !progress[id];
+  if (!progress[id]) delete progress[id];
+  saveProgress(currentRole.id);
+  renderChevrons(); renderProgress();
+  // update just the toggled row's state without full detail rerender
+  renderDetail();
+}
+</script>
+</body>
+</html>
