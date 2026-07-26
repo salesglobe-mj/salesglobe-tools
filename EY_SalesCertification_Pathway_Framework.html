@@ -942,7 +942,7 @@ function renderChevrons(){
   // Certification end-cap
   const cert = document.createElement('div');
   cert.className = 'chev cert' + (currentTrackKey==='cert' ? ' active' : '');
-  cert.innerHTML = `<div class="chev-num">Finish</div><div class="chev-name">Certification</div><div class="chev-meta">Completion &amp; award</div>`;
+  cert.innerHTML = `<div class="chev-num">Finish</div><div class="chev-name">Certification</div><div class="chev-meta">Program completion</div>`;
   cert.addEventListener('click', () => { currentTrackKey='cert'; renderAll(); });
   bar.appendChild(cert);
 
