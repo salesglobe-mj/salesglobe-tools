@@ -1,0 +1,489 @@
+<style>
+  :root{
+    --paper:#FAFAF8; --card:#FFFFFF; --ink:#1A1A24; --slate:#4A4A55; --muted:#7A7A86;
+    --line:#E6E6EC; --line-strong:#D3D3DC;
+    --ey:#FFE600; --gold:#B8860B;
+    --identity:#7C4DD6; --identity-bg:#F3EEFB;
+    --apps:#B8860B; --apps-bg:#FBF4DF;
+    --report:#1F8A4C; --report-bg:#E7F5EC;
+    --data:#2A6DB0; --data-bg:#E9F1FA;
+    --warn:#B4530E; --warn-bg:#FBEDE2;
+    --radius:12px; --maxw:900px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#141419; --card:#1E1E26; --ink:#F4F4F7; --slate:#C3C3CD; --muted:#8E8E9A;
+      --line:#2E2E38; --line-strong:#3A3A46;
+      --gold:#E7C24B;
+      --identity:#B497EA; --identity-bg:#241C33;
+      --apps:#E7C24B; --apps-bg:#2E2716;
+      --report:#5FC488; --report-bg:#12271A;
+      --data:#6FA8DE; --data-bg:#122130;
+      --warn:#E39257; --warn-bg:#2C1D12;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#FAFAF8; --card:#FFFFFF; --ink:#1A1A24; --slate:#4A4A55; --muted:#7A7A86;
+    --line:#E6E6EC; --line-strong:#D3D3DC; --gold:#B8860B;
+    --identity:#7C4DD6; --identity-bg:#F3EEFB; --apps:#B8860B; --apps-bg:#FBF4DF;
+    --report:#1F8A4C; --report-bg:#E7F5EC; --data:#2A6DB0; --data-bg:#E9F1FA;
+    --warn:#B4530E; --warn-bg:#FBEDE2;
+  }
+  :root[data-theme="dark"]{
+    --paper:#141419; --card:#1E1E26; --ink:#F4F4F7; --slate:#C3C3CD; --muted:#8E8E9A;
+    --line:#2E2E38; --line-strong:#3A3A46; --gold:#E7C24B;
+    --identity:#B497EA; --identity-bg:#241C33; --apps:#E7C24B; --apps-bg:#2E2716;
+    --report:#5FC488; --report-bg:#12271A; --data:#6FA8DE; --data-bg:#122130;
+    --warn:#E39257; --warn-bg:#2C1D12;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",-apple-system,system-ui,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .mono{font-family:"Cascadia Code","SF Mono",ui-monospace,Consolas,"Liberation Mono",monospace;}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px;}
+
+  /* header */
+  .masthead{background:var(--ink);color:#fff;margin-bottom:0;}
+  .masthead-in{max-width:var(--maxw);margin:0 auto;padding:30px 24px 32px;}
+  .brandrow{display:flex;align-items:center;gap:13px;margin-bottom:22px;}
+  .ey-badge{background:var(--ey);color:#1A1A24;font-weight:900;font-size:18px;
+    padding:5px 10px;border-radius:3px;letter-spacing:1px;}
+  .brandrow .who{font-size:12.5px;color:#b9b9c4;line-height:1.35;}
+  .brandrow .who b{color:#fff;font-weight:600;}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:2.4px;text-transform:uppercase;
+    color:var(--ey);margin-bottom:12px;}
+  h1{font-size:33px;line-height:1.12;font-weight:800;letter-spacing:-0.4px;margin:0 0 12px;
+    text-wrap:balance;max-width:19ch;}
+  .lede{font-size:15.5px;color:#cfcfd8;max-width:62ch;margin:0;}
+  .lede b{color:#fff;font-weight:600;}
+
+  /* thesis strip */
+  .thesis{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+    border-radius:var(--radius);padding:20px 22px;margin:28px 0 8px;}
+  .thesis .k{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+  .thesis p{margin:0;font-size:15px;color:var(--slate);}
+  .thesis b{color:var(--ink);}
+
+  section{margin-top:44px;}
+  .sec-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--muted);margin-bottom:7px;}
+  h2{font-size:22px;font-weight:800;letter-spacing:-0.2px;margin:0 0 6px;text-wrap:balance;}
+  .sec-sub{font-size:14px;color:var(--slate);margin:0 0 20px;max-width:64ch;}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 18px;font-size:12px;color:var(--slate);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block;}
+
+  /* ARCHITECTURE FLOW */
+  .flow{display:flex;flex-direction:column;align-items:stretch;gap:0;}
+  .band{border-radius:var(--radius);border:1px solid var(--line);background:var(--card);}
+  .arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:9px 0;color:var(--muted);}
+  .arrow .g{font-size:19px;line-height:1;}
+  .arrow .lab{font-size:11px;letter-spacing:.3px;margin-top:2px;}
+
+  .actors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .actor{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--ink);border-radius:var(--radius);padding:15px 16px;}
+  .actor h4{margin:0 0 4px;font-size:14.5px;font-weight:800;}
+  .actor p{margin:0;font-size:12.5px;color:var(--slate);}
+
+  .layer{padding:15px 18px;display:flex;align-items:flex-start;gap:14px;}
+  .layer .tag{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+    padding:4px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+  .layer .body{flex:1;min-width:0;}
+  .layer .body h4{margin:0 0 3px;font-size:15px;font-weight:800;}
+  .layer .body p{margin:0;font-size:13px;color:var(--slate);}
+  .l-identity{border-left:4px solid var(--identity);}
+  .tag-identity{background:var(--identity-bg);color:var(--identity);}
+  .l-report{border-left:4px solid var(--report);}
+  .tag-report{background:var(--report-bg);color:var(--report);}
+
+  .surfaces{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .surface{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:15px 16px;}
+  .surface.apps{border-top:3px solid var(--apps);}
+  .surface.report{border-top:3px solid var(--report);}
+  .surface .st{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .surface .st .tag{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;}
+  .surface h4{margin:0;font-size:15px;font-weight:800;}
+  .surface p{margin:0;font-size:12.5px;color:var(--slate);}
+
+  .appbox{border:1px solid var(--line);border-top:3px solid var(--apps);border-radius:var(--radius);background:var(--card);padding:15px 16px;}
+  .appbox-h{display:flex;gap:12px;align-items:flex-start;margin-bottom:13px;}
+  .appbox-h .tag{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 9px;border-radius:20px;white-space:nowrap;margin-top:2px;flex-shrink:0;}
+  .appbox-h h4{margin:0 0 2px;font-size:15px;font-weight:800;}
+  .appbox-h p{margin:0;font-size:12.5px;color:var(--slate);}
+  .appviews{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:10px;}
+  .appview{background:var(--apps-bg);border:1px solid color-mix(in srgb,var(--apps) 25%,transparent);border-radius:9px;padding:11px 13px;font-size:12.5px;color:var(--ink);font-weight:600;}
+  .appview .role{display:block;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--apps);margin-bottom:3px;}
+  .appview.leader{background:var(--report-bg);border-color:color-mix(in srgb,var(--report) 32%,transparent);}
+  .appview.leader .role{color:var(--report);}
+  .appview .embed{display:block;font-size:10.5px;font-weight:600;color:var(--report);margin-top:7px;line-height:1.42;}
+  @media(max-width:720px){.appviews{grid-template-columns:1fr;}}
+
+  .datalayer{border:1px solid var(--line);border-top:3px solid var(--data);border-radius:var(--radius);background:var(--card);padding:16px 18px;}
+  .datalayer .dl-h{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+  .datalayer .dl-h .tag{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:var(--data-bg);color:var(--data);padding:3px 8px;border-radius:20px;}
+  .datalayer .dl-h h4{margin:0;font-size:15px;font-weight:800;}
+  .lists{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .listchip{background:var(--data-bg);border:1px solid color-mix(in srgb,var(--data) 22%,transparent);border-radius:9px;padding:11px 12px;}
+  .listchip .n{font-size:13px;font-weight:800;color:var(--data);}
+  .listchip .d{font-size:11px;color:var(--slate);margin-top:2px;line-height:1.4;}
+
+  .rls-callout{margin-top:12px;background:var(--identity-bg);border:1px solid color-mix(in srgb,var(--identity) 28%,transparent);
+    border-radius:var(--radius);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
+  .rls-callout .ic{font-size:17px;line-height:1.3;}
+  .rls-callout p{margin:0;font-size:13px;color:var(--slate);}
+  .rls-callout b{color:var(--ink);}
+
+  /* schema cards */
+  .schemas{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .schema{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);overflow:hidden;}
+  .schema-h{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .schema-h .nm{font-size:14.5px;font-weight:800;}
+  .schema-h .kind{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:var(--data-bg);color:var(--data);}
+  .schema-h .kind.ref{background:var(--apps-bg);color:var(--apps);}
+  .fields{list-style:none;margin:0;padding:8px 16px 14px;}
+  .fields li{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .fields li:last-child{border-bottom:none;}
+  .fields .fn{font-size:12px;color:var(--ink);min-width:132px;font-weight:600;}
+  .fields .ft{color:var(--muted);font-size:11.5px;}
+  .fields .key{color:var(--data);}
+  .schema-note{padding:0 16px 14px;font-size:11.5px;color:var(--muted);}
+
+  /* generic card + code */
+  .card-plain{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:18px 20px;}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .card-plain h4{margin:0 0 8px;font-size:14.5px;font-weight:800;}
+  .card-plain ul{margin:0;padding-left:18px;}
+  .card-plain li{font-size:13px;color:var(--slate);margin:5px 0;}
+  .card-plain li b{color:var(--ink);}
+  .perm{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line-strong);font-size:12px;color:var(--muted);}
+  .perm b{color:var(--ink);}
+
+  .codewrap{overflow-x:auto;border-radius:10px;border:1px solid var(--line-strong);background:color-mix(in srgb,var(--ink) 4%,var(--card));margin-top:14px;}
+  pre{margin:0;padding:15px 17px;font-size:12.5px;line-height:1.65;}
+  pre .cm{color:var(--muted);}
+  pre .fn{color:var(--data);font-weight:700;}
+  pre .kw{color:var(--identity);font-weight:700;}
+
+  /* numbered flow */
+  .steps{display:flex;flex-direction:column;gap:12px;}
+  .step{display:flex;gap:15px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);padding:15px 17px;}
+  .step .num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--ey);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;}
+  .step .sc h4{margin:0 0 3px;font-size:14.5px;font-weight:800;}
+  .step .sc h4 .role{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+    color:var(--muted);margin-left:8px;}
+  .step .sc p{margin:0;font-size:13px;color:var(--slate);}
+  .step .sc .wr{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--data);background:var(--data-bg);
+    border-radius:6px;padding:2px 8px;}
+
+  /* build checklist */
+  .build{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .buildit{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:13px 15px;}
+  .buildit .box{width:18px;height:18px;border:2px solid var(--line-strong);border-radius:5px;flex-shrink:0;margin-top:2px;}
+  .buildit .bt{font-size:13px;font-weight:700;color:var(--ink);}
+  .buildit .bd{font-size:11.5px;color:var(--slate);margin-top:2px;}
+  .buildit.dep{border-color:color-mix(in srgb,var(--warn) 40%,transparent);background:var(--warn-bg);}
+  .buildit.dep .box{border-color:var(--warn);background:var(--warn);}
+
+  /* dependencies */
+  .deps{display:flex;flex-direction:column;gap:10px;}
+  .dep-row{display:flex;gap:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:13px 15px;}
+  .dep-row .dk{font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 9px;border-radius:20px;
+    white-space:nowrap;height:fit-content;background:var(--warn-bg);color:var(--warn);}
+  .dep-row p{margin:0;font-size:13px;color:var(--slate);}
+  .dep-row p b{color:var(--ink);}
+
+  .provenance{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);}
+  .provenance b{color:var(--slate);}
+
+  a{color:var(--data);}
+  :focus-visible{outline:2px solid var(--data);outline-offset:2px;border-radius:3px;}
+
+  @media (max-width:720px){
+    h1{font-size:26px;}
+    .actors,.lists,.build{grid-template-columns:1fr 1fr;}
+    .surfaces,.schemas,.split{grid-template-columns:1fr;}
+  }
+  @media (max-width:460px){
+    .actors,.lists,.build{grid-template-columns:1fr;}
+  }
+</style>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brandrow">
+      <span class="ey-badge">EY</span>
+      <div class="who">Americas Sales &amp; Strategic Pursuits<br><b>Sales Proficiency Pathway</b></div>
+    </div>
+    <div class="eyebrow">Production Build Spec · Draft for discussion</div>
+    <h1>Taking the assessment tool fully online</h1>
+    <p class="lede">How to move the Proficiency Pathway assessment off exported files and onto EY's own <b>Power Platform</b> — sellers assess online, managers calibrate online, leaders see their team live — using <b>SharePoint</b>, <b>Power Apps</b>, <b>Power BI</b>, and <b>row-level security</b>.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="thesis">
+    <div class="k">The whole idea, in one line</div>
+    <p>The prototype saves ratings in the <b>browser</b> — which is why data needs a file to travel between a seller and a manager. Swap that one browser store for a single <b>shared SharePoint source</b> everyone signs into, and the file step disappears. Everything else is standard Power Platform.</p>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <section>
+    <div class="sec-eyebrow">01 · Architecture</div>
+    <h2>The stack — all tools EY already runs</h2>
+    <p class="sec-sub">Four layers. Users sign in once; the app they open and the data they see are scoped automatically by their email and place in the manager hierarchy.</p>
+
+    <div class="legend">
+      <span><span class="dot" style="background:var(--identity)"></span>Identity</span>
+      <span><span class="dot" style="background:var(--apps)"></span>Experience · Power Apps</span>
+      <span><span class="dot" style="background:var(--report)"></span>Leader view · in-app</span>
+      <span><span class="dot" style="background:var(--data)"></span>Data · SharePoint</span>
+    </div>
+
+    <div class="flow">
+      <div class="actors">
+        <div class="actor"><h4>Seller</h4><p>Completes their self-assessment and evidence for the current period.</p></div>
+        <div class="actor"><h4>Manager</h4><p>Rates their reports, runs calibration, sets the agreed level and dev actions.</p></div>
+        <div class="actor"><h4>Pillar Leader</h4><p>Reviews the team heat map, readiness, cadence completion, and shared gaps.</p></div>
+      </div>
+
+      <div class="arrow"><span class="g">↓</span><span class="lab">sign in — email is the identity</span></div>
+
+      <div class="band layer l-identity">
+        <span class="tag tag-identity">Identity</span>
+        <div class="body"><h4>Microsoft Entra ID (SSO)</h4><p>Built into Power Platform. The signed-in email keys everything — no separate login to build.</p></div>
+      </div>
+
+      <div class="arrow"><span class="g">↓</span><span class="lab">open — one app for everyone</span></div>
+
+      <div class="appbox">
+        <div class="appbox-h">
+          <span class="tag" style="background:var(--apps-bg);color:var(--apps)">Experience · one app</span>
+          <div><h4>Power App</h4><p>Sellers, managers, and pillar leaders all work in the same app — the view they get depends on who signs in.</p></div>
+        </div>
+        <div class="appviews">
+          <div class="appview"><span class="role">Seller</span>Self-assess &amp; submit</div>
+          <div class="appview"><span class="role">Manager</span>Rate reports &amp; calibrate</div>
+          <div class="appview leader"><span class="role">Pillar leader</span>Team heat map &amp; roll-up<span class="embed">Powered by an embedded Power BI tile — or built natively in the app</span></div>
+        </div>
+      </div>
+
+      <div class="arrow"><span class="g">↕</span><span class="lab">read / write the same data</span></div>
+
+      <div class="datalayer">
+        <div class="dl-h"><span class="tag">Data</span><h4>SharePoint Lists — one shared source</h4></div>
+        <div class="lists">
+          <div class="listchip"><div class="n">People</div><div class="d">Identity + manager hierarchy</div></div>
+          <div class="listchip"><div class="n">Assessments</div><div class="d">Ratings, evidence, status</div></div>
+          <div class="listchip"><div class="n">RoleRequirements</div><div class="d">Required level + weight</div></div>
+          <div class="listchip"><div class="n">Skills</div><div class="d">Definitions + curriculum</div></div>
+        </div>
+        <div class="rls-callout">
+          <span class="ic">🔐</span>
+          <p><b>Row-level security</b> reads the signed-in email against the <b>People</b> hierarchy: a seller sees only themselves, a manager their direct (and indirect) reports, a pillar leader their whole sub-tree — automatically. No one picks who sees what; the org chart does.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEMAS -->
+  <section>
+    <div class="sec-eyebrow">02 · Data layer</div>
+    <h2>SharePoint list schemas</h2>
+    <p class="sec-sub">Two reference lists can be pre-populated directly from the prototype's data. <span class="mono">People</span> comes from HR; <span class="mono">Assessments</span> is the one table that grows.</p>
+
+    <div class="schemas">
+      <div class="schema">
+        <div class="schema-h"><span class="nm mono">People</span><span class="kind">Dimension</span></div>
+        <ul class="fields">
+          <li><span class="fn mono key">EmployeeEmail</span><span class="ft">key · from Entra</span></li>
+          <li><span class="fn mono">DisplayName</span><span class="ft">text</span></li>
+          <li><span class="fn mono key">ManagerEmail</span><span class="ft">the RLS backbone</span></li>
+          <li><span class="fn mono">Pillar</span><span class="ft">choice</span></li>
+          <li><span class="fn mono">RoleId</span><span class="ft">→ RoleRequirements</span></li>
+          <li><span class="fn mono">Level / Tier</span><span class="ft">choice</span></li>
+        </ul>
+        <div class="schema-note">Fed from HR / Workday, ideally auto-synced via Power Automate.</div>
+      </div>
+
+      <div class="schema">
+        <div class="schema-h"><span class="nm mono">Assessments</span><span class="kind">Fact</span></div>
+        <ul class="fields">
+          <li><span class="fn mono key">SellerEmail</span><span class="ft">→ People</span></li>
+          <li><span class="fn mono">Period</span><span class="ft">e.g. FY27-H1</span></li>
+          <li><span class="fn mono">SkillId</span><span class="ft">→ Skills</span></li>
+          <li><span class="fn mono">SelfLevel</span><span class="ft">1–3 · seller</span></li>
+          <li><span class="fn mono">ManagerLevel</span><span class="ft">1–3 · manager</span></li>
+          <li><span class="fn mono">AgreedLevel</span><span class="ft">1–3 · calibration</span></li>
+          <li><span class="fn mono">Evidence</span><span class="ft">note · seller</span></li>
+          <li><span class="fn mono">DevActions</span><span class="ft">note · manager</span></li>
+          <li><span class="fn mono">Status</span><span class="ft">Draft→Self→Mgr→Agreed</span></li>
+        </ul>
+        <div class="schema-note">One row per person × period × skill.</div>
+      </div>
+
+      <div class="schema">
+        <div class="schema-h"><span class="nm mono">RoleRequirements</span><span class="kind ref">Reference</span></div>
+        <ul class="fields">
+          <li><span class="fn mono">RoleId</span><span class="ft">→ People.RoleId</span></li>
+          <li><span class="fn mono">SkillId</span><span class="ft">→ Skills</span></li>
+          <li><span class="fn mono">RequiredLevel</span><span class="ft">1–3</span></li>
+          <li><span class="fn mono">Weight</span><span class="ft">importance 4–10</span></li>
+        </ul>
+        <div class="schema-note">Pre-loaded from the prototype (calibrated for SE–Core Growth; others illustrative).</div>
+      </div>
+
+      <div class="schema">
+        <div class="schema-h"><span class="nm mono">Skills</span><span class="kind ref">Reference</span></div>
+        <ul class="fields">
+          <li><span class="fn mono key">SkillId</span><span class="ft">key</span></li>
+          <li><span class="fn mono">Competency</span><span class="ft">1 of 7</span></li>
+          <li><span class="fn mono">SkillName</span><span class="ft">1 of 24</span></li>
+          <li><span class="fn mono">Definition</span><span class="ft">text</span></li>
+          <li><span class="fn mono">FormalCurriculum</span><span class="ft">learning link</span></li>
+          <li><span class="fn mono">Coaching / OnTheJob</span><span class="ft">dev guidance</span></li>
+        </ul>
+        <div class="schema-note">Pre-loaded from the prototype — the 7 competencies &amp; 24 skills.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POWER APPS -->
+  <section>
+    <div class="sec-eyebrow">03 · Experience layer</div>
+    <h2>Power App — two screens, one app</h2>
+    <p class="sec-sub">The same experience the prototype demonstrates. The signed-in identity decides which screen and whose data a person gets.</p>
+
+    <div class="split">
+      <div class="card-plain">
+        <h4>Seller screen</h4>
+        <ul>
+          <li>Role loads automatically from <b>People</b> by <span class="mono">User().Email</span>; pick the review period.</li>
+          <li>Grid of the 24 skills by competency, with a live readiness gauge.</li>
+          <li>Enter <b>Self</b> rating + evidence; <b>Submit</b> writes to <b>Assessments</b> and advances Status.</li>
+        </ul>
+        <div class="perm"><b>Can edit:</b> own Self rating &amp; evidence only. Manager/Agreed are read-only.</div>
+      </div>
+      <div class="card-plain">
+        <h4>Manager screen</h4>
+        <ul>
+          <li>Gallery of direct reports — <span class="mono">Filter(People, ManagerEmail = User().Email)</span>.</li>
+          <li>Open a report → enter <b>Manager</b> rating, then set the <b>Agreed</b> level and dev actions in calibration.</li>
+          <li>All live to the same data — nothing to email or import.</li>
+        </ul>
+        <div class="perm"><b>Can edit:</b> Manager/Agreed &amp; dev actions for their reports. Cannot change a seller's Self rating.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POWER BI + RLS -->
+  <section>
+    <div class="sec-eyebrow">04 · The leader view</div>
+    <h2>The leader view lives inside the app</h2>
+    <p class="sec-sub">A pillar leader doesn't go to a separate destination — their team roll-up is a <b>view in the same app</b>, showing only their org. There are two ways to build it; both read the shared data and compute readiness with the workbook formula.</p>
+
+    <div class="split" style="margin-bottom:16px;">
+      <div class="card-plain" style="border-top:3px solid var(--report);">
+        <h4>Build option A · Embed Power BI <span style="font-weight:700;color:var(--report);font-size:10.5px;letter-spacing:.4px;">RECOMMENDED</span></h4>
+        <p style="font-size:13px;color:var(--slate);margin:0;">A Power BI tile lives <b>inside the Power App</b>. Best for rich heat maps and a multi-level hierarchy — row-level security walks the whole downline automatically. The leader never leaves the app.</p>
+      </div>
+      <div class="card-plain">
+        <h4>Build option B · Native in Power Apps</h4>
+        <p style="font-size:13px;color:var(--slate);margin:0;">Galleries + Power Fx render the roll-up with <b>no Power BI at all</b> — exactly what the prototype's Team View already demonstrates. Scope the reports by <span class="mono">ManagerEmail</span>. Simpler to start; less rich for large heat maps.</p>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="card-plain">
+        <h4>What the leader sees</h4>
+        <ul>
+          <li><b>Competency heat map</b> — people × the 7 competencies + overall.</li>
+          <li><b>Readiness distribution</b> &amp; movement vs. the prior period.</li>
+          <li><b>Cadence completion</b> — who's done Self / Manager / Agreed.</li>
+          <li><b>Aggregate gaps</b> — the skills most often below required.</li>
+        </ul>
+        <div class="perm"><b>Readiness %</b> = Σ(Weight × MIN(Agreed, Required)) ÷ Σ(Weight × Required). 100% = meets required on every skill.</div>
+      </div>
+      <div class="card-plain">
+        <h4>How it's scoped to their org</h4>
+        <p style="font-size:12.5px;color:var(--slate);margin:0 0 2px;"><b>Option A</b> — on <span class="mono">People</span>, build the management chain, then filter to the signed-in person plus everyone beneath them:</p>
+        <div class="codewrap"><pre class="mono"><span class="cm">-- calculated column on People</span>
+Path = <span class="fn">PATH</span>( People[EmployeeKey], People[ManagerKey] )
+
+<span class="cm">-- RLS filter on People ("span of control")</span>
+<span class="kw">VAR</span> MeKey =
+  <span class="fn">LOOKUPVALUE</span>( People[EmployeeKey],
+    People[EmployeeEmail], <span class="fn">USERPRINCIPALNAME</span>() )
+<span class="kw">RETURN</span>
+  <span class="fn">PATHCONTAINS</span>( People[Path], MeKey )</pre></div>
+        <div class="perm"><b>Option B</b> — filter the reports gallery by <span class="mono">ManagerEmail = User().Email</span> (walk the chain for indirect reports). Either way, a seller sees only their own row.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- END TO END FLOW -->
+  <section>
+    <div class="sec-eyebrow">05 · End to end</div>
+    <h2>What "fully online" looks like</h2>
+    <p class="sec-sub">One sign-in each; every action reads and writes the same shared data. No files at any step.</p>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><div class="sc">
+        <h4>Self-assess &amp; submit<span class="role">Seller</span></h4>
+        <p>Signs in, the app loads their assessment, they rate Self and add evidence, then submit.</p>
+        <span class="wr">→ writes to SharePoint · Status: Self-submitted</span>
+      </div></div>
+      <div class="step"><div class="num">2</div><div class="sc">
+        <h4>Rate &amp; calibrate<span class="role">Manager</span></h4>
+        <p>Signs in, sees their reports (scoped by the hierarchy), rates each and agrees the final level in the calibration conversation.</p>
+        <span class="wr">→ writes to SharePoint · Status: Agreed</span>
+      </div></div>
+      <div class="step"><div class="num">3</div><div class="sc">
+        <h4>Review the team<span class="role">Pillar Leader</span></h4>
+        <p>Opens the team view <b>in the same app</b>; it shows exactly their organization — scoped by the hierarchy, no request, no export, always current.</p>
+        <span class="wr">→ reads live · scoped to their span of control</span>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- BUILD -->
+  <section>
+    <div class="sec-eyebrow">06 · Build</div>
+    <h2>What EY's team stands up</h2>
+    <p class="sec-sub">Standard Power Platform work — no custom servers, no procurement. The prototype serves as the functional spec for every screen and formula.</p>
+    <div class="build">
+      <div class="buildit"><span class="box"></span><div><div class="bt">4 SharePoint lists</div><div class="bd">Two pre-filled from the prototype's data</div></div></div>
+      <div class="buildit dep"><span class="box"></span><div><div class="bt">People sync from HR</div><div class="bd">Power Automate — keeps the hierarchy current</div></div></div>
+      <div class="buildit"><span class="box"></span><div><div class="bt">Power Apps canvas app</div><div class="bd">Seller + manager screens</div></div></div>
+      <div class="buildit"><span class="box"></span><div><div class="bt">Leader view in the app</div><div class="bd">Embedded Power BI (+ RLS), or native</div></div></div>
+      <div class="buildit"><span class="box"></span><div><div class="bt">Entra groups &amp; permissions</div><div class="bd">Seller vs. manager edit rights</div></div></div>
+      <div class="buildit"><span class="box"></span><div><div class="bt">Power Automate (optional)</div><div class="bd">Cadence reminders &amp; status flow</div></div></div>
+    </div>
+  </section>
+
+  <!-- DEPENDENCIES -->
+  <section>
+    <div class="sec-eyebrow">07 · Straight talk</div>
+    <h2>Dependencies &amp; decisions</h2>
+    <p class="sec-sub">The honest short list of what this needs and what to settle before building.</p>
+    <div class="deps">
+      <div class="dep-row"><span class="dk">Dependency</span><p><b>The manager-hierarchy feed.</b> RLS is only as good as the <span class="mono">People</span> data — someone must own keeping it current, ideally an automated HR/Workday sync.</p></div>
+      <div class="dep-row"><span class="dk">Design</span><p><b>Edit permissions.</b> A seller edits only their Self column; the manager owns Manager/Agreed. Enforced by app logic + SharePoint permissions — worth designing deliberately.</p></div>
+      <div class="dep-row"><span class="dk">Decision</span><p><b>Where the app lives.</b> Embed the Power App (and Power BI tile) in Teams or a SharePoint site so entry and the leader view are one place.</p></div>
+      <div class="dep-row"><span class="dk">Scale</span><p><b>SharePoint fits the pilot</b> and well beyond. If it ever gets very large, Dataverse (also Power Platform) is the heavier-duty backend — not needed to start.</p></div>
+      <div class="dep-row"><span class="dk">Scope</span><p><b>The prototype can't be the production app.</b> A static page can't do SSO, RLS, or shared writes — so production rebuilds the UX in Power Apps, which is fast because it's already designed and proven.</p></div>
+    </div>
+  </section>
+
+  <div class="provenance">
+    <span>Prepared by <b>SalesGlobe</b> for EY Americas Sales &amp; Strategic Pursuits</span>
+    <span>Draft for discussion · July 2026</span>
+  </div>
+
+</div>
