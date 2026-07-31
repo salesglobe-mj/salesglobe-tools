@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onebrief — Organization Chart</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --panel:#ffffff; --ink:#1f2933; --muted:#6b7785; --line:#dfe4ea;
+    --sales:#2e7d32; --sales-bg:#e8f5e9;
+    --cr:#1565c0; --cr-bg:#e7f0fb;
+    --capture:#6a1b9a; --capture-bg:#f3e8f9;
+    --exec:#37474f; --exec-bg:#eceff1;
+    --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.06);
+    --shadow-lg:0 8px 24px rgba(16,24,40,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+  /* Header */
+  header{background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;z-index:20}
+  header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.2px}
+  header h1 span{color:var(--sales)}
+  .sub{font-size:12px;color:var(--muted)}
+  .spacer{flex:1}
+  .stat{font-size:12px;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:999px}
+  .stat b{color:var(--ink)}
+
+  /* Tabs */
+  .tabs{display:flex;gap:4px;background:var(--panel);padding:0 20px;border-bottom:1px solid var(--line)}
+  .tab{appearance:none;border:0;background:transparent;padding:11px 16px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;font-family:inherit}
+  .tab:hover{color:var(--ink)}
+  .tab.active{color:var(--sales);border-bottom-color:var(--sales)}
+
+  /* Toolbar */
+  .toolbar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .search{position:relative}
+  .search input{width:280px;max-width:60vw;padding:8px 12px 8px 32px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg)}
+  .search input:focus{outline:none;border-color:var(--sales);background:#fff}
+  .search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .btn{appearance:none;border:1px solid var(--line);background:#fff;color:var(--ink);padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{background:var(--bg);border-color:#c7cfd8}
+  .btn.icon{padding:7px 10px;min-width:34px}
+  select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;font-family:inherit;background:#fff;color:var(--ink);cursor:pointer}
+  label.lbl{font-size:12px;color:var(--muted);font-weight:600}
+  .legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-left:auto}
+  .legend span{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+  /* Main area */
+  main{flex:1;position:relative;overflow:hidden}
+  .view{position:absolute;inset:0;display:none}
+  .view.active{display:block}
+
+  /* ---- Org chart (top-down tree) ---- */
+  #chartScroll{position:absolute;inset:0;overflow:auto;cursor:grab;background:
+     radial-gradient(circle at 1px 1px, #e2e7ec 1px, transparent 0);background-size:22px 22px}
+  #chartScroll.grabbing{cursor:grabbing}
+  #chartZoom{transform-origin:0 0;padding:34px 60px;display:inline-block;min-width:100%}
+  .tree, .tree ul{position:relative;padding-top:22px;display:flex;justify-content:center;list-style:none;margin:0}
+  .tree ul{padding-left:0}
+  .tree li{position:relative;padding:22px 5px 0 5px;display:flex;flex-direction:column;align-items:center}
+  /* connectors */
+  .tree li::before,.tree li::after{content:'';position:absolute;top:0;width:50%;height:22px;border-top:2px solid var(--line)}
+  .tree li::before{right:50%;border-right:2px solid var(--line)}
+  .tree li::after{left:50%}
+  .tree li:only-child::before,.tree li:only-child::after{display:none}
+  .tree li:first-child::before,.tree li:last-child::after{border-top:0}
+  .tree li:first-child::after{border-radius:0}
+  .tree>li{padding-top:0}
+  .tree>li::before,.tree>li::after{display:none}
+  .tree ul::before{content:'';position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--line)}
+  .tree li.collapsed>ul{display:none}
+  /* Wide teams wrap into a compact multi-row grid instead of one long row */
+  .tree li.wide>ul{display:grid;grid-template-columns:repeat(5,180px);justify-content:center;gap:24px 0;padding-top:30px}
+  .tree li.wide>ul>li{padding-top:0}
+  .tree li.wide>ul>li::before,.tree li.wide>ul>li::after{display:none}
+  .tree li.wide>ul::after{content:'';position:absolute;top:22px;left:10%;right:10%;border-top:2px solid var(--line)}
+  /* collapsing a wide node must still hide its grid (higher specificity than the grid rule) */
+  .tree li.wide.collapsed>ul{display:none}
+
+  .card{position:relative;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);width:170px;padding:10px 12px 12px;cursor:pointer;transition:box-shadow .12s,border-color .12s,transform .12s}
+  .card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+  .card.haskids:hover{border-color:var(--sales)}
+  .card .info{position:absolute;top:6px;right:6px;width:19px;height:19px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;font-style:italic;font-family:Georgia,serif}
+  .card .info:hover{border-color:var(--sales);color:var(--sales);background:var(--sales-bg)}
+  .card .nm{font-size:13.5px;font-weight:700;line-height:1.2}
+  .card .tt{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.25}
+  .card .team-bar{margin-top:9px;font-size:10.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:4px 8px;border-radius:6px;display:inline-block}
+  .card.dep-Sales{border-top:3px solid var(--sales)} .dep-Sales .team-bar{background:var(--sales-bg);color:var(--sales)}
+  .card.dep-CR{border-top:3px solid var(--cr)} .dep-CR .team-bar{background:var(--cr-bg);color:var(--cr)}
+  .card.dep-Capture{border-top:3px solid var(--capture)} .dep-Capture .team-bar{background:var(--capture-bg);color:var(--capture)}
+  .card.dep-Executive{border-top:3px solid var(--exec)} .dep-Executive .team-bar{background:var(--exec-bg);color:var(--exec)}
+  .card.root{width:196px}
+  .card.root .nm{font-size:15px}
+  .card.dimmed{opacity:.32}
+  .card.match{outline:3px solid #ffd54f;outline-offset:1px}
+  .card.selected{border-color:var(--sales);box-shadow:0 0 0 2px var(--sales),var(--shadow-lg)}
+
+  .toggle{position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:999px;height:22px;min-width:26px;padding:0 7px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:3px;box-shadow:var(--shadow);z-index:2}
+  .toggle:hover{border-color:var(--sales);color:var(--sales)}
+  .toggle .chev{font-size:9px;transition:transform .15s}
+  li.collapsed .toggle .chev{transform:rotate(-90deg)}
+
+  /* zoom controls */
+  .zoombar{position:absolute;right:16px;bottom:16px;display:flex;flex-direction:column;gap:6px;z-index:10}
+  .zoombar button{width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:17px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);color:var(--ink)}
+  .zoombar button:hover{background:var(--bg)}
+
+  /* ---- Grouped directory ---- */
+  #groupsScroll{position:absolute;inset:0;overflow:auto;padding:20px 24px 60px}
+  .grp{background:#fff;border:1px solid var(--line);border-radius:10px;margin:0 auto 12px;max-width:1000px;box-shadow:var(--shadow);overflow:hidden}
+  .grp-h{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;user-select:none}
+  .grp-h:hover{background:var(--bg)}
+  .grp-h .chev{font-size:11px;color:var(--muted);transition:transform .15s}
+  .grp.collapsed .chev{transform:rotate(-90deg)}
+  .grp-h .title{font-size:14.5px;font-weight:700}
+  .grp-h .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .grp-h .cnt{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+  .grp.collapsed .grp-body{display:none}
+  .grp-body{border-top:1px solid var(--line)}
+  .subgrp{padding:6px 16px 4px}
+  .subgrp-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 4px}
+  .people{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 14px;padding-bottom:8px}
+  .person{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
+  .person:hover{background:#fff;border-color:#c7cfd8}
+  .person .pn{font-size:13px;font-weight:600;line-height:1.2}
+  .person .pt{font-size:11px;color:var(--muted);margin-top:2px}
+  .person.hide{display:none}
+  .subgrp.hide,.grp.hide{display:none}
+  .lstripe{width:4px;border-radius:2px;align-self:stretch}
+
+  /* Detail panel */
+  #detail{position:absolute;top:0;right:0;height:100%;width:320px;background:#fff;border-left:1px solid var(--line);box-shadow:-6px 0 20px rgba(16,24,40,.08);transform:translateX(105%);transition:transform .22s ease;z-index:30;display:flex;flex-direction:column}
+  #detail.open{transform:none}
+  #detail .dh{padding:18px 18px 14px;border-bottom:1px solid var(--line);position:relative}
+  #detail .close{position:absolute;top:12px;right:12px;border:0;background:var(--bg);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:15px;color:var(--muted)}
+  #detail .close:hover{background:#e6eaef;color:var(--ink)}
+  #detail .avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;margin-bottom:10px}
+  #detail .dname{font-size:17px;font-weight:700}
+  #detail .dtitle{font-size:13px;color:var(--muted);margin-top:2px}
+  #detail .db{padding:6px 18px 18px;overflow:auto}
+  .field{padding:11px 0;border-bottom:1px solid var(--line)}
+  .field .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+  .field .v{font-size:13.5px;margin-top:3px}
+  .field .v.link{color:var(--sales);cursor:pointer;font-weight:600}
+  .field .v.link:hover{text-decoration:underline}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+  .chip{font-size:12px;padding:4px 9px;border-radius:7px;background:var(--bg);border:1px solid var(--line);cursor:pointer}
+  .chip:hover{border-color:var(--sales);color:var(--sales)}
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:13px}
+
+  footer{background:var(--panel);border-top:1px solid var(--line);padding:6px 20px;font-size:11px;color:var(--muted);display:flex;gap:16px;align-items:center}
+  footer .spacer{flex:1}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Onebrief <span>· Organization Chart</span></h1>
+    <div class="sub">Interactive org chart — reporting structure &amp; team directory</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="stat"><b id="statPeople">0</b> people</div>
+  <div class="stat"><b id="statTeams">0</b> teams</div>
+  <div class="stat"><b id="statDepts">0</b> departments</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" data-view="chart">Org Chart</button>
+  <button class="tab" data-view="groups">By Team &amp; Department</button>
+</div>
+
+<div class="toolbar">
+  <div class="search">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input id="search" type="text" placeholder="Search name, title, or team…" autocomplete="off">
+  </div>
+
+  <!-- chart-only controls -->
+  <span class="chart-ctl"><button class="btn" id="resetView">Reset view</button></span>
+  <span class="chart-ctl"><button class="btn" id="expandAll">Expand all</button></span>
+  <span class="chart-ctl"><button class="btn" id="collapseAll">Collapse all</button></span>
+
+  <!-- groups-only controls -->
+  <span class="groups-ctl" style="display:none">
+    <label class="lbl">Group by:</label>
+    <select id="groupMode">
+      <option value="dept">Department → Team</option>
+      <option value="team">Team → Department</option>
+    </select>
+  </span>
+  <span class="groups-ctl" style="display:none"><button class="btn" id="grpExpand">Expand all</button></span>
+  <span class="groups-ctl" style="display:none"><button class="btn" id="grpCollapse">Collapse all</button></span>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--sales)"></i>Sales</span>
+    <span><i class="dot" style="background:var(--cr)"></i>Customer Relations</span>
+    <span><i class="dot" style="background:var(--capture)"></i>Capture</span>
+    <span><i class="dot" style="background:var(--exec)"></i>Executive</span>
+  </div>
+</div>
+
+<main>
+  <div class="view active" id="view-chart">
+    <div id="chartScroll"><div id="chartZoom"></div></div>
+    <div class="zoombar">
+      <button id="zoomIn" title="Zoom in">+</button>
+      <button id="zoomReset" title="Reset" style="font-size:12px">⤢</button>
+      <button id="zoomOut" title="Zoom out">−</button>
+    </div>
+  </div>
+  <div class="view" id="view-groups">
+    <div id="groupsScroll"></div>
+  </div>
+
+  <aside id="detail">
+    <div class="dh">
+      <button class="close" id="detailClose">✕</button>
+      <div class="avatar" id="dAvatar"></div>
+      <div class="dname" id="dName"></div>
+      <div class="dtitle" id="dTitle"></div>
+    </div>
+    <div class="db" id="dBody"></div>
+  </aside>
+</main>
+
+<footer>
+  <span>Source: <b>SalesCRCapture_OrgChart.xlsx</b> (SharePoint)</span>
+  <span>Compensation data intentionally excluded.</span>
+  <span class="spacer"></span>
+  <span>Prepared by SalesGlobe</span>
+</footer>
+
+<script>
+const DATA = [{"id":"Grant Demaree","name":"Grant Demaree","title":"Chief Executive Officer","managerId":null,"manager":"","dept":"Executive","team":"Executive","country":"United States"},{"id":"Blake Lackey","name":"Blake Lackey","title":"Advisor","managerId":"Grant Demaree","manager":"Grant Demaree","dept":"Sales","team":"Sales","country":"United States"},{"id":"Michael Schille","name":"Michael Schille","title":"Business Development Executive","managerId":"Matt Work","manager":"Matt Work","dept":"Sales","team":"Army","country":"United States"},{"id":"Dan Ferriter","name":"Dan Ferriter","title":"Business Development Executive","managerId":"Matt Work","manager":"Matt Work","dept":"Sales","team":"Army","country":"United States"},{"id":"Gregory Vinciguerra","name":"Gregory Vinciguerra","title":"Business Development Executive","managerId":"Jon Lum","manager":"Jon Lum","dept":"Sales","team":"Europe","country":"United States"},{"id":"Jonathan Russell","name":"Jonathan Russell","title":"Business Development Executive","managerId":"Will Walker","manager":"Will Walker","dept":"Sales","team":"Federal","country":"United States"},{"id":"Kevin McKinley","name":"Kevin McKinley","title":"Business Development Executive","managerId":"Will Walker","manager":"Will Walker","dept":"Sales","team":"Federal","country":"United States"},{"id":"Joe Donato","name":"Joe Donato","title":"Business Development Executive","managerId":"Will Walker","manager":"Will Walker","dept":"Sales","team":"National Capital","country":"United States"},{"id":"Tim Lawrence","name":"Tim Lawrence","title":"Business Development Executive","managerId":"Janiece Marquez","manager":"Janiece Marquez","dept":"Sales","team":"National Guard","country":"United States"},{"id":"Brandon DeJesus","name":"Brandon DeJesus","title":"Business Development Executive","managerId":"Christopher Tighe","manager":"Christopher Tighe","dept":"Sales","team":"Navy","country":"United States"},{"id":"Thomas Kisch","name":"Thomas Kisch","title":"Business Development Executive","managerId":"Christopher Tighe","manager":"Christopher Tighe","dept":"Sales","team":"Navy","country":"United States"},{"id":"Randy Hooper","name":"Randy Hooper","title":"Business Development Executive","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"NCR","country":"United States"},{"id":"Ramiro Villalobos","name":"Ramiro Villalobos","title":"Business Development Executive","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Space Force","country":"United States"},{"id":"Mark Mader","name":"Mark Mader","title":"Business Development Executive","managerId":"Christopher Tighe","manager":"Christopher Tighe","dept":"Sales","team":"Special Operations Forces","country":"United States"},{"id":"Ryan Tremblay","name":"Ryan Tremblay","title":"Business Development Executive","managerId":"Matt Work","manager":"Matt Work","dept":"Sales","team":"Special Operations Forces","country":"United States"},{"id":"Palmer Snodgrass","name":"Palmer Snodgrass","title":"Business Development Executive","managerId":"Jeff Rule","manager":"Jeff Rule","dept":"Sales","team":"USMC","country":"United States"},{"id":"Molly Ellis","name":"Molly Ellis","title":"Capture Manager","managerId":"Erick Trombley","manager":"Erick Trombley","dept":"Capture","team":"Capture","country":"United States"},{"id":"Jonathan Jones","name":"Jonathan Jones","title":"Capture Manager","managerId":"Erick Trombley","manager":"Erick Trombley","dept":"Capture","team":"Department of War","country":"United States"},{"id":"Christine Spencer","name":"Christine Spencer","title":"Capture Proposal Writer","managerId":"Erick Trombley","manager":"Erick Trombley","dept":"Capture","team":"Capture","country":"United States"},{"id":"Adam Lackey","name":"Adam Lackey","title":"Chief Operating Officer","managerId":"Grant Demaree","manager":"Grant Demaree","dept":"Customer Relations","team":"CR Ops","country":"United States"},{"id":"Matthew Hansen","name":"Matthew Hansen","title":"CR Consultant","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"West","country":"Australia"},{"id":"Josh Swellander","name":"Josh Swellander","title":"Customer Revenue Operations Analyst","managerId":"Tucker Warner","manager":"Tucker Warner","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"Dalton Daly","name":"Dalton Daly","title":"Customer Success Engineer","managerId":"Will Hoover","manager":"Will Hoover","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Joe Howard","name":"Joe Howard","title":"Customer Success Engineer","managerId":"Caleb Sessoms","manager":"Caleb Sessoms","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Ryan Curphey","name":"Ryan Curphey","title":"Customer Success Technician","managerId":"Will Hoover","manager":"Will Hoover","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Tucker Warner","name":"Tucker Warner","title":"Director of Customer Revenue","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"East","country":"United States"},{"id":"Matt Stein","name":"Matt Stein","title":"Director of Key Initiatives","managerId":"Adam Lackey","manager":"Adam Lackey","dept":"Customer Relations","team":"NGC2","country":"United States"},{"id":"Austin Canning","name":"Austin Canning","title":"Director of Operations","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"West","country":"United States"},{"id":"Josh Powers","name":"Josh Powers","title":"Director of Operations","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"Central","country":"United States"},{"id":"Joe Lemens","name":"Joe Lemens","title":"Director of Operations","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"GDT","country":"United States"},{"id":"Ike Sallee","name":"Ike Sallee","title":"Director of Operations","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"CR Ops","country":"United States"},{"id":"Dave White","name":"Dave White","title":"Executive Assistant","managerId":"Adam Lackey","manager":"Adam Lackey","dept":"Customer Relations","team":"CR Ops","country":"United States"},{"id":"Erick Trombley","name":"Erick Trombley","title":"Head of Capture","managerId":"Grant Demaree","manager":"Grant Demaree","dept":"Capture","team":"Capture","country":"United States"},{"id":"Matt Work","name":"Matt Work","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Army","country":"United States"},{"id":"Will Walker","name":"Will Walker","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Federal","country":"United States"},{"id":"Jon Lum","name":"Jon Lum","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"International","country":"United States"},{"id":"Jeff Rule","name":"Jeff Rule","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Marine Corps","country":"United States"},{"id":"Christopher Tighe","name":"Christopher Tighe","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Navy","country":"United States"},{"id":"Janiece Marquez","name":"Janiece Marquez","title":"Head of Growth","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"New Markets","country":"United States"},{"id":"Georges Strachan-Heyes","name":"Georges Strachan-Heyes","title":"Head of Growth","managerId":"Jon Lum","manager":"Jon Lum","dept":"Sales","team":"UK","country":"United Kingdom"},{"id":"Caleb Sessoms","name":"Caleb Sessoms","title":"Integration Manager","managerId":"Matt Stein","manager":"Matt Stein","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Marc Greene","name":"Marc Greene","title":"Interim Vice President of Growth","managerId":"Grant Demaree","manager":"Grant Demaree","dept":"Sales","team":"Sales","country":"United States"},{"id":"David McGowan","name":"David McGowan","title":"Intern","managerId":"Josh Favaloro","manager":"Josh Favaloro","dept":"Customer Relations","team":"Delivery Enablement Operations","country":"United States"},{"id":"Garrett Ewanouski","name":"Garrett Ewanouski","title":"Intern","managerId":"Russ Necessary","manager":"Russ Necessary","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"Kekoa Young","name":"Kekoa Young","title":"Intern","managerId":"Ike Sallee","manager":"Ike Sallee","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"Tyler Stankye","name":"Tyler Stankye","title":"Intern","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"West","country":"United States"},{"id":"Tom Casazza","name":"Tom Casazza","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"GDT","country":"United States"},{"id":"Adriano Ciciotti","name":"Adriano Ciciotti","title":"Operations Manager","managerId":"Vipul Sharma","manager":"Vipul Sharma","dept":"Customer Relations","team":"Air Force Functional","country":"United States"},{"id":"Andrew Davila","name":"Andrew Davila","title":"Operations Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"Central","country":"United States"},{"id":"Jace Neuenschwander","name":"Jace Neuenschwander","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Julian Chavez","name":"Julian Chavez","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"III Corps","country":"United States"},{"id":"Adam Cannon","name":"Adam Cannon","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"III Corps","country":"United States"},{"id":"Chad Amacker","name":"Chad Amacker","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"III Corps","country":"United States"},{"id":"Jeremy Burrows","name":"Jeremy Burrows","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Jerry Gladden","name":"Jerry Gladden","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Mark Becker","name":"Mark Becker","title":"Operations Manager","managerId":"Vipul Sharma","manager":"Vipul Sharma","dept":"Customer Relations","team":"ACC","country":"United States"},{"id":"Christina Rizzo","name":"Christina Rizzo","title":"Operations Manager","managerId":"Vipul Sharma","manager":"Vipul Sharma","dept":"Customer Relations","team":"AMC","country":"United States"},{"id":"Matt Koehler","name":"Matt Koehler","title":"Operations Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"Army University","country":"United States"},{"id":"Will Hoover","name":"Will Hoover","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"Josiah Jeffers","name":"Josiah Jeffers","title":"Operations Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"CENTCOM","country":"United States"},{"id":"Andrew Hubbard","name":"Andrew Hubbard","title":"Operations Manager","managerId":"Derek Corbett","manager":"Derek Corbett","dept":"Customer Relations","team":"EUCOM","country":"United States"},{"id":"Scott McCabe","name":"Scott McCabe","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"Brett Martin","name":"Brett Martin","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Dave Mack","name":"Dave Mack","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Josh Favaloro","name":"Josh Favaloro","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Nick Haberly","name":"Nick Haberly","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Pat Tabb","name":"Pat Tabb","title":"Operations Manager","managerId":"Joe Lemens","manager":"Joe Lemens","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Dan Stork","name":"Dan Stork","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Burt Eissler","name":"Burt Eissler","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"III Corps","country":"United States"},{"id":"Patrick Branco","name":"Patrick Branco","title":"Operations Manager","managerId":"Ike Sallee","manager":"Ike Sallee","dept":"Customer Relations","team":"PACFLT","country":"United States"},{"id":"Kendall Johnson","name":"Kendall Johnson","title":"Operations Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"SPACECOM","country":"United States"},{"id":"Tom Morse","name":"Tom Morse","title":"Operations Manager","managerId":"Ike Sallee","manager":"Ike Sallee","dept":"Customer Relations","team":"MARFORPAC","country":"United States"},{"id":"Elizabeth Scheivert","name":"Elizabeth Scheivert","title":"Operations Manager","managerId":"Derek Corbett","manager":"Derek Corbett","dept":"Customer Relations","team":"NAVEUR","country":"United States"},{"id":"Josh Van Etten","name":"Josh Van Etten","title":"Operations Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"USARC","country":"United States"},{"id":"Tony Lugo","name":"Tony Lugo","title":"Operations Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"CENTCOM","country":"United States"},{"id":"Sean Palmertree","name":"Sean Palmertree","title":"Partner Engagement Manager","managerId":"Pat Tabb","manager":"Pat Tabb","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"GJ Nolan","name":"GJ Nolan","title":"Partner Engagement Manager","managerId":"Pat Tabb","manager":"Pat Tabb","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Jason Arens","name":"Jason Arens","title":"Partner Engagement Manager","managerId":"Brett Martin","manager":"Brett Martin","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Alex Willard","name":"Alex Willard","title":"Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Stephen Case","name":"Stephen Case","title":"Partner Engagement Manager","managerId":"Tom Morse","manager":"Tom Morse","dept":"Customer Relations","team":"INDOPACIFIC","country":"United States"},{"id":"Ron Flick","name":"Ron Flick","title":"Partner Engagement Manager","managerId":"Jeremy Burrows","manager":"Jeremy Burrows","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Kirk Van Everen","name":"Kirk Van Everen","title":"Partner Engagement Manager","managerId":"Jerry Gladden","manager":"Jerry Gladden","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Justin White","name":"Justin White","title":"Partner Engagement Manager","managerId":"Dan Stork","manager":"Dan Stork","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Jesh Anderson","name":"Jesh Anderson","title":"Partner Engagement Manager","managerId":"Mark Becker","manager":"Mark Becker","dept":"Customer Relations","team":"ACC","country":"United States"},{"id":"Luke McLimans","name":"Luke McLimans","title":"Partner Engagement Manager","managerId":"Christina Rizzo","manager":"Christina Rizzo","dept":"Customer Relations","team":"AMC","country":"United States"},{"id":"Joe Ensminger","name":"Joe Ensminger","title":"Partner Engagement Manager","managerId":"Christina Rizzo","manager":"Christina Rizzo","dept":"Customer Relations","team":"AMC","country":"United States"},{"id":"Mike Jiabia","name":"Mike Jiabia","title":"Partner Engagement Manager","managerId":"Matt Koehler","manager":"Matt Koehler","dept":"Customer Relations","team":"Army University","country":"United States"},{"id":"Allan Selburg","name":"Allan Selburg","title":"Partner Engagement Manager","managerId":"Will Hoover","manager":"Will Hoover","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Dallas Cheatham","name":"Dallas Cheatham","title":"Partner Engagement Manager","managerId":"Caleb Sessoms","manager":"Caleb Sessoms","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Christopher L'Heureux","name":"Christopher L'Heureux","title":"Partner Engagement Manager","managerId":"Will Hoover","manager":"Will Hoover","dept":"Customer Relations","team":"Atom Engine Delivery Team","country":"United States"},{"id":"Joseph Koning","name":"Joseph Koning","title":"Partner Engagement Manager","managerId":"Josiah Jeffers","manager":"Josiah Jeffers","dept":"Customer Relations","team":"CYBERCOM","country":"United States"},{"id":"Nate Butler","name":"Nate Butler","title":"Partner Engagement Manager","managerId":"Dave Mack","manager":"Dave Mack","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Chris Trinidad","name":"Chris Trinidad","title":"Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Rich Kittirath","name":"Rich Kittirath","title":"Partner Engagement Manager","managerId":"Pat Tabb","manager":"Pat Tabb","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Cliff Pullig","name":"Cliff Pullig","title":"Partner Engagement Manager","managerId":"Josh Favaloro","manager":"Josh Favaloro","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Clay Rook","name":"Clay Rook","title":"Partner Engagement Manager","managerId":"Brett Martin","manager":"Brett Martin","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Chris Froelich","name":"Chris Froelich","title":"Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Tom Collins","name":"Tom Collins","title":"Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Cory Pederson","name":"Cory Pederson","title":"Partner Engagement Manager","managerId":"Brett Martin","manager":"Brett Martin","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Josh Wines","name":"Josh Wines","title":"Partner Engagement Manager","managerId":"Dave Mack","manager":"Dave Mack","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Creighton Hayes","name":"Creighton Hayes","title":"Partner Engagement Manager","managerId":"Dan Stork","manager":"Dan Stork","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Jeff Rhodes","name":"Jeff Rhodes","title":"Partner Engagement Manager","managerId":"Dan Stork","manager":"Dan Stork","dept":"Customer Relations","team":"I Corps","country":"United States"},{"id":"Steve Jackowski","name":"Steve Jackowski","title":"Partner Engagement Manager","managerId":"Burt Eissler","manager":"Burt Eissler","dept":"Customer Relations","team":"III Corps","country":"United States"},{"id":"Matt Weber","name":"Matt Weber","title":"Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Cris Ulrich","name":"Cris Ulrich","title":"Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Kevin Kawasaki","name":"Kevin Kawasaki","title":"Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Dan Jakab","name":"Dan Jakab","title":"Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Tom Shinn","name":"Tom Shinn","title":"Partner Engagement Manager","managerId":"Jon Anderson","manager":"Jon Anderson","dept":"Customer Relations","team":"CR Ops","country":"United States"},{"id":"Phil DeWolf","name":"Phil DeWolf","title":"Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"ASW (Readiness)","country":"United States"},{"id":"Mary Beth East","name":"Mary Beth East","title":"Partner Engagement Manager","managerId":"Ike Sallee","manager":"Ike Sallee","dept":"Customer Relations","team":"PACAF","country":"United States"},{"id":"Peter Pappalardo","name":"Peter Pappalardo","title":"Partner Engagement Manager","managerId":"Patrick Branco","manager":"Patrick Branco","dept":"Customer Relations","team":"PACFLT","country":"United States"},{"id":"Shea Stewart","name":"Shea Stewart","title":"Partner Engagement Manager","managerId":"Kendall Johnson","manager":"Kendall Johnson","dept":"Customer Relations","team":"SPACECOM","country":"United States"},{"id":"Paul Haynsworth","name":"Paul Haynsworth","title":"Partner Engagement Manager","managerId":"Kendall Johnson","manager":"Kendall Johnson","dept":"Customer Relations","team":"SPACECOM","country":"United States"},{"id":"Lauren Clendening","name":"Lauren Clendening","title":"Partner Engagement Manager","managerId":"Tony Lugo","manager":"Tony Lugo","dept":"Customer Relations","team":"CENTCOM","country":"United States"},{"id":"Steve Flores","name":"Steve Flores","title":"Partner Engagement Manager","managerId":"Tony Lugo","manager":"Tony Lugo","dept":"Customer Relations","team":"CENTCOM","country":"United States"},{"id":"Jamie Burns","name":"Jamie Burns","title":"Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Pete Vasely","name":"Pete Vasely","title":"Principal Partner Engagement Manager","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"Customer Relations","country":"United States"},{"id":"JB Brown","name":"JB Brown","title":"Project Integrator","managerId":"Russ Necessary","manager":"Russ Necessary","dept":"Customer Relations","team":"NGC2","country":"United States"},{"id":"Jake Gluckman","name":"Jake Gluckman","title":"Project Integrator","managerId":"Matt Stein","manager":"Matt Stein","dept":"Customer Relations","team":"NGC2","country":"United States"},{"id":"Ben Krebs","name":"Ben Krebs","title":"Project Integrator","managerId":"Russ Necessary","manager":"Russ Necessary","dept":"Customer Relations","team":"NGC2","country":"United States"},{"id":"Sam Sok","name":"Sam Sok","title":"Project Manager","managerId":"Matt Stein","manager":"Matt Stein","dept":"Customer Relations","team":"USFK","country":"United States"},{"id":"Offset Strategies","name":"Offset Strategies","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Tim Hayden","name":"Tim Hayden","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Omer Rafiq","name":"Omer Rafiq","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Eric Felt","name":"Eric Felt","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Chris Molino","name":"Chris Molino","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Jonathan Chung","name":"Jonathan Chung","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Eric Meyers","name":"Eric Meyers","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Marc ECKARD","name":"Marc ECKARD","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Federico SINI","name":"Federico SINI","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"Italy"},{"id":"Mike Berdy","name":"Mike Berdy","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Derek Keller","name":"Derek Keller","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Omar Jones","name":"Omar Jones","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Kent Park","name":"Kent Park","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"James Downing","name":"James Downing","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Gene Black","name":"Gene Black","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Dennis Micic","name":"Dennis Micic","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Chris Budihas","name":"Chris Budihas","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Sean Bernabe","name":"Sean Bernabe","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Gerry McGowan","name":"Gerry McGowan","title":"Sales Consultant","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales Ops","country":"United States"},{"id":"Nick Ondovcsik","name":"Nick Ondovcsik","title":"Sales Enablement","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Andrew Pankow","name":"Andrew Pankow","title":"Sales Operations Manager","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Russ Necessary","name":"Russ Necessary","title":"Senior Integration Manager","managerId":"Matt Stein","manager":"Matt Stein","dept":"Customer Relations","team":"NGC2","country":"United States"},{"id":"Vipul Sharma","name":"Vipul Sharma","title":"Senior Operations Manager","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"Air Force Functional","country":"United States"},{"id":"Derek Corbett","name":"Derek Corbett","title":"Senior Operations Manager","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"NAVEUR","country":"United States"},{"id":"Brie Burgett","name":"Brie Burgett","title":"Senior Operations Manager","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Pete Moon","name":"Pete Moon","title":"Senior Partner Engagement Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"West","country":"United States"},{"id":"Simon Macioch","name":"Simon Macioch","title":"Senior Partner Engagement Manager","managerId":"Austin Canning","manager":"Austin Canning","dept":"Customer Relations","team":"West","country":"United States"},{"id":"Jeff Farmer","name":"Jeff Farmer","title":"Senior Partner Engagement Manager","managerId":"Josh Powers","manager":"Josh Powers","dept":"Customer Relations","team":"NORTHCOM","country":"United States"},{"id":"Eric Tyson","name":"Eric Tyson","title":"Senior Partner Engagement Manager","managerId":"Josh Favaloro","manager":"Josh Favaloro","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Boyd Williams","name":"Boyd Williams","title":"Senior Partner Engagement Manager","managerId":"Andrew Hubbard","manager":"Andrew Hubbard","dept":"Customer Relations","team":"EUCOM","country":"United States"},{"id":"Josh Lobdell","name":"Josh Lobdell","title":"Senior Partner Engagement Manager","managerId":"Brett Martin","manager":"Brett Martin","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Mark Mehaffie","name":"Mark Mehaffie","title":"Senior Partner Engagement Manager","managerId":"Nick Haberly","manager":"Nick Haberly","dept":"Customer Relations","team":"Global Delivery","country":"United States"},{"id":"Jeffrey Thorn","name":"Jeffrey Thorn","title":"Senior Partner Engagement Manager","managerId":"Brie Burgett","manager":"Brie Burgett","dept":"Customer Relations","team":"Joint Staff","country":"United States"},{"id":"Adam Blanton","name":"Adam Blanton","title":"Senior Partner Engagement Manager","managerId":"Tony Lugo","manager":"Tony Lugo","dept":"Customer Relations","team":"CENTCOM","country":"United States"},{"id":"Jon Anderson","name":"Jon Anderson","title":"Senior Program Manager","managerId":"Blake Lemmons","manager":"Blake Lemmons","dept":"Customer Relations","team":"CR Ops","country":"United States"},{"id":"Jim Coughlin","name":"Jim Coughlin","title":"Senior Technical Sales Executive","managerId":"Marc Greene","manager":"Marc Greene","dept":"Sales","team":"Sales","country":"United States"},{"id":"Blake Lemmons","name":"Blake Lemmons","title":"Vice President of Customer Relations","managerId":"Adam Lackey","manager":"Adam Lackey","dept":"Customer Relations","team":"CR Ops","country":"United States"}];
+
+/* ---------- indexing ---------- */
+const byId = new Map();
+DATA.forEach(p => byId.set(p.id, p));
+const childrenOf = new Map();
+DATA.forEach(p => childrenOf.set(p.id, []));
+let root = null;
+DATA.forEach(p => {
+  if (p.managerId === null) { root = p; return; }
+  if (childrenOf.has(p.managerId)) childrenOf.get(p.managerId).push(p);
+});
+// sort children: by dept then title then name for stable readable layout
+const titleRank = t => t;
+Object.freeze(childrenOf);
+for (const arr of childrenOf.values()){
+  arr.sort((a,b)=> a.title.localeCompare(b.title) || a.name.localeCompare(b.name));
+}
+const depClass = d => d==='Sales'?'dep-Sales':d==='Customer Relations'?'dep-CR':d==='Capture'?'dep-Capture':'dep-Executive';
+const depColor = d => d==='Sales'?'#2e7d32':d==='Customer Relations'?'#1565c0':d==='Capture'?'#6a1b9a':'#37474f';
+function descendantCount(id){let n=0;for(const c of childrenOf.get(id)){n+=1+descendantCount(c.id);}return n;}
+
+/* stats */
+document.getElementById('statPeople').textContent = DATA.filter(p=>p.managerId!==null).length;
+document.getElementById('statTeams').textContent = new Set(DATA.filter(p=>p.managerId!==null).map(p=>p.team)).size;
+document.getElementById('statDepts').textContent = new Set(DATA.filter(p=>p.managerId!==null).map(p=>p.dept)).size;
+
+/* ---------- ORG CHART ---------- */
+const chartZoom = document.getElementById('chartZoom');
+function buildTree(){
+  const rootUl = document.createElement('ul');
+  rootUl.className = 'tree';
+  rootUl.appendChild(renderNode(root, 0));
+  chartZoom.innerHTML='';
+  chartZoom.appendChild(rootUl);
+  smartDefault();
+}
+// Default view: Grant at top with his direct reports COLLAPSED, except the managers
+// listed in OPEN_ON_LOAD (Marc Greene's Sales team stays expanded as a grid).
+const WRAP = 7;    // wrap a manager's reports into a grid at this many+ direct reports
+const OPEN_ON_LOAD = new Set(['Marc Greene']); // direct reports expanded on load
+function smartDefault(){
+  chartZoom.querySelectorAll('li.node').forEach(li=>{
+    const depth=+li.dataset.depth, n=childrenOf.get(li.dataset.id).length;
+    const collapse = n>0 && (depth>=2 || (depth===1 && !OPEN_ON_LOAD.has(li.dataset.id)));
+    li.classList.toggle('collapsed', collapse);
+  });
+}
+function renderNode(p, depth){
+  const li = document.createElement('li');
+  li.className='node'; li.dataset.id=p.id; li.dataset.depth=depth;
+  const kids = childrenOf.get(p.id);
+  if(kids.length>=WRAP) li.classList.add('wide');
+
+  const card = document.createElement('div');
+  card.className='card '+depClass(p.dept)+(depth===0?' root':'')+(kids.length?' haskids':'');
+  card.dataset.id=p.id;
+  card.innerHTML = `<div class="nm">${esc(p.name)}</div><div class="tt">${esc(p.title)}</div>`+
+                   `<div class="team-bar">${esc(p.team)}</div>`+
+                   `<button class="info" title="View details">i</button>`;
+  card.title = kids.length ? 'Click to show / hide reports' : '';
+  // clicking the card expands/collapses reports; the ⓘ button opens details
+  card.addEventListener('click', e=>{
+    e.stopPropagation();
+    if(kids.length){
+      li.classList.toggle('collapsed');
+      if(!li.classList.contains('collapsed'))
+        requestAnimationFrame(()=>card.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}));
+    } else openDetail(p.id);
+  });
+  card.querySelector('.info').addEventListener('click', e=>{e.stopPropagation();openDetail(p.id);});
+  li.appendChild(card);
+
+  if(kids.length){
+    const tog=document.createElement('button');
+    tog.className='toggle';
+    tog.innerHTML=`<span class="chev">▼</span>${kids.length}`;
+    tog.title='Show / hide direct reports';
+    tog.addEventListener('click', e=>{e.stopPropagation();li.classList.toggle('collapsed');});
+    card.appendChild(tog);
+
+    const ul=document.createElement('ul');
+    kids.forEach(c=>ul.appendChild(renderNode(c, depth+1)));
+    li.appendChild(ul);
+  }
+  return li;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+document.getElementById('resetView').onclick=()=>{smartDefault();centerOnRoot();};
+document.getElementById('expandAll').onclick=()=>chartZoom.querySelectorAll('li.node').forEach(li=>li.classList.remove('collapsed'));
+document.getElementById('collapseAll').onclick=()=>chartZoom.querySelectorAll('li.node').forEach(li=>{
+  if(+li.dataset.depth>=1 && childrenOf.get(li.dataset.id).length) li.classList.add('collapsed');
+});
+
+/* zoom + pan */
+let zoom=1;
+function applyZoom(){chartZoom.style.transform=`scale(${zoom})`;}
+document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.6,zoom+0.15);applyZoom();};
+document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(0.3,zoom-0.15);applyZoom();};
+document.getElementById('zoomReset').onclick=()=>{zoom=1;applyZoom();};
+const scroll=document.getElementById('chartScroll');
+scroll.addEventListener('wheel',e=>{if(e.ctrlKey){e.preventDefault();zoom=Math.min(1.6,Math.max(0.3,zoom+(e.deltaY<0?0.1:-0.1)));applyZoom();}},{passive:false});
+let pan=null;
+scroll.addEventListener('mousedown',e=>{if(e.target.closest('.card')||e.target.closest('.toggle'))return;pan={x:e.clientX,y:e.clientY,l:scroll.scrollLeft,t:scroll.scrollTop};scroll.classList.add('grabbing');});
+window.addEventListener('mousemove',e=>{if(!pan)return;scroll.scrollLeft=pan.l-(e.clientX-pan.x);scroll.scrollTop=pan.t-(e.clientY-pan.y);});
+window.addEventListener('mouseup',()=>{pan=null;scroll.classList.remove('grabbing');});
+
+/* ---------- GROUPED DIRECTORY ---------- */
+const groupsScroll=document.getElementById('groupsScroll');
+function buildGroups(){
+  const mode=document.getElementById('groupMode').value;
+  groupsScroll.innerHTML='';
+  const people=DATA.filter(p=>p.managerId!==null);
+  if(mode==='dept'){
+    const depts=groupBy(people,p=>p.dept);
+    Object.keys(depts).sort().forEach(dep=>{
+      const teams=groupBy(depts[dep],p=>p.team);
+      const sub=Object.keys(teams).sort().map(t=>subgroupHTML(t,teams[t]));
+      groupsScroll.appendChild(groupCard(dep,dep,depts[dep].length,sub.join('')));
+    });
+  } else { // team first, then department label
+    const teams=groupBy(people,p=>p.team);
+    // order teams by dept then team name so related teams cluster
+    const keys=Object.keys(teams).sort((a,b)=>{
+      const da=teams[a][0].dept, db=teams[b][0].dept;
+      return da.localeCompare(db)||a.localeCompare(b);
+    });
+    keys.forEach(t=>{
+      const dep=teams[t][0].dept;
+      const body=`<div class="subgrp"><div class="people">`+
+        teams[t].slice().sort((a,b)=>a.name.localeCompare(b.name)).map(personHTML).join('')+
+        `</div></div>`;
+      groupsScroll.appendChild(groupCard(t,dep,teams[t].length,body,dep));
+    });
+  }
+  wireGroups();
+  applyGroupSearch();
+}
+function groupBy(arr,fn){const o={};arr.forEach(x=>{const k=fn(x);(o[k]=o[k]||[]).push(x);});return o;}
+function subgroupHTML(team,arr){
+  return `<div class="subgrp"><div class="subgrp-h">${esc(team)} · ${arr.length}</div><div class="people">`+
+    arr.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(personHTML).join('')+`</div></div>`;
+}
+function personHTML(p){
+  return `<div class="person" data-id="${p.id}" data-s="${esc((p.name+' '+p.title+' '+p.team).toLowerCase())}">
+    <div class="pn">${esc(p.name)}</div><div class="pt">${esc(p.title)}</div></div>`;
+}
+function groupCard(title,depForColor,count,body,depBadge){
+  const el=document.createElement('div');
+  el.className='grp collapsed';
+  const color=depColor(depForColor);
+  const badge = depBadge?`<span class="badge" style="background:${hexA(color,.13)};color:${color}">${esc(depBadge)}</span>`:'';
+  el.innerHTML=`<div class="grp-h"><span class="lstripe" style="background:${color}"></span>
+    <span class="chev">▼</span><span class="title">${esc(title)}</span>${badge}
+    <span class="cnt">${count} ${count===1?'person':'people'}</span></div>
+    <div class="grp-body">${body}</div>`;
+  return el;
+}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+function wireGroups(){
+  groupsScroll.querySelectorAll('.grp-h').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('collapsed'));
+  groupsScroll.querySelectorAll('.person').forEach(p=>p.onclick=()=>openDetail(p.dataset.id));
+}
+document.getElementById('groupMode').onchange=buildGroups;
+document.getElementById('grpExpand').onclick=()=>groupsScroll.querySelectorAll('.grp').forEach(g=>g.classList.remove('collapsed'));
+document.getElementById('grpCollapse').onclick=()=>groupsScroll.querySelectorAll('.grp').forEach(g=>g.classList.add('collapsed'));
+
+/* ---------- SEARCH ---------- */
+const searchBox=document.getElementById('search');
+searchBox.addEventListener('input',()=>{ if(currentView==='chart') applyChartSearch(); else applyGroupSearch(); });
+function applyChartSearch(){
+  const q=searchBox.value.trim().toLowerCase();
+  const cards=chartZoom.querySelectorAll('.card');
+  if(!q){cards.forEach(c=>c.classList.remove('dimmed','match'));return;}
+  const matchIds=new Set();
+  DATA.forEach(p=>{ if((p.name+' '+p.title+' '+p.team).toLowerCase().includes(q)) matchIds.add(p.id); });
+  // reveal path to matches
+  matchIds.forEach(id=>{let cur=byId.get(id);while(cur){const li=chartZoom.querySelector(`li.node[data-id="${cssq(cur.id)}"]`);if(li)li.classList.remove('collapsed');cur=cur.managerId!==null?byId.get(cur.managerId):null;}});
+  cards.forEach(c=>{const m=matchIds.has(c.dataset.id);c.classList.toggle('match',m);c.classList.toggle('dimmed',!m);});
+}
+function applyGroupSearch(){
+  const q=searchBox.value.trim().toLowerCase();
+  groupsScroll.querySelectorAll('.person').forEach(p=>{
+    p.classList.toggle('hide', q && !p.dataset.s.includes(q));
+  });
+  groupsScroll.querySelectorAll('.subgrp').forEach(sg=>{
+    const any=[...sg.querySelectorAll('.person')].some(p=>!p.classList.contains('hide'));
+    sg.classList.toggle('hide',!any);
+  });
+  groupsScroll.querySelectorAll('.grp').forEach(g=>{
+    const any=[...g.querySelectorAll('.person')].some(p=>!p.classList.contains('hide'));
+    g.classList.toggle('hide',!any);
+    if(q&&any)g.classList.remove('collapsed');
+  });
+}
+function cssq(s){return String(s).replace(/"/g,'\\"');}
+
+/* ---------- DETAIL PANEL ---------- */
+const detail=document.getElementById('detail');
+function openDetail(id){
+  const p=byId.get(id); if(!p)return;
+  chartZoom.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));
+  const card=chartZoom.querySelector(`.card[data-id="${cssq(id)}"]`); if(card)card.classList.add('selected');
+  const mgr=p.managerId!==null?byId.get(p.managerId):null;
+  const kids=childrenOf.get(id);
+  const color=depColor(p.dept);
+  document.getElementById('dAvatar').style.background=color;
+  document.getElementById('dAvatar').textContent=initials(p.name);
+  document.getElementById('dName').textContent=p.name;
+  document.getElementById('dTitle').textContent=p.title;
+  const body=document.getElementById('dBody');
+  let h='';
+  h+=field('Reports to', mgr?`<span class="v link" data-go="${esc(mgr.id)}">${esc(mgr.name)}</span><div class="pt" style="color:var(--muted);font-size:11.5px;margin-top:2px">${esc(mgr.title)}</div>`:'—',true);
+  h+=field('Department',`<span class="chip" data-dept="${esc(p.dept)}" style="border-color:${hexA(color,.5)};color:${color}">${esc(p.dept)}</span>`,true);
+  h+=field('Team',`<span class="chip" data-team="${esc(p.team)}">${esc(p.team)}</span>`,true);
+  h+=field('Location', esc(p.country));
+  if(kids.length){
+    h+=field(`Direct reports (${kids.length})`,
+      `<div class="chips">`+kids.map(k=>`<span class="chip" data-go="${esc(k.id)}">${esc(k.name)}</span>`).join('')+`</div>`,true);
+    h+=field('Total in org below', String(descendantCount(id)));
+  }
+  body.innerHTML=h;
+  body.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>{ if(currentView==='chart'){revealAndScroll(el.dataset.go);} openDetail(el.dataset.go); });
+  body.querySelectorAll('[data-team]').forEach(el=>el.onclick=()=>jumpToGroup('team',el.dataset.team));
+  body.querySelectorAll('[data-dept]').forEach(el=>el.onclick=()=>jumpToGroup('dept',el.dataset.dept));
+  detail.classList.add('open');
+}
+function field(k,v,html){return `<div class="field"><div class="k">${k}</div><div class="v">${html?v:esc(v)}</div></div>`;}
+function initials(n){const parts=n.split(/\s+/);return ((parts[0]||'')[0]||'')+((parts[parts.length-1]||'')[0]||'');}
+document.getElementById('detailClose').onclick=()=>{detail.classList.remove('open');chartZoom.querySelectorAll('.card.selected').forEach(c=>c.classList.remove('selected'));};
+function revealAndScroll(id){let cur=byId.get(id);while(cur){const li=chartZoom.querySelector(`li.node[data-id="${cssq(cur.id)}"]`);if(li)li.classList.remove('collapsed');cur=cur.managerId!==null?byId.get(cur.managerId):null;}
+  const card=chartZoom.querySelector(`.card[data-id="${cssq(id)}"]`);if(card)card.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});}
+function jumpToGroup(mode,val){switchView('groups');document.getElementById('groupMode').value=(mode==='team'?'team':'dept');buildGroups();searchBox.value=val;applyGroupSearch();}
+
+/* ---------- TABS ---------- */
+let currentView='chart';
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  document.getElementById('view-chart').classList.toggle('active',v==='chart');
+  document.getElementById('view-groups').classList.toggle('active',v==='groups');
+  document.querySelectorAll('.chart-ctl').forEach(e=>e.style.display=v==='chart'?'':'none');
+  document.querySelectorAll('.groups-ctl').forEach(e=>e.style.display=v==='groups'?'':'none');
+  searchBox.placeholder = v==='chart' ? 'Search name, title, or team…' : 'Filter people…';
+  if(v==='chart')applyChartSearch(); else applyGroupSearch();
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchView(t.dataset.view));
+
+/* ---------- init ---------- */
+buildTree();
+buildGroups();
+switchView('chart');
+function centerOnRoot(){
+  const rootCard=chartZoom.querySelector('.card.root');
+  if(!rootCard)return;
+  scroll.scrollLeft=Math.max(0,(chartZoom.scrollWidth-scroll.clientWidth)/2);
+  scroll.scrollTop=0;
+}
+// run after layout settles
+requestAnimationFrame(()=>requestAnimationFrame(centerOnRoot));
+window.addEventListener('load',centerOnRoot);
+</script>
+</body>
+</html>
