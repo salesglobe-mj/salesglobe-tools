@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesGlobe — Interview Scheduling</title>
+<style>
+  :root{
+    --sg-navy:#13294B;
+    --sg-navy-2:#1E3A66;
+    --sg-blue:#2E6FA7;
+    --sg-blue-light:#E7F0F8;
+    --sg-accent:#E29B2E;
+    --sg-line:#d9dfe7;
+    --sg-bg:#f4f6f9;
+    --sg-text:#1c2733;
+    --sg-muted:#7c8898;
+    --sg-white:#ffffff;
+    --radius:10px;
+    --shadow:0 2px 10px rgba(19,41,75,.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--sg-bg);
+    color:var(--sg-text);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 140px;}
+
+  /* Header */
+  header{
+    background:linear-gradient(135deg,var(--sg-navy) 0%,var(--sg-navy-2) 100%);
+    color:#fff;
+    padding:34px 0 30px;
+  }
+  .header-inner{max-width:1080px;margin:0 auto;padding:0 20px;}
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:700;letter-spacing:.5px;font-size:15px;text-transform:uppercase;
+    color:#cdd8e6;margin-bottom:14px;
+  }
+  .brand .globe{
+    width:22px;height:22px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,var(--sg-accent),#c07d12);
+    box-shadow:0 0 0 3px rgba(226,155,46,.25);
+  }
+  header h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.3px;}
+  header p{margin:8px 0 0;color:#c6d2e2;font-size:15px;max-width:640px;}
+
+  /* Instructions + legend */
+  .intro{
+    background:var(--sg-white);border:1px solid var(--sg-line);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px 22px;margin:24px 0 22px;
+    font-size:14.5px;
+  }
+  .intro strong{color:var(--sg-navy);}
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-size:13px;color:var(--sg-muted);}
+  .legend span{display:inline-flex;align-items:center;gap:7px;}
+  .swatch{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--sg-blue);background:#fff;}
+  .swatch.sel{background:var(--sg-navy);border-color:var(--sg-navy);}
+  .swatch.na{background:#eceff3;border:1px solid var(--sg-line);}
+
+  /* Week blocks */
+  .week{margin-bottom:26px;}
+  .week-label{
+    font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+    color:var(--sg-navy);margin:0 0 12px;padding-left:2px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .week-label::after{content:"";flex:1;height:1px;background:var(--sg-line);}
+  .days{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:12px;
+  }
+  .day{
+    background:var(--sg-white);border:1px solid var(--sg-line);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:12px 10px;display:flex;flex-direction:column;
+  }
+  .day-head{text-align:center;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid var(--sg-line);}
+  .day-dow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--sg-blue);}
+  .day-date{font-size:15px;font-weight:700;color:var(--sg-navy);margin-top:1px;}
+  .slots{display:flex;flex-direction:column;gap:7px;}
+  .slot{
+    border:1.5px solid var(--sg-blue);background:#fff;color:var(--sg-navy);
+    font-family:inherit;font-size:13.5px;font-weight:600;
+    padding:9px 6px;border-radius:7px;cursor:pointer;text-align:center;
+    transition:all .12s ease;
+  }
+  .slot:hover{background:var(--sg-blue-light);}
+  .slot.selected{background:var(--sg-navy);border-color:var(--sg-navy);color:#fff;box-shadow:0 2px 8px rgba(19,41,75,.28);}
+  .slot.selected::before{content:"\2713  ";}
+  .none{color:var(--sg-muted);font-size:12.5px;text-align:center;padding:14px 4px;font-style:italic;}
+
+  /* Booking bar */
+  .booking{
+    position:fixed;left:0;right:0;bottom:0;
+    background:var(--sg-white);border-top:2px solid var(--sg-navy);
+    box-shadow:0 -4px 18px rgba(19,41,75,.12);
+    transform:translateY(105%);transition:transform .25s ease;z-index:50;
+  }
+  .booking.show{transform:translateY(0);}
+  .booking-inner{max-width:1080px;margin:0 auto;padding:16px 20px;
+    display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:14px;align-items:end;}
+  .sel-label{font-size:12px;color:var(--sg-muted);}
+  .sel-time{font-size:16px;font-weight:700;color:var(--sg-navy);line-height:1.25;}
+  .field{display:flex;flex-direction:column;gap:4px;}
+  .field label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--sg-muted);}
+  .field input{
+    font-family:inherit;font-size:14px;padding:9px 11px;
+    border:1px solid var(--sg-line);border-radius:7px;color:var(--sg-text);
+  }
+  .field input:focus{outline:none;border-color:var(--sg-blue);box-shadow:0 0 0 3px rgba(46,111,167,.15);}
+  .btn{
+    background:var(--sg-accent);color:#3a2a06;font-family:inherit;font-weight:700;font-size:14.5px;
+    border:none;border-radius:8px;padding:11px 22px;cursor:pointer;white-space:nowrap;height:40px;
+    transition:filter .12s ease;
+  }
+  .btn:hover{filter:brightness(1.05);}
+  .btn:disabled{background:#e4e7ec;color:#9aa3af;cursor:not-allowed;}
+  .hint{grid-column:1/-1;font-size:12px;color:var(--sg-muted);margin-top:-4px;}
+  .confirm{grid-column:1/-1;background:var(--sg-blue-light);border:1px solid var(--sg-blue);
+    color:var(--sg-navy);border-radius:8px;padding:10px 14px;font-size:13.5px;display:none;}
+
+  footer{margin-top:30px;font-size:12px;color:var(--sg-muted);text-align:center;line-height:1.6;}
+
+  @media(max-width:880px){
+    .days{grid-template-columns:repeat(2,1fr);}
+    .booking-inner{grid-template-columns:1fr 1fr;}
+    .booking-inner .field.full,.booking-inner .btn{grid-column:1/-1;}
+    .booking-inner .sel-block{grid-column:1/-1;}
+  }
+  @media(max-width:520px){
+    .days{grid-template-columns:1fr;}
+    header h1{font-size:23px;}
+    .booking-inner{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand"><span class="globe"></span>SalesGlobe</div>
+    <h1>Interview Scheduling</h1>
+    <p>Thanks for taking part in our Sales Compensation Assessment &amp; Design interview process. Please choose a 60-minute time that works for you — we'll follow up with a calendar invite to confirm.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="intro">
+    <strong>How it works:</strong> Click an available time below, enter your name and email in the bar that appears, and hit <em>Send interview request</em>. That opens a pre-filled email to our team — just press send. All times shown are <strong>U.S. Eastern (ET)</strong>.
+    <div class="legend">
+      <span><span class="swatch"></span> Available</span>
+      <span><span class="swatch sel"></span> Your selection</span>
+      <span><span class="swatch na"></span> No availability</span>
+    </div>
+  </div>
+
+  <div id="calendar"></div>
+
+  <footer>
+    Availability current as of July 31, 2026 · All times U.S. Eastern (ET) · Your requested time is confirmed only once you receive a calendar invite.<br>
+    SalesGlobe · Sales Compensation Assessment &amp; Design
+  </footer>
+</div>
+
+<div class="booking" id="booking">
+  <div class="booking-inner">
+    <div class="sel-block">
+      <div class="sel-label">Selected time</div>
+      <div class="sel-time" id="selTime">—</div>
+    </div>
+    <div class="field">
+      <label for="nm">Your name</label>
+      <input type="text" id="nm" autocomplete="name" placeholder="Jane Smith">
+    </div>
+    <div class="field">
+      <label for="em">Your email</label>
+      <input type="email" id="em" autocomplete="email" placeholder="jane@company.com">
+    </div>
+    <button class="btn" id="send" disabled>Send interview request</button>
+    <div class="field full">
+      <label for="org">Organization &amp; role (optional)</label>
+      <input type="text" id="org" placeholder="Company · Title">
+    </div>
+    <div class="hint">Prefer not to use the form? Email <strong>mjohnson@salesglobe.com</strong> directly with your preferred time.</div>
+    <div class="confirm" id="confirm"></div>
+  </div>
+</div>
+
+<script>
+  var RECIPIENT = "mjohnson@salesglobe.com";
+  var weeks = [
+    { label:"Week 1 · August 3–7", days:[
+      {dow:"Monday",    short:"Aug 3",  long:"Monday, August 3, 2026",    slots:["11:00 AM","12:00 PM","2:00 PM","4:00 PM"]},
+      {dow:"Tuesday",   short:"Aug 4",  long:"Tuesday, August 4, 2026",   slots:[]},
+      {dow:"Wednesday", short:"Aug 5",  long:"Wednesday, August 5, 2026", slots:["1:00 PM","2:00 PM","3:00 PM","4:00 PM"]},
+      {dow:"Thursday",  short:"Aug 6",  long:"Thursday, August 6, 2026",  slots:["10:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM"]},
+      {dow:"Friday",    short:"Aug 7",  long:"Friday, August 7, 2026",    slots:["1:00 PM","2:00 PM","3:00 PM","4:00 PM"]}
+    ]},
+    { label:"Week 2 · August 10–14", days:[
+      {dow:"Monday",    short:"Aug 10", long:"Monday, August 10, 2026",    slots:["11:00 AM","12:00 PM","1:00 PM","2:00 PM"]},
+      {dow:"Tuesday",   short:"Aug 11", long:"Tuesday, August 11, 2026",   slots:["1:00 PM","3:00 PM","4:00 PM"]},
+      {dow:"Wednesday", short:"Aug 12", long:"Wednesday, August 12, 2026", slots:["11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM"]},
+      {dow:"Thursday",  short:"Aug 13", long:"Thursday, August 13, 2026",  slots:["10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM"]},
+      {dow:"Friday",    short:"Aug 14", long:"Friday, August 14, 2026",    slots:["9:00 AM","1:00 PM","2:00 PM","3:00 PM","4:00 PM"]}
+    ]}
+  ];
+
+  var selected = null;          // {label, el}
+  var cal = document.getElementById("calendar");
+
+  weeks.forEach(function(wk){
+    var w = document.createElement("div"); w.className="week";
+    var lbl = document.createElement("div"); lbl.className="week-label"; lbl.textContent=wk.label; w.appendChild(lbl);
+    var days = document.createElement("div"); days.className="days";
+    wk.days.forEach(function(d){
+      var day = document.createElement("div"); day.className="day";
+      var head = document.createElement("div"); head.className="day-head";
+      head.innerHTML = '<div class="day-dow">'+d.dow+'</div><div class="day-date">'+d.short+'</div>';
+      day.appendChild(head);
+      var sl = document.createElement("div"); sl.className="slots";
+      if(d.slots.length===0){
+        var none=document.createElement("div"); none.className="none"; none.textContent="No availability"; sl.appendChild(none);
+      } else {
+        d.slots.forEach(function(t){
+          var b=document.createElement("button"); b.className="slot"; b.type="button"; b.textContent=t;
+          var full = d.long + " at " + t + " ET";
+          b.addEventListener("click", function(){ pick(b, full); });
+          sl.appendChild(b);
+        });
+      }
+      day.appendChild(sl); days.appendChild(day);
+    });
+    w.appendChild(days); cal.appendChild(w);
+  });
+
+  var booking=document.getElementById("booking");
+  var selTime=document.getElementById("selTime");
+  var nm=document.getElementById("nm"), em=document.getElementById("em"), org=document.getElementById("org");
+  var sendBtn=document.getElementById("send");
+  var confirm=document.getElementById("confirm");
+
+  function pick(el, label){
+    if(selected && selected.el){ selected.el.classList.remove("selected"); }
+    el.classList.add("selected");
+    selected={label:label, el:el};
+    selTime.textContent=label;
+    booking.classList.add("show");
+    confirm.style.display="none";
+    validate();
+  }
+
+  function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validate(){
+    var ok = selected && nm.value.trim().length>0 && validEmail(em.value.trim());
+    sendBtn.disabled = !ok;
+  }
+  nm.addEventListener("input",validate);
+  em.addEventListener("input",validate);
+
+  sendBtn.addEventListener("click", function(){
+    if(sendBtn.disabled) return;
+    var name=nm.value.trim(), email=em.value.trim(), o=org.value.trim();
+    var subject="Interview Request — "+name;
+    var body =
+      "I'd like to request the following interview time:\r\n\r\n"+
+      "Requested time: "+selected.label+"\r\n"+
+      "Name: "+name+"\r\n"+
+      "Email: "+email+"\r\n"+
+      "Organization / role: "+(o||"(not provided)")+"\r\n\r\n"+
+      "— Submitted via the SalesGlobe interview scheduler";
+    var href="mailto:"+RECIPIENT+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+    window.location.href=href;
+    confirm.style.display="block";
+    confirm.innerHTML="✓ Your email draft has opened in your mail app — please press <strong>Send</strong> to submit your request. If nothing opened, email <strong>"+RECIPIENT+"</strong> with your selected time: <em>"+selected.label+"</em>.";
+  });
+</script>
+</body>
+</html>
