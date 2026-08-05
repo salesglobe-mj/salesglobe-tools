@@ -232,6 +232,7 @@
   .team-table td { font-size: 12.5px; color: #444; padding: 9px 10px; border-bottom: 1px solid #f2f2f5; }
   .team-table td .tt-name { font-weight: 700; color: var(--ey-dark); }
   .cad-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin: 0 1px; }
+  .cad-mini { margin-top: 3px; font-size: 10px; color: var(--ey-gray); }
   .cad-on { background: var(--done); } .cad-off { background: #e0e0e8; }
   .tt-delta { font-size: 11px; font-weight: 800; }
   .d-up { color: var(--done); } .d-down { color: #C62828; } .d-flat { color: var(--ey-gray); }
@@ -287,6 +288,30 @@
   .gauge-info p { font-size: 12.5px; color: #cfcfd6; line-height: 1.5; max-width: 340px; }
   .gauge-info .readout { margin-top: 10px; font-size: 12px; color: #eee; }
   .gauge-info .readout b { color: var(--ey-yellow); }
+
+  /* engagement meter + standing (individual gauge card) */
+  .gauge-extra { margin-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+  .eng-meter .em-top { display: flex; justify-content: space-between; font-size: 11px; color: #cfcfd6; margin-bottom: 4px; }
+  .eng-meter .em-top b { color: #fff; font-weight: 700; }
+  .eng-track { height: 8px; background: rgba(255,255,255,0.12); border-radius: 6px; overflow: hidden; }
+  .eng-fill { height: 100%; background: linear-gradient(90deg, var(--practice), #7FB3E6); }
+  .eng-sub { font-size: 10.5px; color: #a9a9b4; margin-top: 4px; }
+  .standing-line { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #cfcfd6; }
+  .standing-line .sl-lbl { font-weight: 700; }
+
+  /* standing chips (shared) */
+  .st-chip { font-size: 10.5px; font-weight: 800; letter-spacing: 0.3px; padding: 3px 10px; border-radius: 11px; white-space: nowrap; display: inline-block; }
+  .st-not-started { background: #EDEDF2; color: #7A7A86; }
+  .st-in-progress { background: #E3F2FD; color: #1565C0; }
+  .st-on-track { background: #E8F5E9; color: #2E7D32; }
+  .st-certified { background: #FFF8E1; color: #B8860B; border: 1px solid #E7C24B; }
+  .st-building { background: #FFF3E0; color: #E65100; }
+  .st-at-risk { background: #FFEBEE; color: #C62828; }
+
+  /* utilization strip (pathway progress) */
+  .util-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--ey-gray); margin-top: 4px; }
+  .util-row .u-pill { background: var(--ey-light); border: 1px solid var(--ey-border); border-radius: 9px; padding: 2px 9px; font-weight: 600; color: var(--ey-dark); }
+  .util-row .u-pill b { color: var(--gold); }
 
   .radar-card { background: #fff; border: 1px solid var(--ey-border); border-radius: 12px; padding: 16px; flex: 1; min-width: 300px; display: flex; flex-direction: column; align-items: center; }
   .radar-card .rc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ey-gray); align-self: flex-start; margin-bottom: 4px; }
@@ -987,6 +1012,62 @@ function allModuleIds(role){
   return ids;
 }
 
+/* ---------- Utilization: estimate learning hours from course durations ---------- */
+function parseHours(meta){
+  if (!meta) return 0;
+  let total = 0;
+  meta.forEach(raw => {
+    const s = String(raw);
+    if (!/min|hr|hour/i.test(s)) return;               // skip format labels
+    let mult = 1; const mm = s.match(/[×x]\s*(\d+)/); if (mm) mult = parseInt(mm[1]);
+    const nums = (s.match(/\d+(?:\.\d+)?/g) || []).map(Number).filter(n=>n<1000);
+    if (!nums.length) return;
+    const isRange = nums.length >= 2 && /[–\-]/.test(s);
+    const val = isRange ? (nums[0] + nums[1]) / 2 : nums[0];
+    total += (/hr|hour/i.test(s) ? val : val / 60) * mult;
+  });
+  return total;
+}
+function roleModulesForTrack(key, role){
+  if (key === 'leadership'){
+    return [ {id:'all-in-leadership', meta:['40 min','WBL']},
+             {id:'all-in-debrief', meta:['60 min','Virtual live']},
+             LEAD_TRACKS[role.lead] ];
+  }
+  const t = TRACKS[key]; let mods = [];
+  (t.groups||[]).forEach(g => g.modules.forEach(m => mods.push(m)));
+  return mods;
+}
+function roleTotalHours(role){
+  let h = 0; pathwayFor(role).forEach(k => roleModulesForTrack(k, role).forEach(m => h += parseHours(m.meta)));
+  return h;
+}
+function roleCompletedHours(role){
+  let h = 0; pathwayFor(role).forEach(k => roleModulesForTrack(k, role).forEach(m => { if (progress[m.id]) h += parseHours(m.meta); }));
+  return h;
+}
+function fmtH(h){ return (Math.round(h*10)/10).toString().replace(/\.0$/,''); }
+
+/* ---------- Engagement (participation) vs. attainment (readiness) ---------- */
+// Engagement = blend of assessment self-participation and course completion, 0–100.
+function engagementPct(grid, map, coursesPct){
+  const rated = grid.filter(g => ratingOf(g.skill.id, 'self', map) > 0).length;
+  const selfPct = grid.length ? rated / grid.length : 0;
+  const c = (typeof coursesPct === 'number') ? coursesPct : selfPct; // fall back if no course data
+  return Math.round(((selfPct + c) / 2) * 100);
+}
+
+/* ---------- Standing (certification status) ---------- */
+// Combines attainment (readiness) with engagement so "trying hard" ≠ "not engaging".
+function standingFor(readinessPct, engPct, ratedCount){
+  if (ratedCount === 0 && engPct === 0) return {key:'not-started', label:'Not started'};
+  if (readinessPct >= 100) return {key:'certified', label:'Certified'};
+  if (readinessPct >= 75)  return {key:'on-track', label:'On track'};
+  if (engPct < 40)         return {key:'at-risk', label:'At risk'};              // not doing the work
+  if (engPct >= 60 && (engPct - readinessPct) >= 25) return {key:'building', label:'Building'};  // effort outpaces attainment
+  return {key:'in-progress', label:'In progress'};
+}
+
 /* ============================================================
    Populate role selector
    ============================================================ */
@@ -1179,7 +1260,15 @@ function renderProgress(){
   const pct = ids.length ? Math.round(done/ids.length*100) : 0;
   document.getElementById('progFill').style.width = pct + '%';
   document.getElementById('progPct').textContent = pct + '%';
-  document.getElementById('progSub').textContent = `${done} of ${ids.length} courses complete · 85% participation required to certify`;
+  const totalH = roleTotalHours(currentRole), doneH = roleCompletedHours(currentRole);
+  const remH = Math.max(0, totalH - doneH), pace = totalH / 12;
+  document.getElementById('progSub').innerHTML =
+    `${done} of ${ids.length} courses complete · 85% participation required to certify`
+    + `<div class="util-row"><span>⏱ Time investment:</span>`
+    + `<span class="u-pill"><b>${fmtH(totalH)}h</b> total</span>`
+    + `<span class="u-pill"><b>${fmtH(remH)}h</b> remaining</span>`
+    + `<span class="u-pill">pace ≈ <b>${fmtH(pace)}h</b>/mo</span>`
+    + `<span style="font-size:11px">across a ~12–18 month journey — leaders plan utilization coverage against this</span></div>`;
 }
 
 /* ---------- Track / certification detail ---------- */
@@ -1394,6 +1483,12 @@ function renderAssessment(){
   const rd = computeReadiness(grid, assessBasis, assessData);
   const rdPrev = hasPrev ? computeReadiness(grid, assessBasis, prevMap) : null;
 
+  // engagement (participation) vs. attainment (readiness), + standing
+  const mIds = allModuleIds(currentRole);
+  const coursesFrac = mIds.length ? mIds.filter(i => progress[i]).length / mIds.length : 0;
+  const eng = engagementPct(grid, assessData, coursesFrac);
+  const stand = standingFor(rd.pct, eng, rd.rated);
+
   // delta chip
   let deltaHTML = '';
   if (rdPrev){
@@ -1432,6 +1527,14 @@ function renderAssessment(){
         <p>Weighted against required levels for <b>${currentRole.name}</b>. 100% = meets the required level on every skill; gaps on higher-weight skills count more.</p>
         <div class="readout">Basis: <b>${basisLabel} rating</b> &nbsp;·&nbsp; ${rd.rated} of ${rd.total} skills rated</div>
         ${deltaHTML}
+        <div class="gauge-extra">
+          <div class="eng-meter">
+            <div class="em-top"><span>Engagement <span style="opacity:.7">(are you doing the work?)</span></span><b>${eng}%</b></div>
+            <div class="eng-track"><div class="eng-fill" style="width:${eng}%"></div></div>
+            <div class="eng-sub">${rd.rated}/${rd.total} skills self-rated · ${Math.round(coursesFrac*100)}% of courses complete</div>
+          </div>
+          <div class="standing-line"><span class="sl-lbl">Standing:</span> <span class="st-chip st-${stand.key}">${stand.label}</span>${stand.key==='building'?`<span style="font-size:11px;opacity:.8">high effort, still building attainment</span>`:''}</div>
+        </div>
       </div>
     </div>
     <div class="radar-card">
@@ -1692,19 +1795,26 @@ function renderTeam(){
       const prevMap = prevPid && p.assessments ? (p.assessments[prevPid]||{}) : {};
       const hasPrev = prevPid && Object.keys(prevMap).length>0;
       const rdPrev = hasPrev ? computeReadiness(grid, teamBasis, prevMap) : null;
-      return { p, grid, rd, cad, delta: rdPrev? rd.pct-rdPrev.pct : null };
+      // engagement, standing, utilization
+      const coursesFrac = (typeof p.coursesPct === 'number') ? p.coursesPct : (grid.length ? cad.self/grid.length : 0);
+      const eng = engagementPct(grid, map, coursesFrac);
+      const stand = standingFor(rd.pct, eng, rd.rated);
+      const role = ROLES.find(x=>x.id===p.roleId) || p;
+      const totalH = roleTotalHours(role);
+      const remH = Math.max(0, totalH * (1 - coursesFrac));
+      return { p, grid, rd, cad, delta: rdPrev? rd.pct-rdPrev.pct : null, eng, stand, remH };
     });
 
     // summary stats
     const n = rows.length;
     const avg = Math.round(rows.reduce((s,r)=>s+r.rd.pct,0)/n);
-    const atReq = rows.filter(r=>r.rd.pct>=100).length;
-    const complete = rows.filter(r=>r.cad.agreed===r.cad.total).length;
+    const certified = rows.filter(r=>r.stand.key==='certified').length;
+    const atRisk = rows.filter(r=>r.stand.key==='at-risk').length;
     html += `<div class="team-stats">
       <div class="tstat"><div class="n">${n}</div><div class="l">Team members</div></div>
       <div class="tstat"><div class="n">${avg}%</div><div class="l">Avg readiness (${{self:'Self',mgr:'Manager',agreed:'Agreed'}[teamBasis]})</div></div>
-      <div class="tstat"><div class="n">${atReq}</div><div class="l">At / above required (100%)</div></div>
-      <div class="tstat"><div class="n">${complete}/${n}</div><div class="l">Assessment complete (all agreed)</div></div>
+      <div class="tstat"><div class="n">${certified}</div><div class="l">Certified (readiness 100%)</div></div>
+      <div class="tstat"><div class="n" style="color:${atRisk?'#FF8A8A':'var(--ey-yellow)'}">${atRisk}</div><div class="l">At risk — need attention</div></div>
     </div>`;
 
     // heat map: people × 7 competencies + overall
@@ -1728,16 +1838,25 @@ function renderTeam(){
         <div class="hk-note">Each cell shows that person's <b>readiness</b> for the competency — the weighted share of its skills that meet their role's required level (100% = every skill at or above target). Higher-weight skills move the number more. Columns are grouped: <b>OC · OD · AM</b> are the process competencies; <b>LC · SI · EY · PB</b> are the professional competencies.</div>
       </div></div>`;
 
-    // readiness + cadence table
-    html += `<div class="heat-wrap"><h3>Readiness &amp; cadence</h3><div class="heat-sub">Overall readiness, movement vs. the prior period, and how far each member is through the current cycle's three inputs.</div>
-      <table class="team-table"><thead><tr><th>Team member</th><th>Role</th><th class="c">Readiness</th><th class="c">vs. prior</th><th class="c">Self</th><th class="c">Manager</th><th class="c">Agreed</th></tr></thead><tbody>`;
+    // standing / engagement / readiness / utilization table
+    html += `<div class="heat-wrap"><h3>Standing, engagement &amp; readiness</h3><div class="heat-sub">Standing combines <b>engagement</b> (are they doing the work?) with <b>readiness</b> (attainment vs. required) — so "trying hard but not there yet" (<span class="st-chip st-building" style="padding:1px 7px">Building</span>) reads differently from "not engaging" (<span class="st-chip st-at-risk" style="padding:1px 7px">At risk</span>). Remaining hours is the utilization coverage a leader needs to plan.</div>
+      <table class="team-table"><thead><tr><th>Team member</th><th class="c">Standing</th><th class="c">Engagement</th><th class="c">Readiness</th><th class="c">vs. prior</th><th class="c">Remaining</th></tr></thead><tbody>`;
     rows.forEach(r=>{
       const d=r.delta; const dtxt = d==null?'—':`<span class="tt-delta ${d>0?'d-up':(d<0?'d-down':'d-flat')}">${d>0?'▲ +':(d<0?'▼ ':'▬ ')}${d===0?'0':Math.abs(d)}${d!==0?' pts':''}</span>`;
-      html += `<tr><td><span class="tt-name">${esc(r.p.name||r.p.email)}</span></td><td>${esc(r.p.roleName)}</td>
+      html += `<tr><td><span class="tt-name">${esc(r.p.name||r.p.email)}</span><div class="pr" style="font-size:10.5px;color:var(--ey-gray)">${esc(r.p.roleName)}</div></td>
+        <td class="c"><span class="st-chip st-${r.stand.key}">${r.stand.label}</span></td>
+        <td class="c">${r.eng}%<div class="cad-mini">${cadCell(r.cad.self,r.cad.total)}</div></td>
         <td class="c"><b>${r.rd.pct}%</b></td><td class="c">${dtxt}</td>
-        <td class="c">${cadCell(r.cad.self,r.cad.total)}</td><td class="c">${cadCell(r.cad.mgr,r.cad.total)}</td><td class="c">${cadCell(r.cad.agreed,r.cad.total)}</td></tr>`;
+        <td class="c">≈ ${fmtH(r.remH)}h</td></tr>`;
     });
-    html += `</tbody></table></div>`;
+    html += `</tbody></table>
+      <div class="heat-legend" style="margin-top:14px"><span>Standing:</span>
+        <span><span class="st-chip st-certified" style="padding:1px 7px">Certified</span> 100%</span>
+        <span><span class="st-chip st-on-track" style="padding:1px 7px">On track</span> ≥75%</span>
+        <span><span class="st-chip st-in-progress" style="padding:1px 7px">In progress</span></span>
+        <span><span class="st-chip st-building" style="padding:1px 7px">Building</span> engaged, low attainment</span>
+        <span><span class="st-chip st-at-risk" style="padding:1px 7px">At risk</span> low engagement</span>
+      </div></div>`;
 
     // aggregate gaps
     const gapCount = {};
@@ -1778,31 +1897,39 @@ document.getElementById('teamMode').addEventListener('change', e => {
   const ps = e.target.closest('#teamPeriodSel'); if (ps){ teamPeriod=ps.value; renderTeam(); return; }
 });
 
-/* Sample team generator — for demoing the leader view without real files */
+/* Sample team generator — engagement + attainment vary so the standing personas show:
+   attain = how high their ratings are; engage = how much of the work they've actually done. */
 function demoTeam(){
   const people = [
-    {name:'Jordan Ellis', email:'jordan.ellis@ey.com', roleId:'cg-se', seed:0.86},
-    {name:'Priya Nair', email:'priya.nair@ey.com', roleId:'cg-se', seed:0.62},
-    {name:'Marcus Webb', email:'marcus.webb@ey.com', roleId:'sa-sam', seed:0.74},
-    {name:'Chen Li', email:'chen.li@ey.com', roleId:'sa-am', seed:0.5},
-    {name:'Dana Brooks', email:'dana.brooks@ey.com', roleId:'al-se', seed:0.68},
-    {name:'Sam Rivera', email:'sam.rivera@ey.com', roleId:'cg-al', seed:0.8}
+    {name:'Jordan Ellis', email:'jordan.ellis@ey.com', roleId:'cg-se',  attain:0.92, engage:0.96},  // On track / Certified
+    {name:'Sam Rivera',   email:'sam.rivera@ey.com',   roleId:'cg-al',  attain:0.82, engage:0.88},  // On track
+    {name:'Marcus Webb',  email:'marcus.webb@ey.com',  roleId:'sa-sam', attain:0.66, engage:0.75},  // In progress
+    {name:'Chen Li',      email:'chen.li@ey.com',      roleId:'sa-am',  attain:0.40, engage:0.92},  // Building — trying hard, low attainment
+    {name:'Dana Brooks',  email:'dana.brooks@ey.com',  roleId:'al-se',  attain:0.70, engage:0.66},  // In progress
+    {name:'Priya Nair',   email:'priya.nair@ey.com',   roleId:'cg-se',  attain:0.55, engage:0.22}   // At risk — barely engaging
   ];
   return people.map((pp,idx)=>{
     const grid = getRoleGrid(pp.roleId);
-    // baseline (Mid-Year): deterministic per person/skill, scaled by seed (higher seed = closer to required)
-    const base = {}; grid.forEach((g,i)=>{
-      const h = Math.abs(Math.sin((idx+1)*(i+3)*12.9898))%1;
-      let lvl = g.req - (h > pp.seed ? (h>(pp.seed+0.18)?2:1) : 0);
-      lvl = Math.max(1, Math.min(3, lvl));
-      base[g.skill.id] = { self:lvl, mgr:Math.max(1,Math.min(3, lvl-(h>0.65?1:0))), agreed:lvl };
-    });
-    // Full-Year: improvement on ~a third of skills
-    const impr = {}; grid.forEach((g,i)=>{ const b=base[g.skill.id]; const bump = (i%3===0 && b.agreed<g.req)?1:0;
-      impr[g.skill.id] = { self:Math.min(3,b.self+bump), mgr:Math.min(3,b.mgr+bump), agreed:Math.min(3,b.agreed+bump) }; });
-    const assessments = {}; assessments[PERIODS[0].id]=base; assessments[PERIODS[1].id]=impr;
+    const participated = Math.max(1, Math.round(pp.engage * grid.length)); // how many skills they've rated
+    const build = (attainSeed, bumpFrac) => {
+      const m = {};
+      grid.forEach((g,i)=>{
+        if (i >= participated) return;                 // not yet rated → drives engagement + readiness down
+        const h = Math.abs(Math.sin((idx+1)*(i+3)*12.9898)) % 1;
+        let lvl = g.req - (h > attainSeed ? (h > (attainSeed+0.18) ? 2 : 1) : 0);
+        lvl = Math.max(1, Math.min(3, lvl));
+        const bump = (bumpFrac && i%3===0 && lvl<g.req) ? 1 : 0;
+        lvl = Math.min(3, lvl + bump);
+        m[g.skill.id] = { self:lvl, mgr:Math.max(1,Math.min(3, lvl-(h>0.7?1:0))), agreed:lvl };
+      });
+      return m;
+    };
+    const assessments = {};
+    assessments[PERIODS[0].id] = build(pp.attain, 0);         // Mid-Year baseline
+    assessments[PERIODS[1].id] = build(pp.attain, 1);         // Full-Year — improvement
     const role = ROLES.find(r=>r.id===pp.roleId)||{};
-    return { name:pp.name, email:pp.email, managerEmail:'leader@ey.com', roleId:pp.roleId, roleName:role.name||pp.roleId, pillar:role.pillar||'', assessments };
+    return { name:pp.name, email:pp.email, managerEmail:'leader@ey.com', roleId:pp.roleId,
+             roleName:role.name||pp.roleId, pillar:role.pillar||'', coursesPct:pp.engage, assessments };
   });
 }
 </script>
