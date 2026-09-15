@@ -200,6 +200,35 @@
 
   .footnote{font-size:11.5px;color:var(--faint);margin-top:24px;padding-top:14px;border-top:1px solid var(--line);line-height:1.6}
 
+  /* Competitors */
+  .position-card{background:linear-gradient(135deg,#f6f9fc,#eef4f9);border:1px solid var(--line)}
+  .comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .comp-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .comp{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .comp .ch{padding:14px 16px 12px;border-bottom:1px solid var(--line);position:relative}
+  .comp .ch::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--blue)}
+  .comp.locum .ch::before{background:var(--orange)}
+  .comp .crow{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .comp .cname{font-size:16px;font-weight:700;color:var(--navy);line-height:1.2}
+  .comp .cparent{font-size:11.5px;color:var(--faint);margin-top:3px}
+  .own{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap}
+  .own.pub{background:#e8f0fb;color:#2b5fb3}
+  .own.priv{background:#eef1f4;color:#5b6b7c}
+  .comp .cb{padding:13px 16px 15px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .scale-badge{align-self:flex-start;font-size:11px;font-weight:700;color:#2b6a3e;background:#e7f6ee;border-radius:6px;padding:4px 10px}
+  .scale-badge.o{color:#a85a12;background:#fdf1e3}
+  .crole{font-size:12.6px;color:var(--ink)}
+  .crole .cl{display:block;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);margin-bottom:2px}
+  .cvs{background:#f7f9fb;border:1px solid var(--line);border-left:3px solid var(--orange);border-radius:8px;padding:9px 11px;font-size:12px;color:var(--muted);margin-top:auto}
+  .cvs b{color:var(--navy)}
+  .cloc{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+  .also{display:flex;flex-wrap:wrap;gap:9px;margin-top:2px}
+  .also .p{font-size:12.5px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;color:var(--muted)}
+  .also .p b{color:var(--navy);font-weight:700}
+  .also .p span{color:var(--faint);font-size:11px}
+  @media(max-width:1000px){.comp-grid,.comp-grid3{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.comp-grid,.comp-grid3{grid-template-columns:1fr}.market-strip{grid-template-columns:repeat(2,1fr)}}
+
   @media(max-width:1000px){
     .hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}
     .brands-grid{grid-template-columns:repeat(2,1fr)}.att-grid{grid-template-columns:repeat(2,1fr)}
@@ -225,6 +254,7 @@
     <button class="tab active" data-panel="company">Company Overview</button>
     <button class="tab" data-panel="attendees">Attendees <span style="opacity:.6;font-weight:600">· 19</span></button>
     <button class="tab" data-panel="gameplan">Kickoff Game Plan</button>
+    <button class="tab" data-panel="competitors">Competitive Landscape</button>
   </nav>
 </header>
 
@@ -557,6 +587,134 @@
   </table>
 
   <p class="footnote">Engagement details from the CHG SalesGlobe Scoping Brief (June 2026) and the SalesGlobe proposal, "Designing a Modern Sales Structure and Compensation Program" (Sept 4, 2026). Timeline, populations, and role/plan counts are proposal assumptions to be confirmed at kickoff.</p>
+</section>
+
+<!-- ================= COMPETITORS ================= -->
+<section class="panel" id="competitors">
+
+  <div class="section-title">Market context</div>
+  <div class="stats market-strip">
+    <div class="stat b"><div class="num">~$47B</div><div class="lab">US healthcare staffing — largest US staffing segment (top agencies, 2026)</div></div>
+    <div class="stat o"><div class="num">~$9.8B</div><div class="lab">US locum tenens market (2025) — CHG's core arena</div></div>
+    <div class="stat g"><div class="num">~9%</div><div class="lab">Est. locum tenens market CAGR — steady growth, rising competition</div></div>
+    <div class="stat b"><div class="num">#1 / #2</div><div class="lab">CHG rank: #1 in locum tenens (~30% share) · #2 in all healthcare staffing (~7.4%)</div></div>
+  </div>
+
+  <div class="section-title">Where CHG sits</div>
+  <div class="card pad position-card">
+    <div class="mini-h"><span class="dot" style="background:var(--navy)"></span>Read on the landscape</div>
+    <p style="margin:0 0 10px;font-size:14px">CHG is the <b>#2 healthcare staffing company in the US overall</b>, trailing only <b>Aya Healthcare</b> — but Aya's lead is built on travel nursing, not physicians. In <b>locum tenens</b>, CHG's core business, <b>CHG is #1</b> with roughly a third of the market through CompHealth, Weatherby, and Global Medical Staffing.</p>
+    <p style="margin:0;font-size:14px">The real head-to-head pressure — and the "clients working around us" the scoping brief describes — comes from three directions: <b>Jackson Healthcare's</b> locum brands (LocumTenens.com, Jackson &amp; Coker), the only large <b>public pure-play</b> in <b>AMN Healthcare</b>, and a pack of <b>fast-growing single-brand specialists</b> (Medicus, Hayes, Barton) winning on speed and service. Consolidation is live too — Aya's <b>$615M bid for Cross Country</b> was recently terminated under FTC scrutiny.</p>
+  </div>
+
+  <div class="section-title">Diversified staffing giants — scale context</div>
+  <div class="comp-grid">
+    <div class="comp">
+      <div class="ch"><div class="crow"><div><div class="cname">Aya Healthcare</div><div class="cparent">San Diego, CA</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge">#1 US staffing · ~16% share · ~$6.9B (2024)</span>
+        <div class="crole"><span class="cl">Focus</span>Travel nursing leader; allied, per-diem, plus workforce technology (VMS / managed services).</div>
+        <div class="cvs"><b>vs. CHG:</b> Larger overall, but nursing-centric and light in locum tenens — not a direct threat in CHG's physician core. Recently walked away from a $615M Cross Country acquisition.</div>
+      </div>
+    </div>
+    <div class="comp">
+      <div class="ch"><div class="crow"><div><div class="cname">Jackson Healthcare</div><div class="cparent">Alpharetta, GA</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge">#3 US staffing · ~6.6% share</span>
+        <div class="crole"><span class="cl">Focus</span>Parent of LocumTenens.com, Jackson &amp; Coker, and Jackson Physician Search — heavily weighted to physician/locum staffing.</div>
+        <div class="cvs"><b>vs. CHG:</b> CHG's most direct rival at the portfolio level — the closest mirror-image house of physician-staffing brands.</div>
+      </div>
+    </div>
+    <div class="comp">
+      <div class="ch"><div class="crow"><div><div class="cname">AMN Healthcare</div><div class="cparent">Dallas, TX · NYSE: AMN</div></div><span class="own pub">Public</span></div></div>
+      <div class="cb">
+        <span class="scale-badge">#4 US staffing · ~5.6% share</span>
+        <div class="crole"><span class="cl">Focus</span>Diversified: nursing, allied, and physician. AMN Physician Solutions (former Staff Care + Merritt Hawkins) covers locum &amp; permanent physician; also VMS and language services.</div>
+        <div class="cvs"><b>vs. CHG:</b> The only large <b>public</b> comparator — a useful public benchmark for pay and plan structures, and a direct locum/perm-physician competitor.</div>
+      </div>
+    </div>
+    <div class="comp">
+      <div class="ch"><div class="crow"><div><div class="cname">Cross Country Healthcare</div><div class="cparent">Boca Raton, FL · Nasdaq: CCRN</div></div><span class="own pub">Public</span></div></div>
+      <div class="cb">
+        <span class="scale-badge">#7 US staffing</span>
+        <div class="crole"><span class="cl">Focus</span>Nursing &amp; allied staffing plus workforce solutions; smaller physician/locum presence.</div>
+        <div class="cvs"><b>vs. CHG:</b> Nursing-led and smaller; notable mainly as Aya's terminated acquisition target and a second public data point.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Direct locum tenens competitors — head-to-head in CHG's core</div>
+  <div class="comp-grid3">
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">LocumTenens.com</div><div class="cparent">Jackson Healthcare · Alpharetta, GA</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">Claims largest single locum agency</span>
+        <div class="crole"><span class="cl">Focus</span>Full-specialty locum tenens; 7,000+ clinicians placed annually; presence in ~90% of top facilities.</div>
+        <div class="cvs"><b>vs. CHG:</b> Direct fight for locum placements and health-system accounts — a primary benchmark target.</div>
+      </div>
+    </div>
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">AMN Physician Solutions</div><div class="cparent">AMN Healthcare · Dallas, TX</div></div><span class="own pub">Public</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">Staff Care + Merritt Hawkins</span>
+        <div class="crole"><span class="cl">Focus</span>Locum tenens (Staff Care heritage) and permanent physician search (Merritt Hawkins), unified in 2023.</div>
+        <div class="cvs"><b>vs. CHG:</b> Competes squarely with Weatherby &amp; CompHealth; public filings make it the best external comp/pay reference.</div>
+      </div>
+    </div>
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">Medicus Healthcare Solutions</div><div class="cparent">Windham, NH</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">Top-3 single-brand locum (SIA '26)</span>
+        <div class="crole"><span class="cl">Focus</span>Locum tenens across specialties, plus advisory/interim leadership; highest-ranked single-brand locum firm per SIA.</div>
+        <div class="cvs"><b>vs. CHG:</b> Fast-rising single-brand challenger winning on speed and service — the kind of competitor "working around" CHG.</div>
+      </div>
+    </div>
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">Barton Associates</div><div class="cparent">Peabody, MA</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">~6th-largest locum · 800+ staff</span>
+        <div class="crole"><span class="cl">Focus</span>Locum staffing for physicians, NP/PA, and dental; ~10 offices; founded 2001. Known for a scaled inside-sales engine.</div>
+        <div class="cvs"><b>vs. CHG:</b> Scaled specialist with a strong advanced-practice &amp; dental niche; a relevant comp-model comparator.</div>
+      </div>
+    </div>
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">Hayes Locums</div><div class="cparent">Fort Lauderdale, FL</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">Fast-growing · founded 2012</span>
+        <div class="crole"><span class="cl">Focus</span>Physician-owned locum firm focused on hard-to-fill specialties with high-touch service.</div>
+        <div class="cvs"><b>vs. CHG:</b> Aggressive, specialty-focused disruptor — the profile of newer entrants pressuring CHG on service and pay.</div>
+      </div>
+    </div>
+    <div class="comp locum">
+      <div class="ch"><div class="crow"><div><div class="cname">Vista Staffing Solutions</div><div class="cparent">Salt Lake City, UT</div></div><span class="own priv">Private</span></div></div>
+      <div class="cb">
+        <span class="scale-badge o">Locum specialist · SLC-local</span>
+        <div class="crole"><span class="cl">Focus</span>Locum tenens for physicians &amp; advanced practitioners, domestic and international.</div>
+        <div class="cvs"><b>vs. CHG:</b> In CHG's Salt Lake City backyard — a direct competitor for both talent and clients in the home market.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Also in the mix</div>
+  <div class="also">
+    <span class="p"><b>Jackson &amp; Coker</b> <span>· locum &amp; perm physician (Jackson Healthcare)</span></span>
+    <span class="p"><b>Floyd Lee Locums</b> <span>· boutique, ranked among largest '26</span></span>
+    <span class="p"><b>All Star Healthcare Solutions</b> <span>· locum, FL</span></span>
+    <span class="p"><b>Interim Physicians</b> <span>· locum</span></span>
+    <span class="p"><b>Aureus / Fusion</b> <span>· allied &amp; nursing peers</span></span>
+    <span class="p"><b>TeamHealth</b> <span>· physician services / staffing-adjacent</span></span>
+  </div>
+
+  <div class="card pad" style="margin-top:22px;border-left:4px solid var(--orange)">
+    <div class="mini-h"><span class="dot" style="background:var(--orange)"></span>Why this matters for the kickoff</div>
+    <ul class="tight">
+      <li>The proposal includes a <b>Targeted Competitive Insights</b> study — direct-competitor benchmarking on pay levels, plan structures, and quota practices. The names above are the natural target list to confirm with CHG.</li>
+      <li>Best <b>public</b> pay/plan references: <b>AMN</b> and <b>Cross Country</b> (SEC filings). Best <b>direct-locum</b> targets: <b>LocumTenens.com, Jackson &amp; Coker, Medicus, Barton, Hayes</b>.</li>
+      <li>Watch the <b>talent-flow</b> angle — sellers and recruiters move between these firms, so competitor pay design directly shapes CHG's retention and the case for change.</li>
+    </ul>
+  </div>
+
+  <p class="footnote">Sources: Staffing Industry Analysts (Largest US Healthcare Staffing Firms, 2026 update; locum tenens rankings); company websites (Aya, Jackson Healthcare, AMN Healthcare, Cross Country, Medicus, Barton Associates, Hayes Locums, Vista); Healthcare Dive / Fierce Healthcare (Aya–Cross Country transaction, terminated 2025). Market sizes, shares, and revenue are the latest public estimates and vary by source; private-company figures are approximate. Rankings reflect US healthcare staffing / locum tenens revenue. This is a light benchmarking snapshot for kickoff prep — not the formal competitive-insights study.</p>
 </section>
 </main>
 
