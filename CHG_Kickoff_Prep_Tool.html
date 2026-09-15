@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHG Healthcare — Kickoff Prep</title>
+<style>
+  :root{
+    --navy:#27394F; --navy-deep:#1c2a3a; --navy-soft:#33475f;
+    --orange:#F1701E; --green:#8BC540; --blue:#1C9AD6;
+    --ink:#1f2a37; --muted:#5b6b7c; --faint:#8797a8;
+    --line:#e3e8ee; --bg:#f4f6f9; --card:#ffffff;
+    --hi:#2f9e5b; --hi-bg:#e7f6ee; --mid:#c07d10; --mid-bg:#fdf3e0; --lo:#9aa6b2; --lo-bg:#eef1f4;
+    --shadow:0 1px 2px rgba(16,29,45,.05),0 4px 16px rgba(16,29,45,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* Header */
+  header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(16,29,45,.18)}
+  .stripe{height:4px;background:linear-gradient(90deg,var(--orange) 0 33.3%,var(--green) 33.3% 66.6%,var(--blue) 66.6% 100%)}
+  .head-inner{max-width:1200px;margin:0 auto;padding:16px 24px 0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px}
+  .brand{display:flex;flex-direction:column;gap:2px;margin-right:auto}
+  .brand h1{margin:0;font-size:20px;font-weight:700;letter-spacing:.2px}
+  .brand h1 .chg{color:#fff}
+  .brand .sub{color:#b8c6d6;font-size:12.5px;font-weight:500}
+  .kick-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;
+    padding:6px 14px;font-size:12.5px;color:#eaf1f8;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+  .kick-pill b{color:#fff}
+  .kick-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(139,197,64,.25)}
+  nav{max-width:1200px;margin:0 auto;padding:10px 24px 0;display:flex;gap:4px}
+  .tab{appearance:none;border:0;background:transparent;color:#aebccd;font-size:14px;font-weight:600;
+    padding:12px 18px;cursor:pointer;border-radius:10px 10px 0 0;position:relative;font-family:inherit}
+  .tab:hover{color:#fff}
+  .tab.active{color:var(--navy);background:var(--bg)}
+  .tab.active::after{content:"";position:absolute;left:18px;right:18px;bottom:-1px;height:3px;
+    background:linear-gradient(90deg,var(--orange),var(--green),var(--blue));border-radius:3px}
+
+  /* Layout */
+  main{max-width:1200px;margin:0 auto;padding:26px 24px 60px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .section-title{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;margin:34px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-title:first-child{margin-top:0}
+  .section-title::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .pad{padding:20px 22px}
+
+  /* Hero */
+  .hero{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+  .hero .lede{font-size:15.5px;color:var(--ink)}
+  .hero .lede p{margin:0 0 12px}
+  .hero .lede p:last-child{margin-bottom:0}
+  .logo-badge{display:inline-flex;align-items:baseline;font-weight:800;font-size:26px;letter-spacing:.5px;margin-bottom:6px}
+  .logo-badge .c{color:var(--orange)}.logo-badge .h{color:var(--green)}.logo-badge .g{color:var(--blue)}
+  .logo-badge .word{color:var(--navy);font-weight:700;font-size:20px;margin-left:8px;align-self:center}
+  .aside-stats{display:flex;flex-direction:column;gap:10px}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+  .kv:last-child{border-bottom:0}
+  .kv .k{color:var(--muted)}.kv .v{font-weight:600;text-align:right}
+
+  /* Stat cards */
+  .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .stat.o::before{background:var(--orange)}.stat.g::before{background:var(--green)}.stat.b::before{background:var(--blue)}
+  .stat .num{font-size:22px;font-weight:800;color:var(--navy);line-height:1.1}
+  .stat .lab{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.35}
+
+  /* Brand architecture */
+  .brands-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .brand-card{border:1px solid var(--line);border-radius:12px;padding:15px 16px;background:var(--card);box-shadow:var(--shadow);position:relative}
+  .brand-card h4{margin:0 0 4px;font-size:15px;color:var(--navy)}
+  .brand-card p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.4}
+  .brand-card .scope-tag{display:inline-block;margin-top:10px;font-size:10.5px;font-weight:700;letter-spacing:.05em;
+    text-transform:uppercase;color:#fff;background:var(--green);border-radius:5px;padding:3px 8px}
+  .brand-card.attend{border-color:#cfe6f6;box-shadow:0 0 0 2px rgba(28,154,214,.12),var(--shadow)}
+  .brand-card .attend-tag{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;color:var(--blue);
+    background:#e8f5fc;border-radius:5px;padding:3px 7px;letter-spacing:.03em}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  ul.tight{margin:0;padding-left:18px}
+  ul.tight li{margin:6px 0;font-size:13.8px;color:var(--ink)}
+  .mini-h{font-size:14px;font-weight:700;color:var(--navy);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .mini-h .dot{width:9px;height:9px;border-radius:50%}
+
+  /* Pain cards */
+  .pain{border-left:4px solid var(--orange);background:#fff;border:1px solid var(--line);border-left-width:4px;
+    border-radius:10px;padding:14px 16px}
+  .pain h5{margin:0 0 5px;font-size:14px;color:var(--navy)}
+  .pain p{margin:0;font-size:13px;color:var(--muted)}
+
+  /* Attendees */
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}
+  .search{flex:1;min-width:220px;position:relative}
+  .search input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
+  .search input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(28,154,214,.12)}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.4}
+  .filters{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{appearance:none;border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:600;
+    font-size:12.5px;padding:8px 13px;border-radius:999px;cursor:pointer;font-family:inherit;transition:.12s}
+  .chip:hover{border-color:var(--faint);color:var(--ink)}
+  .chip.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .count-note{font-size:12.5px;color:var(--faint);margin:14px 2px}
+
+  .att-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .att{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);
+    display:flex;flex-direction:column;overflow:hidden;transition:.15s}
+  .att:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(16,29,45,.10)}
+  .att-top{padding:16px 18px 14px;border-bottom:1px solid var(--line);position:relative}
+  .att-top::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .att.grp-exec .att-top::before{background:var(--navy)}
+  .att.grp-comp .att-top::before{background:var(--orange)}
+  .att.grp-people .att-top::before{background:var(--green)}
+  .att.grp-finance .att-top::before{background:#6b4fbb}
+  .att.grp-salesops .att-top::before{background:var(--blue)}
+  .att.grp-brand .att-top::before{background:#d64b6a}
+  .att.grp-pm .att-top::before{background:#3aa6a0}
+  .att.grp-confirm .att-top::before{background:var(--lo)}
+  .att .name-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .att .nm{font-size:16px;font-weight:700;color:var(--navy)}
+  .att .ttl{font-size:13px;color:var(--ink);font-weight:600;margin-top:2px}
+  .att .co{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .co-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.03em}
+  .co-chg{background:#eef3f8;color:var(--navy)}
+  .co-comphealth{background:#e8f5fc;color:var(--blue)}
+  .co-weatherby{background:#fdeee2;color:var(--orange)}
+  .conf{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap}
+  .conf.High{background:var(--hi-bg);color:var(--hi)}
+  .conf.MidHigh{background:var(--mid-bg);color:var(--mid)}
+  .conf.Low{background:var(--lo-bg);color:#6b7885}
+  .att-body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .fn-tag{align-self:flex-start;font-size:10.5px;font-weight:700;color:var(--muted);background:#f2f5f8;
+    border:1px solid var(--line);border-radius:6px;padding:3px 9px;letter-spacing:.03em;text-transform:uppercase}
+  .field{font-size:12.8px;color:var(--ink)}
+  .field .fl{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:2px}
+  .relevance{background:#f7f9fb;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:12.5px}
+  .relevance .fl{color:var(--navy)}
+  .att-foot{padding:11px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px}
+  .att-foot .loc{color:var(--muted);display:flex;align-items:center;gap:5px}
+  .li-link{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+  .li-badge{width:16px;height:16px;background:#0a66c2;color:#fff;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+  .no-li{color:var(--faint);font-size:11.5px}
+
+  /* Who's who */
+  .whoswho{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
+  .ww{border:1px solid var(--line);border-radius:12px;padding:14px 15px;background:#fff;box-shadow:var(--shadow)}
+  .ww h4{margin:0 0 3px;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .ww .ww-dot{width:10px;height:10px;border-radius:50%}
+  .ww .ww-sub{font-size:11px;color:var(--faint);margin-bottom:9px}
+  .ww ul{margin:0;padding-left:0;list-style:none}
+  .ww li{font-size:12.5px;padding:3px 0;color:var(--ink)}
+  .ww li span{color:var(--muted);font-size:11px}
+
+  /* Game plan */
+  .gp-hero{background:linear-gradient(135deg,var(--navy),var(--navy-deep));color:#fff;border-radius:var(--radius);padding:26px 28px;position:relative;overflow:hidden}
+  .gp-hero::after{content:"";position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(28,154,214,.25),transparent 70%)}
+  .gp-hero .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:700}
+  .gp-hero h2{margin:8px 0 10px;font-size:24px;font-weight:800;max-width:760px;line-height:1.25}
+  .gp-hero p{margin:0;color:#c7d4e2;font-size:14px;max-width:720px}
+  .gp-meta{display:flex;flex-wrap:wrap;gap:22px;margin-top:18px}
+  .gp-meta div{font-size:12.5px;color:#aebccd}
+  .gp-meta b{display:block;color:#fff;font-size:17px;font-weight:800;margin-bottom:2px}
+
+  .ask{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:#fff;box-shadow:var(--shadow)}
+  .ask .n{width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-weight:800;display:inline-flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:8px}
+  .ask h4{margin:0 0 6px;font-size:15px;color:var(--navy)}
+  .ask p{margin:0;font-size:13px;color:var(--muted)}
+
+  .phase-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .phase{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+  .phase .ph-head{padding:14px 18px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+  .phase.p1 .ph-head{background:var(--blue)}
+  .phase.p2 .ph-head{background:var(--navy)}
+  .phase .ph-head h4{margin:0;font-size:15px}
+  .phase .ph-head .wk{font-size:12px;opacity:.85;font-weight:600}
+  .phase .ph-body{padding:14px 18px}
+
+  .know{border-left:4px solid var(--blue);background:#f7fbfd;border-radius:8px;padding:12px 15px;margin-bottom:10px}
+  .know h5{margin:0 0 4px;font-size:13.5px;color:var(--navy)}
+  .know p{margin:0;font-size:12.8px;color:var(--muted)}
+  .know.warn{border-left-color:var(--orange);background:#fef8f2}
+
+  .map-table{width:100%;border-collapse:collapse;font-size:13px}
+  .map-table th{text-align:left;padding:10px 12px;background:var(--navy);color:#fff;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700}
+  .map-table th:first-child{border-radius:8px 0 0 0}.map-table th:last-child{border-radius:0 8px 0 0}
+  .map-table td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .map-table tr:last-child td{border-bottom:0}
+  .map-table td .who{color:var(--muted);font-size:12px}
+  .map-table tbody tr:hover{background:#f7f9fb}
+
+  .footnote{font-size:11.5px;color:var(--faint);margin-top:24px;padding-top:14px;border-top:1px solid var(--line);line-height:1.6}
+
+  @media(max-width:1000px){
+    .hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}
+    .brands-grid{grid-template-columns:repeat(2,1fr)}.att-grid{grid-template-columns:repeat(2,1fr)}
+    .whoswho{grid-template-columns:repeat(2,1fr)}.two-col,.phase-wrap{grid-template-columns:1fr}.three-col{grid-template-columns:1fr}
+  }
+  @media(max-width:640px){
+    .stats{grid-template-columns:repeat(2,1fr)}.brands-grid,.att-grid,.whoswho{grid-template-columns:1fr}
+    .head-inner{padding:14px 16px 0}nav{padding:8px 12px 0;overflow-x:auto}main{padding:20px 14px 50px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="stripe"></div>
+  <div class="head-inner">
+    <div class="brand">
+      <h1><span class="chg">CHG Healthcare</span> — Kickoff Prep</h1>
+      <span class="sub">SalesGlobe · Sales Compensation Evolution engagement · Internal team briefing</span>
+    </div>
+    <div class="kick-pill"><span class="kick-dot"></span> Kickoff: <b>Friday, Sept 18, 2026</b></div>
+  </div>
+  <nav>
+    <button class="tab active" data-panel="company">Company Overview</button>
+    <button class="tab" data-panel="attendees">Attendees <span style="opacity:.6;font-weight:600">· 19</span></button>
+    <button class="tab" data-panel="gameplan">Kickoff Game Plan</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================= COMPANY ================= -->
+<section class="panel active" id="company">
+
+  <div class="card pad hero">
+    <div class="lede">
+      <div class="logo-badge"><span class="c">C</span><span class="h">H</span><span class="g">G</span><span class="word">Healthcare</span></div>
+      <p><b>CHG Healthcare is the largest provider of locum tenens (temporary physician) staffing in the United States</b> and one of the country's largest privately held healthcare staffing companies. Founded in Salt Lake City in 1979, it operates a family of specialized staffing brands that place physicians, advanced practitioners, allied health professionals, and nurses on temporary and permanent assignments nationwide.</p>
+      <p>The company is known as much for its workplace culture as its market position — it has appeared on Fortune's <b>100 Best Companies to Work For</b> list for over a decade, ranking <b>#40 in 2026</b>. Its "Putting People First" philosophy shapes both its employer brand and its go-to-market model.</p>
+      <p>CHG is now undertaking a significant modernization of its sales organization — the reason for this engagement — moving toward a clearer role architecture, harmonized pay, and individual quotas across its 7 US divisions.</p>
+    </div>
+    <div class="aside-stats">
+      <div class="mini-h"><span class="dot" style="background:var(--navy)"></span>At a glance</div>
+      <div class="kv"><span class="k">Headquarters</span><span class="v">Midvale, Utah</span></div>
+      <div class="kv"><span class="k">Founded</span><span class="v">1979</span></div>
+      <div class="kv"><span class="k">Ownership</span><span class="v">Leonard Green &amp; Partners + Ares (PE)</span></div>
+      <div class="kv"><span class="k">Employees</span><span class="v">4,100+ across 48 states</span></div>
+      <div class="kv"><span class="k">Market position</span><span class="v">#1 in US locum tenens (~30%+ share)</span></div>
+      <div class="kv"><span class="k">CEO &amp; President</span><span class="v">Leslie Snavely</span></div>
+      <div class="kv"><span class="k">Sales roles</span><span class="v">2,000+ across 7 divisions</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Snapshot</div>
+  <div class="stats">
+    <div class="stat o"><div class="num">1979</div><div class="lab">Founded in Salt Lake City, UT</div></div>
+    <div class="stat g"><div class="num">4,100+</div><div class="lab">Internal employees, 48 states</div></div>
+    <div class="stat b"><div class="num">#1</div><div class="lab">US locum tenens, ~30%+ market share</div></div>
+    <div class="stat o"><div class="num">#40</div><div class="lab">Fortune 100 Best Companies '26 (up from #77)</div></div>
+    <div class="stat g"><div class="num">7</div><div class="lab">US divisions in engagement scope</div></div>
+    <div class="stat b"><div class="num">2,000+</div><div class="lab">Sales roles across the enterprise</div></div>
+  </div>
+
+  <div class="section-title">Brand architecture</div>
+  <p style="margin:-4px 0 14px;color:var(--muted);font-size:13.5px">CHG operates as a house of brands. The three highlighted below are represented on Friday's call; brands marked <b style="color:var(--green)">IN SCOPE</b> contain divisions covered by the engagement.</p>
+  <div class="brands-grid">
+    <div class="brand-card attend">
+      <span class="attend-tag">On the call</span>
+      <h4>CompHealth</h4>
+      <p>The original CHG brand and a market leader in locum tenens and permanent placement for physicians and allied health.</p>
+      <span class="scope-tag">In scope · Locum + Allied</span>
+    </div>
+    <div class="brand-card attend">
+      <span class="attend-tag">On the call</span>
+      <h4>Weatherby Healthcare</h4>
+      <p>Locum tenens staffing for physicians and advanced practitioners (NP/PA) across specialties.</p>
+      <span class="scope-tag">In scope · Locum + Adv. Practice</span>
+    </div>
+    <div class="brand-card">
+      <h4>Global Medical Staffing</h4>
+      <p>Locum tenens placements domestically and internationally, including unique travel-oriented assignments.</p>
+      <span class="scope-tag">In scope</span>
+    </div>
+    <div class="brand-card">
+      <h4>Enterprise Client Solutions</h4>
+      <p>Cross-brand enterprise account team serving large health-system clients — central to the "client-model strain" theme.</p>
+      <span class="scope-tag">In scope</span>
+    </div>
+    <div class="brand-card">
+      <h4>RNnetwork</h4>
+      <p>Travel nursing staffing brand within the CHG family.</p>
+    </div>
+    <div class="brand-card">
+      <h4>Modio Health</h4>
+      <p>Provider credentialing and data-management technology platform.</p>
+    </div>
+    <div class="brand-card">
+      <h4>Locumsmart</h4>
+      <p>Vendor-management and workflow technology for locum tenens programs.</p>
+    </div>
+    <div class="brand-card">
+      <h4>CareerMD</h4>
+      <p>Physician recruiting events, media, and outreach to residents and fellows.</p>
+    </div>
+  </div>
+  <p style="margin:12px 2px 0;font-size:11.5px;color:var(--faint)">Divisions formally in scope (7, US): CompHealth Locum Tenens · CompHealth Allied · Weatherby Locum Tenens · Weatherby Advanced Practice · Enterprise Client Solutions · Global Medical Staffing · Allied Permanent Placements.</p>
+
+  <div class="section-title">Business model &amp; how they make money</div>
+  <div class="two-col">
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--blue)"></span>What they do</div>
+      <ul class="tight">
+        <li><b>Locum tenens</b> — placing physicians &amp; advanced practitioners in temporary assignments (the core, highest-share business).</li>
+        <li><b>Permanent placement</b> — direct-hire physician and allied recruiting.</li>
+        <li><b>Allied health &amp; nursing</b> — therapists, technologists, and travel nurses.</li>
+        <li><b>Technology &amp; services</b> — credentialing (Modio), VMS (Locumsmart), recruiting media (CareerMD).</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--orange)"></span>Commercial engine</div>
+      <ul class="tight">
+        <li>A large, transactional sales force of <b>client-facing reps</b> (sell to hospitals/health systems) and <b>provider-facing reps/recruiters</b> (source and place clinicians) — a two-sided marketplace.</li>
+        <li>Revenue is driven by <b>filled days / placements</b>; margin sits between the bill rate to the client and pay rate to the provider.</li>
+        <li>Historically a <b>commission-heavy, non-quota</b> comp model — the very thing this engagement is modernizing.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Why this engagement — what CHG told us</div>
+  <div class="three-col">
+    <div class="pain"><h5>Competitive pressure</h5><p>The locum market is more saturated than ever; clients of all sizes are increasingly working around CHG, creating urgency to act.</p></div>
+    <div class="pain"><h5>Pay &amp; role misalignment</h5><p>Similar roles are paid differently and job definitions are inconsistent, creating internal equity gaps as people move across the evolving model.</p></div>
+    <div class="pain"><h5>Client-model strain</h5><p>Division sellers are chasing jobs already sold by the enterprise client team instead of growing new and existing accounts.</p></div>
+    <div class="pain"><h5>Organizational readiness</h5><p>After nearly a decade on the current model, leadership agrees the risk of inaction now outweighs the risk of change.</p></div>
+  </div>
+
+  <div class="section-title">Culture &amp; context worth knowing</div>
+  <div class="two-col">
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--green)"></span>Culture signal</div>
+      <ul class="tight">
+        <li><b>"Putting People First"</b> is CHG's signature value — expect strong sensitivity to how comp change affects employees and morale.</li>
+        <li>12+ appearances on <b>Fortune's 100 Best Companies to Work For</b>; #40 in 2026. Change management and communication will matter as much as plan mechanics.</li>
+        <li>A People &amp; Culture-heavy attendee list (CPO, total rewards, HRBP) reflects this — this is a people-led change, not just a finance exercise.</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--navy)"></span>Recent moves</div>
+      <ul class="tight">
+        <li><b>Leslie Snavely</b> leads as CEO &amp; President, having risen through the enterprise since 2010.</li>
+        <li><b>Ryan Solomon</b> joined as <b>CFO in August 2026</b> (succeeding Rob Millard) — brand-new to the seat and to this initiative.</li>
+        <li><b>Kerry Norman</b> was elevated to <b>Chief People Officer in 2025</b>; several People Ops / Total Rewards leaders sit on the working team.</li>
+        <li>Owned by <b>Leonard Green &amp; Partners and Ares</b> since a 2012 buyout — expect financial discipline on cost-of-sales.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="footnote">Sources: CHG Healthcare corporate site &amp; newsroom; Wikipedia (CHG Healthcare Services); Great Place to Work / Fortune 100 Best Companies to Work For (2025–2026); BusinessWire (CFO appointment, Aug 2026); Mergr / PE Hub (2012 Leonard Green &amp; Ares acquisition); Staffing Industry Analysts. Market-share and employee figures are the most recent public estimates and may vary by source. Engagement facts drawn from the CHG SalesGlobe Scoping Brief (June 2026) and SalesGlobe proposal (Sept 2026).</p>
+</section>
+
+<!-- ================= ATTENDEES ================= -->
+<section class="panel" id="attendees">
+
+  <div class="section-title">Who's who — read the room</div>
+  <p style="margin:-4px 0 14px;color:var(--muted);font-size:13.5px">The 19 attendees cluster into these working roles. Colored dots match the accent bar on each person's card below.</p>
+  <div class="whoswho">
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:var(--navy)"></span>Executive sponsors</h4>
+      <div class="ww-sub">Direction &amp; final decisions</div>
+      <ul>
+        <li>Leslie Snavely <span>· CEO &amp; President</span></li>
+        <li>Pete LaBore <span>· EVP, Sales Operations</span></li>
+        <li>Bill Heller <span>· COO</span></li>
+        <li>Ryan Solomon <span>· CFO (new)</span></li>
+        <li>Luke Woodyard <span>· Group President</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:var(--orange)"></span>Compensation / Total Rewards</h4>
+      <div class="ww-sub">Core design counterparts</div>
+      <ul>
+        <li>Leo Rocha <span>· Sr Dir, Compensation</span></li>
+        <li>Nathaniel Noyes <span>· Dir, Compensation</span></li>
+        <li>Scott Christiansen <span>· Comp Manager</span></li>
+        <li>Jennica Anderson <span>· Head, People Ops &amp; Total Rewards</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:var(--green)"></span>People &amp; Culture</h4>
+      <div class="ww-sub">Change &amp; workforce impact</div>
+      <ul>
+        <li>Kerry Norman <span>· Chief People Officer</span></li>
+        <li>Carrie Johnson <span>· SVP People &amp; Culture, CompHealth</span></li>
+        <li>Andrea Moreira-Alejandro <span>· Sr Dir, People Business Partner</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:var(--blue)"></span>Sales Ops &amp; Analytics</h4>
+      <div class="ww-sub">Feasibility &amp; data</div>
+      <ul>
+        <li>Ronney Davis <span>· VP, Sales Operations Strategy</span></li>
+        <li>Andrew Bornstein <span>· Dir, BI &amp; Analytics</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:#d64b6a"></span>Brand / Sales leadership</h4>
+      <div class="ww-sub">Commercial reality</div>
+      <ul>
+        <li>Brooke Bowers <span>· President, CompHealth Locum</span></li>
+        <li>Michael DePaolis <span>· President, Weatherby</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:#6b4fbb"></span>Finance</h4>
+      <div class="ww-sub">Affordability &amp; governance</div>
+      <ul>
+        <li>Jeff Gwilliam <span>· VP, Financial Management</span></li>
+        <li>Catie Baker <span>· Sr Financial Analyst</span></li>
+      </ul>
+    </div>
+    <div class="ww">
+      <h4><span class="ww-dot" style="background:#3aa6a0"></span>Project management</h4>
+      <div class="ww-sub">Coordination &amp; logistics</div>
+      <ul>
+        <li>Christine Southwick <span>· Sr PM, People Operations</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">All attendees</div>
+  <div class="toolbar">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="q" type="text" placeholder="Search name, title, background…">
+    </div>
+    <div class="filters" id="filters">
+      <button class="chip active" data-f="all">All (19)</button>
+      <button class="chip" data-f="exec">Executive</button>
+      <button class="chip" data-f="comp">Comp / Total Rewards</button>
+      <button class="chip" data-f="people">People &amp; Culture</button>
+      <button class="chip" data-f="salesops">Sales Ops / Analytics</button>
+      <button class="chip" data-f="brand">Brand / Sales</button>
+      <button class="chip" data-f="finance">Finance</button>
+      <button class="chip" data-f="pm">PM</button>
+    </div>
+  </div>
+  <div class="count-note" id="countNote"></div>
+  <div class="att-grid" id="attGrid"></div>
+
+  <p class="footnote">Public professional information researched as of September 15, 2026. Confidence badges indicate how firmly a profile was matched to the CHG email address — <b>High</b> = strongly corroborated; <b>Med-High</b> = likely but partially unverified; <b>Low</b> = no reliable public profile matched (confirm during introductions). "Kickoff relevance" is SalesGlobe's read of each person's likely role on the engagement, not a CHG-assigned title. Verify anything before stating it in the room.</p>
+</section>
+
+<!-- ================= GAME PLAN ================= -->
+<section class="panel" id="gameplan">
+  <div class="gp-hero">
+    <div class="eyebrow">The engagement</div>
+    <h2>Designing a Modern Sales Structure &amp; Compensation Program to Accelerate Integration and Growth</h2>
+    <p>A ~10-week program to clarify CHG's sales role architecture, validate market competitiveness of pay, and build the individual-accountability (quota) framework needed to sustain growth in a rapidly evolving locum tenens market — targeting an <b style="color:#fff">FY27 go-live</b> for quota-based roles.</p>
+    <div class="gp-meta">
+      <div><b>~10 wks</b>Est. duration</div>
+      <div><b>7</b>US divisions in scope</div>
+      <div><b>40–60</b>Sellers for FY27 individual quotas</div>
+      <div><b>~150</b>Client reps potentially impacted</div>
+      <div><b>2</b>Core workstreams</div>
+    </div>
+  </div>
+
+  <div class="section-title">What CHG asked us to scope</div>
+  <div class="two-col">
+    <div class="ask"><span class="n">1</span><h4>Sales role hierarchy &amp; target comp architecture</h4><p>Define which roles carry the highest enterprise value, the talent paths between them, and how core skills, target earnings, upside, and commission-component design map to those paths.</p></div>
+    <div class="ask"><span class="n">2</span><h4>Quota evolution &amp; supporting comp design</h4><p>Leadership has buy-in to move to a quota-based model. Lay out the range of options for supporting that transition and the comp design that backs it.</p></div>
+  </div>
+
+  <div class="section-title">Scope at a glance</div>
+  <div class="three-col">
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--blue)"></span>Divisions (7, US)</div>
+      <ul class="tight" style="font-size:12.8px">
+        <li>CompHealth Locum Tenens</li><li>CompHealth Allied</li><li>Weatherby Locum Tenens</li>
+        <li>Weatherby Advanced Practice</li><li>Enterprise Client Solutions</li><li>Global Medical Staffing</li><li>Allied Permanent Placements</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--orange)"></span>Roles in scope</div>
+      <ul class="tight" style="font-size:12.8px">
+        <li>Client Reps &amp; Client Execs</li><li>Provider Reps</li><li>Provider Recruiters</li>
+        <li>Sales Consultants</li><li>Specialty &amp; Client Delivery Execs</li><li>Associate Recruiters</li><li>First-Line Sales Managers</li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <div class="mini-h"><span class="dot" style="background:var(--green)"></span>Populations</div>
+      <ul class="tight" style="font-size:12.8px">
+        <li><b>~40–60 sellers</b> targeted for individual quota plans in FY27</li>
+        <li><b>~150 client reps</b> potentially impacted</li>
+        <li>Assumes ~10–12 total roles &amp; ~25 plan designs to harmonize</li>
+        <li>Headcounts to be confirmed with CHG</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">How the work flows</div>
+  <div class="phase-wrap">
+    <div class="phase p1">
+      <div class="ph-head"><h4>Phase 1 · Assessment</h4><span class="wk">~4–5 weeks</span></div>
+      <div class="ph-body">
+        <ul class="tight" style="font-size:13px">
+          <li>Kickoff, data logistics &amp; alignment across all 7 divisions</li>
+          <li>Revenue Roadmap<sup>SM</sup> assessment: Insight · Strategy · Coverage · Enablement</li>
+          <li>~20 leadership interviews + ~30 sales/support fact-finding interviews</li>
+          <li>Current-state role definitions, hierarchy mapping &amp; plan inventory</li>
+          <li>Comp, performance &amp; benchmarking analytics (50th/75th percentile)</li>
+          <li>Targeted competitive insights + findings &amp; program-design directions</li>
+        </ul>
+      </div>
+    </div>
+    <div class="phase p2">
+      <div class="ph-head"><h4>Phase 2 · Design</h4><span class="wk">~6–8 weeks</span></div>
+      <div class="ph-body">
+        <ul class="tight" style="font-size:13px">
+          <li>Sales role architecture &amp; comp-structure framework (enterprise value tiers, talent paths)</li>
+          <li>Compensation design — harmonize toward ~10 roles / ~25 plans</li>
+          <li>Cost modeling &amp; Monte Carlo simulation (cost-of-sales guardrails)</li>
+          <li>Plan refinement &amp; final designs; FY27 execution readiness</li>
+          <li>Quota-setting methodology, validation tests &amp; pilot tooling</li>
+          <li>Knowledge transfer, manager rollout &amp; change communication</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Know before you walk in</div>
+  <div class="two-col">
+    <div>
+      <div class="know warn"><h5>The CFO is brand-new</h5><p>Ryan Solomon stepped into the CFO seat in Aug 2026. He'll likely probe economics, cost-of-sales, and governance — and won't carry history on the current model. Meet him where he is.</p></div>
+      <div class="know"><h5>This is a people-led change</h5><p>A heavy People &amp; Culture / Total Rewards presence (CPO Kerry Norman + several comp leaders) signals culture and change management weigh as heavily as plan mechanics. "Putting People First" is a real constraint.</p></div>
+      <div class="know"><h5>Analytics is in the room</h5><p>Andrew Bornstein (BI &amp; Analytics) and Ronney Davis (Sales Ops Strategy) are your data-feasibility reality check — engage them early on data availability, measurement, and reporting.</p></div>
+    </div>
+    <div>
+      <div class="know"><h5>Comp SMEs will go deep fast</h5><p>Rocha, Noyes, Christiansen and Anderson live in the plans daily. Expect specific, mechanics-level questions; they're your primary design counterparts.</p></div>
+      <div class="know warn"><h5>The "client-model strain" is political</h5><p>Division sellers chasing enterprise-sold jobs is a live tension. Enterprise Client Solutions vs. brand P&amp;Ls (Bowers, DePaolis) may surface competing views — listen for it.</p></div>
+      <div class="know"><h5>Pete LaBore is your business owner</h5><p>EVP of Sales Operations — the senior sales-ops sponsor, likely central to design direction and whether the model is actually implementable. Prioritize his read of the room.</p></div>
+    </div>
+  </div>
+
+  <div class="section-title">Attendee → workstream map</div>
+  <table class="map-table">
+    <thead><tr><th style="width:30%">Workstream</th><th style="width:42%">Primary CHG counterparts</th><th>Why they matter</th></tr></thead>
+    <tbody>
+      <tr><td><b>Executive alignment &amp; C-level goals</b></td><td class="who">Snavely, LaBore, Heller, Woodyard, Solomon</td><td>Set direction, arbitrate trade-offs, own the final call.</td></tr>
+      <tr><td><b>Role architecture &amp; comp design</b></td><td class="who">Rocha, Noyes, Christiansen, Anderson</td><td>Day-to-day design partners on structure, pay mix, mechanics.</td></tr>
+      <tr><td><b>Quota model &amp; sales-ops feasibility</b></td><td class="who">LaBore, Davis, Bornstein</td><td>Practical quota mechanics, data readiness, measurement.</td></tr>
+      <tr><td><b>Commercial reality &amp; GTM</b></td><td class="who">Bowers, DePaolis</td><td>Ground designs in how the brands actually sell.</td></tr>
+      <tr><td><b>Change management &amp; workforce</b></td><td class="who">Norman, Johnson, Moreira-Alejandro</td><td>Employee impact, equity, communication, adoption.</td></tr>
+      <tr><td><b>Financial guardrails</b></td><td class="who">Gwilliam, Solomon, Baker</td><td>Cost-of-sales, affordability, modeling, governance of the plans.</td></tr>
+      <tr><td><b>Coordination &amp; logistics</b></td><td class="who">Southwick</td><td>Client-side PM — data requests, scheduling, central contact.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">Engagement details from the CHG SalesGlobe Scoping Brief (June 2026) and the SalesGlobe proposal, "Designing a Modern Sales Structure and Compensation Program" (Sept 4, 2026). Timeline, populations, and role/plan counts are proposal assumptions to be confirmed at kickoff.</p>
+</section>
+</main>
+
+<script>
+const escapeHtml = s => (s==null?'':String(s)).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const attendees = [
+  {name:"Leslie Snavely",group:"exec",fn:"Executive Leadership",title:"CEO & President",company:"CHG Healthcare",co:"chg",
+   bg:"Joined CHG in 2010 and progressed through senior leadership before becoming President and CEO. Leads the enterprise and its healthcare staffing brands.",
+   edu:"Public profile did not provide a complete education history.",loc:"Park City, Utah",
+   li:"https://www.linkedin.com/in/lsnavely",conf:"High",note:"Executive sponsor and final decision-maker."},
+
+  {name:"Bill Heller",group:"exec",fn:"Executive Leadership",title:"Chief Operating Officer",company:"CHG Healthcare",co:"chg",
+   bg:"Healthcare staffing executive with roughly 20 years of industry experience. Oversees operating performance; has spoken publicly on physician engagement, AI, data, and flexible staffing.",
+   edu:"Not publicly verified.",loc:"Utah",li:"",conf:"High",note:"Enterprise operating perspective."},
+
+  {name:"Ryan Solomon",group:"exec",fn:"Finance",title:"Chief Financial Officer",company:"CHG Healthcare",co:"chg",
+   bg:"Joined CHG as CFO in August 2026. 20+ years of finance leadership, including CFO roles at Enhabit Home Health & Hospice, Aspirion, AccentCare, and Apple Leisure Group.",
+   edu:"Texas A&M University; MBA in Finance, Texas Christian University.",loc:"Dallas–Fort Worth, Texas",
+   li:"https://www.linkedin.com/in/ryan-solomon2001",conf:"High",note:"New to CHG (Aug '26); likely focused on economics, governance, and scalability."},
+
+  {name:"Luke Woodyard",group:"exec",fn:"Executive Leadership",title:"Group President",company:"CHG Healthcare",co:"chg",
+   bg:"Long-time healthcare staffing leader. Became President of Weatherby Healthcare in 2021, then moved into a CHG group president role; succeeded at Weatherby by Michael DePaolis.",
+   edu:"Not publicly verified.",loc:"United States",li:"",conf:"High",note:"Cross-brand operating viewpoint."},
+
+  {name:"Brooke Bowers",group:"brand",fn:"Brand / Sales Leadership",title:"President, CompHealth Locum Tenens",company:"CompHealth",co:"comphealth",
+   bg:"Joined CompHealth in 2002 and advanced through operations, sales, and leadership roles. Formerly SVP of Sales before promotion to division president in 2023.",
+   edu:"Not publicly verified.",loc:"Utah",li:"",conf:"High",note:"Senior commercial leader for CompHealth locum tenens."},
+
+  {name:"Michael DePaolis",group:"brand",fn:"Brand / Sales Leadership",title:"President, Weatherby Healthcare",company:"Weatherby Healthcare",co:"weatherby",
+   bg:"Promoted to President of Weatherby Healthcare in 2024, succeeding Luke Woodyard. Earlier career includes senior leadership at Acsys and operating roles in healthcare staffing.",
+   edu:"Not publicly verified.",loc:"Raleigh, NC / Fort Lauderdale, FL",li:"",conf:"High",note:"Senior commercial leader for Weatherby."},
+
+  {name:"Leo Rocha",group:"comp",fn:"Compensation / Total Rewards",title:"Senior Director, Compensation",company:"CHG Healthcare",co:"chg",
+   bg:"Total rewards and sales compensation leader with nearly 20 years of experience in compensation strategy, incentives, people operations, and organizational rewards.",
+   edu:"Not publicly verified.",loc:"Utah",li:"",conf:"High",note:"Core compensation subject-matter expert."},
+
+  {name:"Nathaniel Noyes",group:"comp",fn:"Compensation / Total Rewards",title:"Director, Compensation",company:"CHG Healthcare",co:"chg",
+   bg:"Compensation leader within CHG's People organization; public information confirms responsibility on the compensation management team.",
+   edu:"Utah State University.",loc:"Saratoga Springs, Utah",li:"https://www.linkedin.com/in/nathaniel-noyes-80573a18",conf:"High",note:"Core compensation design and administration stakeholder."},
+
+  {name:"Scott Christiansen",group:"comp",fn:"Compensation / Total Rewards",title:"Compensation Manager",company:"CHG Healthcare",co:"chg",
+   bg:"Compensation practitioner at CHG. Public information indicates graduate study in both business administration and finance at the University of Utah.",
+   edu:"MBA & MS Finance candidate, University of Utah (expected 2026).",loc:"Salt Lake City area, Utah",li:"",conf:"MidHigh",note:"Working-team compensation stakeholder."},
+
+  {name:"Jennica Anderson",group:"comp",fn:"Compensation / Total Rewards",title:"Head of People Operations & Total Rewards",company:"CHG Healthcare",co:"chg",
+   bg:"Leads people operations and total rewards. Joined CHG in 2021, rising from Director of People Operations; scope spans total rewards, analytics, and HRIS. Earlier comp/HRIS experience at Select Portfolio Servicing.",
+   edu:"B.S., Clinical Psychology, Westminster University.",loc:"Salt Lake City, Utah",li:"https://www.linkedin.com/in/jennica-anderson-00402236",conf:"MidHigh",note:"Bridges People Ops and Total Rewards. Note: public sources show both Anderson and Christiansen surnames; email confirms Anderson."},
+
+  {name:"Kerry Norman",group:"people",fn:"People & Culture",title:"Chief People Officer",company:"CHG Healthcare",co:"chg",
+   bg:"Joined CHG in 2017 as VP of Talent Management, became EVP of People & Operations in 2023, and was promoted to CPO in 2025. Prior HR/talent leadership at Capital Group, Prudential Financial, and FedEx.",
+   edu:"B.A., Economics, Boston College (honors, summa cum laude).",loc:"Salt Lake City area, Utah",li:"https://www.linkedin.com/in/normankerry",conf:"High",note:"Primary people and culture executive."},
+
+  {name:"Carrie Johnson",group:"people",fn:"People & Culture",title:"SVP, People & Culture",company:"CompHealth",co:"comphealth",
+   bg:"Senior people & culture leader for CompHealth. Public board information lists her as SVP, People & Culture; earlier recognition listed her as a CompHealth vice president.",
+   edu:"Not publicly verified.",loc:"Salt Lake City area, Utah",li:"",conf:"MidHigh",note:"Brand-level people leader."},
+
+  {name:"Andrea Moreira-Alejandro",group:"people",fn:"People & Culture",title:"Senior Director, People Business Partner",company:"CHG Healthcare",co:"chg",
+   bg:"Senior people business partner with 10+ years at CHG as of 2025. Public profiles also reference prior culture and engagement leadership responsibilities.",
+   edu:"Florida International University.",loc:"Fort Lauderdale, Florida",li:"https://www.linkedin.com/in/andrea-moreira-alejandro",conf:"High",note:"Likely represents business-unit needs and change implications."},
+
+  {name:"Ronney Davis",group:"salesops",fn:"Sales Ops / Analytics",title:"VP, Sales Operations Strategy",company:"CHG Healthcare",co:"chg",
+   bg:"Sales operations and strategy executive with prior Weatherby Healthcare experience. Public profiles list MBA and MPA credentials and a Fort Lauderdale base.",
+   edu:"MBA; MPA; Florida Atlantic University (per LinkedIn).",loc:"Fort Lauderdale, Florida",li:"https://www.linkedin.com/in/ronney-davis-mba-mpa-46172195",conf:"High",note:"Likely key voice on sales-model practicality and operating impact."},
+
+  {name:"Andrew Bornstein",group:"salesops",fn:"Sales Ops / Analytics",title:"Director, Business Intelligence & Analytics",company:"CHG Healthcare",co:"chg",
+   bg:"Leads business intelligence and analytics at CHG. Earlier references place him in interactive marketing, suggesting a background bridging digital-performance data and enterprise analytics.",
+   edu:"Not publicly verified.",loc:"Salt Lake City area, Utah",li:"",conf:"MidHigh",note:"Likely key for data availability, measurement, and reporting feasibility."},
+
+  {name:"Jeff Gwilliam",group:"finance",fn:"Finance",title:"VP, Financial Management",company:"CHG Healthcare",co:"chg",
+   bg:"Finance leader with 20+ years at CHG, progressing through assistant controller, director, and senior director roles. Previously in external reporting at Robert Half International.",
+   edu:"University of Utah, David Eccles School of Business (a second profile references BYU).",loc:"South Jordan, Utah",li:"https://www.linkedin.com/in/jeff-gwilliam-36b4a65",conf:"High",note:"Finance governance and affordability stakeholder."},
+
+  {name:"Christine Southwick",group:"pm",fn:"Project Management",title:"Senior Project Manager, People Operations",company:"CHG Healthcare",co:"chg",
+   bg:"Senior project manager supporting People Operations. Public information also references earlier project manager and Scrum Master work at CHG.",
+   edu:"University of Utah.",loc:"South Jordan, Utah",li:"https://www.linkedin.com/in/christine-southwick-b7335032",conf:"High",note:"Client project manager and central coordination point."},
+
+  {name:"Pete LaBore",group:"exec",fn:"Sales Operations / Executive",title:"EVP, Sales Operations",company:"CHG Healthcare",co:"chg",
+   bg:"Executive leader responsible for sales operations at CHG. His role sits at the intersection of enterprise sales strategy, operating processes, performance management, and execution across CHG's businesses.",
+   edu:"Not publicly verified.",loc:"United States",li:"https://www.linkedin.com/in/petelabore/",conf:"High",note:"Senior sales-operations sponsor; likely central to design direction and implementation practicality."},
+
+  {name:"Catie Baker",group:"finance",fn:"Finance",title:"Senior Financial Analyst",company:"CHG Healthcare",co:"chg",
+   bg:"Senior financial analyst at CHG Healthcare. Public LinkedIn confirms her current role and CHG experience but does not expose enough detail to reliably summarize earlier positions.",
+   edu:"Not publicly verified.",loc:"West Jordan, Utah",li:"https://www.linkedin.com/in/catie-baker-8a5512296/",conf:"High",note:"Likely supports financial modeling, cost analysis, and plan affordability."}
+];
+
+const coLabel = {chg:"CHG Healthcare",comphealth:"CompHealth",weatherby:"Weatherby Healthcare"};
+const confLabel = {High:"High",MidHigh:"Med-High",Low:"Low"};
+
+function cardHtml(a){
+  const li = a.li
+    ? `<a class="li-link" href="${escapeHtml(a.li)}" target="_blank" rel="noopener"><span class="li-badge">in</span>LinkedIn</a>`
+    : `<span class="no-li">No public LinkedIn matched</span>`;
+  return `<article class="att grp-${a.group}" data-group="${a.group}" data-search="${escapeHtml((a.name+' '+a.title+' '+a.fn+' '+a.bg+' '+a.company).toLowerCase())}">
+    <div class="att-top">
+      <div class="name-row">
+        <div>
+          <div class="nm">${escapeHtml(a.name)}</div>
+          <div class="ttl">${escapeHtml(a.title)}</div>
+          <div class="co"><span class="co-badge co-${a.co}">${escapeHtml(coLabel[a.co])}</span></div>
+        </div>
+        <span class="conf ${a.conf}">${escapeHtml(confLabel[a.conf])}</span>
+      </div>
+    </div>
+    <div class="att-body">
+      <span class="fn-tag">${escapeHtml(a.fn)}</span>
+      <div class="field"><span class="fl">Background</span>${escapeHtml(a.bg)}</div>
+      <div class="field"><span class="fl">Education</span>${escapeHtml(a.edu)}</div>
+      <div class="relevance"><span class="fl">Kickoff relevance</span>${escapeHtml(a.note)}</div>
+    </div>
+    <div class="att-foot">
+      <span class="loc">📍 ${escapeHtml(a.loc)}</span>
+      ${li}
+    </div>
+  </article>`;
+}
+
+const grid = document.getElementById('attGrid');
+grid.innerHTML = attendees.map(cardHtml).join('');
+
+let activeFilter='all', query='';
+const countNote = document.getElementById('countNote');
+
+function applyFilters(){
+  let shown=0;
+  document.querySelectorAll('.att').forEach(el=>{
+    const okGroup = activeFilter==='all' || el.dataset.group===activeFilter;
+    const okQuery = !query || el.dataset.search.includes(query);
+    const show = okGroup && okQuery;
+    el.style.display = show ? '' : 'none';
+    if(show) shown++;
+  });
+  countNote.textContent = `Showing ${shown} of ${attendees.length} attendees`;
+}
+applyFilters();
+
+document.getElementById('filters').addEventListener('click',e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  document.querySelectorAll('#filters .chip').forEach(c=>c.classList.remove('active'));
+  b.classList.add('active'); activeFilter=b.dataset.f; applyFilters();
+});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();applyFilters();});
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.panel).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
