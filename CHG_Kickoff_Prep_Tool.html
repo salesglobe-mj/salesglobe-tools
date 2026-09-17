@@ -227,6 +227,37 @@
   .also .p b{color:var(--navy);font-weight:700}
   .also .p span{color:var(--faint);font-size:11px}
   @media(max-width:1000px){.comp-grid,.comp-grid3{grid-template-columns:1fr 1fr}}
+
+  /* Engagement Teams */
+  .teams-intro{font-size:15px;color:var(--ink);margin:-4px 0 18px;max-width:900px}
+  .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+  .team-col{background:#f5f7fa;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+  .team-head{background:var(--navy);color:#fff;padding:14px 16px;text-align:center;font-weight:700;font-size:16px;letter-spacing:.2px}
+  .team-col.core .team-head{border-bottom:3px solid var(--blue)}
+  .team-col.consult .team-head{border-bottom:3px solid var(--orange)}
+  .team-col.steer .team-head{border-bottom:3px solid var(--green)}
+  .team-sub{margin:14px 14px 0;padding:11px 13px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  .team-sub .sn{font-weight:700;color:var(--navy);font-size:13px}
+  .team-sub .ss{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .team-purpose{margin:11px 14px 12px;font-size:12px;color:var(--muted);line-height:1.45}
+  .team-mem-h{margin:0 14px 8px;font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+  .team-members{margin:0 14px 16px;display:flex;flex-direction:column;gap:9px}
+  .tm{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px;border-left:3px solid var(--blue)}
+  .team-col.consult .tm{border-left-color:var(--orange)}
+  .team-col.steer .tm{border-left-color:var(--green)}
+  .tm-name{font-weight:700;color:var(--navy);font-size:14px}
+  .tm-role{font-size:11px;color:var(--muted);margin-top:1px;font-weight:600}
+  .tm-insight{font-size:12px;color:var(--ink);margin-top:7px;line-height:1.46}
+  .tm-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .tm-chip{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:5px}
+  .tm-chip.watch{background:#fde7e7;color:#c0392b}
+  .tm-chip.new{background:#fdf3e0;color:#b3800f}
+  .tm-chip.lead{background:#e7f6ee;color:#2b7a49}
+  .tm-chip.int{background:#e8f0fb;color:#2b5fb3}
+  .tm-chip.data{background:#eef1f4;color:#4a5a6b}
+  .team-flow{margin-top:18px;background:var(--navy);color:#fff;border-radius:12px;padding:15px 18px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 16px;font-weight:700;font-size:13.5px;text-align:center}
+  .team-flow .ar{color:var(--green);font-weight:800;font-size:16px}
+  @media(max-width:900px){.team-grid{grid-template-columns:1fr}}
   @media(max-width:640px){.comp-grid,.comp-grid3{grid-template-columns:1fr}.market-strip{grid-template-columns:repeat(2,1fr)}}
 
   @media(max-width:1000px){
@@ -253,6 +284,7 @@
   <nav>
     <button class="tab active" data-panel="company">Company Overview</button>
     <button class="tab" data-panel="attendees">Attendees <span style="opacity:.6;font-weight:600">· 19</span></button>
+    <button class="tab" data-panel="teams">Engagement Teams</button>
     <button class="tab" data-panel="gameplan">Kickoff Game Plan</button>
     <button class="tab" data-panel="competitors">Competitive Landscape</button>
   </nav>
@@ -400,7 +432,7 @@
       <ul>
         <li>Leslie Snavely <span>· CEO &amp; President</span></li>
         <li>Pete LaBore <span>· EVP, Sales Operations</span></li>
-        <li>Bill Heller <span>· COO</span></li>
+        <li>Bill Heller <span>· CSO &amp; COO</span></li>
         <li>Ryan Solomon <span>· CFO (new)</span></li>
         <li>Luke Woodyard <span>· Group President</span></li>
       </ul>
@@ -428,7 +460,7 @@
       <h4><span class="ww-dot" style="background:var(--blue)"></span>Sales Ops &amp; Analytics</h4>
       <div class="ww-sub">Feasibility &amp; data</div>
       <ul>
-        <li>Ronney Davis <span>· VP, Sales Operations Strategy</span></li>
+        <li>Ronney Davis <span>· VP, Sales Strategy</span></li>
         <li>Andrew Bornstein <span>· Dir, BI &amp; Analytics</span></li>
       </ul>
     </div>
@@ -444,7 +476,7 @@
       <h4><span class="ww-dot" style="background:#6b4fbb"></span>Finance</h4>
       <div class="ww-sub">Affordability &amp; governance</div>
       <ul>
-        <li>Jeff Gwilliam <span>· VP, Financial Management</span></li>
+        <li>Jeff Gwilliam <span>· SVP, FP&amp;A</span></li>
         <li>Catie Baker <span>· Sr Financial Analyst</span></li>
       </ul>
     </div>
@@ -478,6 +510,122 @@
   <div class="att-grid" id="attGrid"></div>
 
   <p class="footnote">Public professional information researched as of September 15, 2026. Confidence badges indicate how firmly a profile was matched to the CHG email address — <b>High</b> = strongly corroborated; <b>Med-High</b> = likely but partially unverified; <b>Low</b> = no reliable public profile matched (confirm during introductions). "Kickoff relevance" is SalesGlobe's read of each person's likely role on the engagement, not a CHG-assigned title. Verify anything before stating it in the room.</p>
+</section>
+
+<!-- ================= ENGAGEMENT TEAMS ================= -->
+<section class="panel" id="teams">
+  <p class="teams-intro">Three groups provide the day-to-day working team, consultative input, and executive decision-making for the engagement. Below each member is the read <b>Jennica Anderson</b> gave us on the planning call (Sep 17, 2026).</p>
+
+  <div class="team-grid">
+    <!-- CORE -->
+    <div class="team-col core">
+      <div class="team-head">Core Workgroup</div>
+      <div class="team-sub">
+        <div class="sn">Led by Leo Rocha — Sr. Director, Compensation</div>
+        <div class="ss">PM'd internally by Christine Southwick (Sr. PM, People Operations)</div>
+      </div>
+      <p class="team-purpose">Manages the day-to-day work, ensures work is driving forward, provides clarity for the SalesGlobe workgroup, and keeps the consultative workgroup informed.</p>
+      <div class="team-mem-h">Members</div>
+      <div class="team-members">
+        <div class="tm"><div class="tm-name">Nathaniel Noyes</div><div class="tm-role">Director, Compensation</div>
+          <div class="tm-insight">Core compensation lead on the CHG side — a primary design counterpart.</div></div>
+        <div class="tm"><div class="tm-name">Scott Christiansen</div><div class="tm-role">Manager, Compensation</div>
+          <div class="tm-insight">Working-team compensation practitioner supporting design and administration.</div></div>
+        <div class="tm"><div class="tm-name">Jennica Anderson</div><div class="tm-role">Head of People Operations &amp; Total Rewards</div>
+          <div class="tm-insight">Our key day-to-day sponsor and contact — she briefed us on the full roster. Senior owner of comp &amp; total rewards steering this initiative.</div>
+          <div class="tm-chips"><span class="tm-chip lead">Key contact</span></div></div>
+        <div class="tm"><div class="tm-name">Catie Baker</div><div class="tm-role">Lead Analyst</div>
+          <div class="tm-insight">Currently embedded on the client side of the business, so she's more current than the rest of the team on what's happening there. Will help heavily with the data pull. (Out Thu–Fri.)</div>
+          <div class="tm-chips"><span class="tm-chip data">Data support</span></div></div>
+      </div>
+    </div>
+
+    <!-- CONSULTATIVE -->
+    <div class="team-col consult">
+      <div class="team-head">Consultative Workgroup</div>
+      <div class="team-sub">
+        <div class="sn">Core Workgroup + rotating divisional representatives</div>
+        <div class="ss">Division leaders, HR/People partners, sales ops, finance &amp; analytics</div>
+      </div>
+      <p class="team-purpose">Provides feedback on solutions and helps steer the core workgroup on decisions, roadblocks, and final recommendations for the Steer Co.</p>
+      <div class="team-mem-h">Members</div>
+      <div class="team-members">
+        <div class="tm"><div class="tm-name">Brooke Bowers</div><div class="tm-role">Division President, CompHealth Locum Tenens</div>
+          <div class="tm-insight">Leads CompHealth. The Weatherby-vs-CompHealth pay gap is a real pain point for her — her side earns less.</div></div>
+        <div class="tm"><div class="tm-name">Mike DePaolis</div><div class="tm-role">Division President, Weatherby (largest locum group)</div>
+          <div class="tm-insight">Brooke's counterpart. On board with individual quotas, but fiercely protective of his top earners (a handful at $1.2–1.5M) — needs the new design to feel like a win, not a pay cut.</div>
+          <div class="tm-chips"><span class="tm-chip watch">Most anxious</span></div></div>
+        <div class="tm"><div class="tm-name">Sandy Vega</div><div class="tm-role">SVP, Weatherby</div>
+          <div class="tm-insight">Mike DePaolis's #2. Added to the consultative group per Jennica (newly added to the roster).</div></div>
+        <div class="tm"><div class="tm-name">Luke Woodyard</div><div class="tm-role">Group President, small divisions</div>
+          <div class="tm-insight">Has sat in nearly every division at some point. Joins the <b>quota workshop only</b>, to represent the small divisions. May carry some long-tenured skepticism toward "outside industry" approaches.</div>
+          <div class="tm-chips"><span class="tm-chip watch">Watch: legacy view</span></div></div>
+        <div class="tm"><div class="tm-name">Carrie Johnson</div><div class="tm-role">SVP, People &amp; Culture — CompHealth Locum Tenens</div>
+          <div class="tm-insight">Brooke's embedded P&amp;C partner (acts like an HRBP but sits outside the HRBP org). Historically owns the tactical execution of commission-plan development &amp; deployment — exceptionally detail-oriented ("needs to know the plan for every second of every day").</div>
+          <div class="tm-chips"><span class="tm-chip watch">Most anxious</span></div></div>
+        <div class="tm"><div class="tm-name">Andrea Moreira-Alejandro</div><div class="tm-role">People Business Partner (HRBP), Sales Orgs</div>
+          <div class="tm-insight">CHG's official HR / people business partner for the sales organization.</div></div>
+        <div class="tm"><div class="tm-name">Andrew Bornstein</div><div class="tm-role">Director, Business Intelligence</div>
+          <div class="tm-insight">Built CHG's sales-productivity model; brought in to keep incentive design and sales productivity in sync. The team's data whiz and best sounding board on what data is actually attainable.</div>
+          <div class="tm-chips"><span class="tm-chip data">Data whiz</span></div></div>
+        <div class="tm"><div class="tm-name">Pete LaBore</div><div class="tm-role">EVP, Sales Operations (≈7 days in)</div>
+          <div class="tm-insight">Positioned as the layer between CSO/COO Bill Heller and the division presidents. Per the CEO, accountable for weaving sales productivity and future-state org design into quota design — aside from the comp team, the person <b>most accountable for this project's success</b>. Brings fresh external perspective.</div>
+          <div class="tm-chips"><span class="tm-chip new">New hire</span><span class="tm-chip lead">Key owner</span></div></div>
+        <div class="tm"><div class="tm-name">Jeff Gwilliam</div><div class="tm-role">SVP, FP&amp;A</div>
+          <div class="tm-insight">Focus is the tactical P&amp;L implications of the design (less strategic, more numbers). Quiet. Also sits on the Steer Co for financial continuity.</div></div>
+        <div class="tm"><div class="tm-name">Ronney Davis</div><div class="tm-role">VP, Sales Strategy (reports to Pete LaBore)</div>
+          <div class="tm-insight">May be pulled into the Core Workgroup at times to carry the "sales voice" without bringing the whole group — toggles between consultative and core as needed.</div></div>
+      </div>
+    </div>
+
+    <!-- STEER CO -->
+    <div class="team-col steer">
+      <div class="team-head">Steer Co</div>
+      <div class="team-sub">
+        <div class="sn">Executive Compensation Committee</div>
+        <div class="ss">Final decision-makers &amp; financial sign-off</div>
+      </div>
+      <p class="team-purpose">Final decision-makers on recommendations, with the operator as the tie-breaker in split decisions, plus financial sign-off.</p>
+      <div class="team-mem-h">Members</div>
+      <div class="team-members">
+        <div class="tm"><div class="tm-name">Bill Heller</div><div class="tm-role">Chief Sales Officer &amp; COO — the "operator" / tie-breaker</div>
+          <div class="tm-insight">Expect the most trepidation and resistance here — his lens is "what are you doing to not upset my people?" A long-tenured leader who may push back on generally-accepted sales-comp approaches ("that's not how it's done here").</div>
+          <div class="tm-chips"><span class="tm-chip watch">Most resistance</span><span class="tm-chip int">Exec interview</span></div></div>
+        <div class="tm"><div class="tm-name">Leslie Snavely</div><div class="tm-role">CEO</div>
+          <div class="tm-insight">The strongest source of strategic direction and the driver of CHG's change agenda. In the executive interview she'll answer first and set the tone — intentionally, so Bill, Pete, and Kerry hear her view.</div>
+          <div class="tm-chips"><span class="tm-chip lead">Strategic lead</span><span class="tm-chip int">Exec interview</span></div></div>
+        <div class="tm"><div class="tm-name">Kerry Norman</div><div class="tm-role">Chief People Officer</div>
+          <div class="tm-insight">Opening the kickoff and setting tone: this is a top priority (protect calendar time), and — critically — the goal is <b>not</b> to cut overall comp spend, but to pay the right people the right way at the right time.</div>
+          <div class="tm-chips"><span class="tm-chip int">Exec interview</span></div></div>
+        <div class="tm"><div class="tm-name">Jeff Gwilliam</div><div class="tm-role">SVP, FP&amp;A</div>
+          <div class="tm-insight">On the Steer Co for financial continuity and sign-off. Quiet. (Also serves in the consultative workgroup.)</div></div>
+        <div class="tm"><div class="tm-name">Ryan Solomon</div><div class="tm-role">CFO (≈2 weeks in — started ~1 week before Pete)</div>
+          <div class="tm-insight">New to the seat — expected to be quieter for now, absorbing knowledge.</div>
+          <div class="tm-chips"><span class="tm-chip new">New hire</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="team-flow">
+    <span>Day-to-day execution</span><span class="ar">→</span>
+    <span>Consultative input &amp; recommendations</span><span class="ar">→</span>
+    <span>Executive decisions &amp; sign-off</span>
+  </div>
+
+  <div class="section-title">Reading the room — Jennica's context</div>
+  <div class="card pad" style="border-left:4px solid var(--orange)">
+    <div class="mini-h"><span class="dot" style="background:var(--orange)"></span>From the planning call · Sep 17, 2026</div>
+    <ul class="tight">
+      <li><b>It's an increase-revenue play, not a cost-cut.</b> Kerry Norman will state up front that the objective is <i>not</i> to reduce overall comp spend — it's paying the right people the right way at the right time. (An ~18-month-ago "AGI" effort was framed as cost-to-serve; they've deliberately moved away from that.)</li>
+      <li><b>Change inflection.</b> #1 in the market for ~20 years (they pioneered locum tenens), but a ~3-year "reckoning" that standing still risks losing #1. The CEO is driving the change; long-tenured leaders are gradually aligning, though some still wrestle with how much change, how fast.</li>
+      <li><b>Watch list.</b> <b>Mike DePaolis</b> and <b>Carrie Johnson</b> are the two most anxious in the consultative group. <b>Bill Heller</b> (and possibly <b>Luke Woodyard</b>) may resist "outside industry" approaches.</li>
+      <li><b>Known tension.</b> A real earnings gap between <b>Weatherby (higher)</b> and <b>CompHealth (lower)</b> — not a secret, a pain point for Brooke; Mike likes that his people earn top dollar.</li>
+      <li><b>Two brand-new execs.</b> CFO <b>Ryan Solomon</b> (~2 wks) and EVP Sales Ops <b>Pete LaBore</b> (~1 wk) are both new; Pete is being made a central owner of this work.</li>
+      <li><b>Executive interview.</b> Planned with <b>Leslie</b> (leads), <b>Bill</b>, <b>Pete</b>, and <b>Kerry</b> — a deliberate, tone-setting session where Leslie answers first so the others hear her view.</li>
+    </ul>
+  </div>
+
+  <p class="footnote">Team structure per the SalesGlobe "Engagement Teams" slide; individual insights from Jennica Anderson on the CHG kickoff planning call (Sep 17, 2026). Names verified against that slide. Read of individuals reflects Jennica's perspective for internal prep — handle discreetly.</p>
 </section>
 
 <!-- ================= GAME PLAN ================= -->
@@ -727,7 +875,7 @@ const attendees = [
    edu:"Public profile did not provide a complete education history.",loc:"Park City, Utah",
    li:"https://www.linkedin.com/in/lsnavely",conf:"High",note:"Executive sponsor and final decision-maker."},
 
-  {name:"Bill Heller",group:"exec",fn:"Executive Leadership",title:"Chief Operating Officer",company:"CHG Healthcare",co:"chg",
+  {name:"Bill Heller",group:"exec",fn:"Executive Leadership",title:"Chief Sales Officer & COO",company:"CHG Healthcare",co:"chg",
    bg:"Healthcare staffing executive with roughly 20 years of industry experience. Oversees operating performance; has spoken publicly on physician engagement, AI, data, and flexible staffing.",
    edu:"Not publicly verified.",loc:"Utah",li:"https://www.linkedin.com/in/bill-heller-7504874/",conf:"High",note:"Enterprise operating perspective."},
 
@@ -776,7 +924,7 @@ const attendees = [
    bg:"Senior people business partner with 10+ years at CHG as of 2025. Public profiles also reference prior culture and engagement leadership responsibilities.",
    edu:"Florida International University.",loc:"Fort Lauderdale, Florida",li:"https://www.linkedin.com/in/andrea-moreira-alejandro",conf:"High",note:"Likely represents business-unit needs and change implications."},
 
-  {name:"Ronney Davis",group:"salesops",fn:"Sales Ops / Analytics",title:"VP, Sales Operations Strategy",company:"CHG Healthcare",co:"chg",
+  {name:"Ronney Davis",group:"salesops",fn:"Sales Ops / Analytics",title:"VP, Sales Strategy",company:"CHG Healthcare",co:"chg",
    bg:"Sales operations and strategy executive with prior Weatherby Healthcare experience. Public profiles list MBA and MPA credentials and a Fort Lauderdale base.",
    edu:"MBA; MPA; Florida Atlantic University (per LinkedIn).",loc:"Fort Lauderdale, Florida",li:"https://www.linkedin.com/in/ronney-davis-mba-mpa-46172195",conf:"High",note:"Likely key voice on sales-model practicality and operating impact."},
 
@@ -784,7 +932,7 @@ const attendees = [
    bg:"Leads business intelligence and analytics at CHG. Earlier references place him in interactive marketing, suggesting a background bridging digital-performance data and enterprise analytics.",
    edu:"Not publicly verified.",loc:"Salt Lake City area, Utah",li:"https://www.linkedin.com/in/andrewbornstein/",conf:"High",note:"Likely key for data availability, measurement, and reporting feasibility."},
 
-  {name:"Jeff Gwilliam",group:"finance",fn:"Finance",title:"VP, Financial Management",company:"CHG Healthcare",co:"chg",
+  {name:"Jeff Gwilliam",group:"finance",fn:"Finance",title:"SVP, FP&A",company:"CHG Healthcare",co:"chg",
    bg:"Finance leader with 20+ years at CHG, progressing through assistant controller, director, and senior director roles. Previously in external reporting at Robert Half International.",
    edu:"University of Utah, David Eccles School of Business (a second profile references BYU).",loc:"South Jordan, Utah",li:"https://www.linkedin.com/in/jeff-gwilliam-36b4a65",conf:"High",note:"Finance governance and affordability stakeholder."},
 
